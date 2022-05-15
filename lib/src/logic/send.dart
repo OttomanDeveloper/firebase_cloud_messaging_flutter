@@ -13,5 +13,5 @@ class FirebaseSend {
 
   Map<String, dynamic> toJson() => _$FirebaseSendToJson(this);
 
-  FirebaseSend({this.validate_only: false, this.message});
+  FirebaseSend({this.validate_only = false, this.message});
 }

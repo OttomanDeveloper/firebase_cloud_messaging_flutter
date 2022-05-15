@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'logic/message.dart';
 import 'logic/send.dart';
 import 'package:http/http.dart';
-import "package:googleapis_auth/auth_io.dart";
+import 'package:googleapis_auth/auth_io.dart';
 import 'logic/firebase.service.model.dart';
 
 /// Send Firebase Cloud Messages directly from your Dart or Flutter App
@@ -19,21 +19,19 @@ class FirebaseCloudMessagingServer {
 
   FirebaseCloudMessagingServer(
     this.firebaseServiceCredentials, {
-    this.cacheAuth: true,
+    this.cacheAuth = true,
   });
 
   Future<AccessCredentials?> performAuth() async {
     /// Get Service Account Credentials from Given Map
-    ServiceAccountCredentials accountCredentials =
+    var accountCredentials =
         ServiceAccountCredentials.fromJson(firebaseServiceCredentials);
 
     /// We only required messaging scope to send messages
-    List<String> scopes = [
-      "https://www.googleapis.com/auth/firebase.messaging"
-    ];
+    var scopes = <String>['https://www.googleapis.com/auth/firebase.messaging'];
 
     /// Create a instance of HTTP Client to perform server request
-    Client client = Client();
+    var client = Client();
 
     /// Get Access to Requested Scop via service account details
     accessCredentials = await obtainAccessCredentialsViaServiceAccount(
@@ -56,8 +54,8 @@ class FirebaseCloudMessagingServer {
   /// Send Multiple Messages at once
   Future<List<ServerResult>> sendMessages(
       List<FirebaseSend> sendObjects) async {
-    List<ServerResult> results = [];
-    for (FirebaseSend sendObject in sendObjects) {
+    var results = <ServerResult>[];
+    for (var sendObject in sendObjects) {
       results.add((await _send(sendObject)));
     }
     return results;
@@ -75,23 +73,23 @@ class FirebaseCloudMessagingServer {
     }
 
     /// Send Message Request and Save it's response
-    Response response = await Client().post(
+    var response = await Client().post(
       Uri.parse(
         'https://fcm.googleapis.com/v1/projects/${FirebaseServiceModel.fromJson(firebaseServiceCredentials).project_id}/messages:send',
       ),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer ${accessCredentials!.accessToken.data}"
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${accessCredentials!.accessToken.data}'
       },
       body: json.encode(sendObject.toJson()),
     );
-    bool successful = response.statusCode == 200;
+    var successful = response.statusCode == 200;
 
     /// Print Request response
-    print("successful: $successful");
+    print('successful: $successful');
 
     /// Get Server Request result from Request Body [response.body]
-    ServerResult serverResult = ServerResult(
+    var serverResult = ServerResult(
       successful: successful,
       statusCode: response.statusCode,
       errorPhrase: response.reasonPhrase,
@@ -127,36 +125,3 @@ class ServerResult {
     return 'ServerResult{successful: $successful, statusCode: $statusCode, messageSent: $messageSent, errorPhrase: $errorPhrase}';
   }
 }
-
-// ///TODO:: Test Code
-//     FirebaseCloudMessagingServer server = FirebaseCloudMessagingServer(
-//       AppSettings.firebaseAdminSDK,
-//     );
-
-//     /// Get Firebase Token
-//     String? token = await FirebaseMessaging.instance.getToken();
-
-//     /// Send a Message
-//     var result = await server.send(
-//       FirebaseSend(
-//         validate_only: false,
-//         message: FirebaseMessage(
-//           notification: FirebaseNotification(
-//             title: "Package by Ottoman",
-//             body: "Ottoman added something new! 🔥",
-//           ),
-//           android: FirebaseAndroidConfig(
-//             ttl: "3s",
-//             notification: FirebaseAndroidNotification(
-//               icon: "ic_notification",
-//               color: "#009999",
-//             ),
-//           ),
-//           token: token,
-//         ),
-//       ),
-//     );
-
-//     Get.log(result.toString());
-
-//     ///TODO:: Test Code

@@ -2,21 +2,21 @@ import 'package:firebase_cloud_messaging_backend/firebase_cloud_messaging_backen
 
 void main() async {
   /// My Service Account Json File Content
-  final Map<String, String> serviceAccountFileContent = {
-    "type": "",
-    "project_id": "",
-    "private_key_id": "",
-    "private_key": "",
-    "client_email": "",
-    "client_id": "",
-    "auth_uri": "",
-    "token_uri": "",
-    "auth_provider_x509_cert_url": "",
-    "client_x509_cert_url": ""
+  final serviceAccountFileContent = <String, String>{
+    'type': '',
+    'project_id': '',
+    'private_key_id': '',
+    'private_key': '',
+    'client_email': '',
+    'client_id': '',
+    'auth_uri': '',
+    'token_uri': '',
+    'auth_provider_x509_cert_url': '',
+    'client_x509_cert_url': ''
   };
 
   /// Add Your Service Account File Content as Map
-  FirebaseCloudMessagingServer server = FirebaseCloudMessagingServer(
+  var server = FirebaseCloudMessagingServer(
     serviceAccountFileContent,
   );
 
@@ -30,16 +30,16 @@ void main() async {
       validate_only: false,
       message: FirebaseMessage(
         notification: FirebaseNotification(
-          title: "Package by Ottoman",
-          body: "Ottoman added something new! 🔥",
+          title: 'Package by Ottoman',
+          body: 'Ottoman added something new! 🔥',
         ),
         android: FirebaseAndroidConfig(
-          ttl: "3s",
+          ttl: '3s',
 
           /// Add Delay in String. If you want to add 1 minute delat then add it like "60s"
           notification: FirebaseAndroidNotification(
-            icon: "ic_notification",
-            color: "#009999",
+            icon: 'ic_notification',
+            color: '#009999',
           ),
         ),
         // token:

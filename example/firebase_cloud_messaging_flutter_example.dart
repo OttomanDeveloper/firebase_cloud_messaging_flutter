@@ -1,4 +1,4 @@
-import 'package:firebase_cloud_messaging_backend/firebase_cloud_messaging_backend.dart';
+import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
 
 void main() async {
   /// My Service Account Json File Content

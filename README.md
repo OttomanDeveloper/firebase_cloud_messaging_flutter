@@ -11,7 +11,7 @@ Settings > Service Accounts > Generate new key > Copy important informations dir
 A simple usage example:
 
 ```dart
-import 'package:firebase_cloud_messaging_backend/firebase_cloud_messaging_backend.dart';
+import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
 
     /// Add Your Service Account File Content as Map
     FirebaseCloudMessagingServer server = FirebaseCloudMessagingServer(

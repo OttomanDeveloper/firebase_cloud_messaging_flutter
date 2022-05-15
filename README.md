@@ -1,6 +1,6 @@
 Send messages with Firebase Cloud Messaging from your dart backend!
 
-Created using the HTTPv1 API of Firebase Cloud Messaging - you can find more on their [website](https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages).
+Created using the HTTPv1 API of Firebase Cloud Messaging - you can find more on their [Firebase Cloud Messaging API Docs](https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages).
 
 Not affiliated in any way with the official Firebase team or Google. We just trying to help flutter & dart developers to send messages without using any external server.
 
@@ -44,4 +44,4 @@ import 'package:firebase_cloud_messaging_backend/firebase_cloud_messaging_backen
 
 ## Features and bugs
 
-Please file feature requests and bugs at the [issue tracker][tracker].
+Please file feature requests and bugs at the [Issue Tracker](https://github.com/OttomanDeveloper/firebase_cloud_messaging_flutter/issues).

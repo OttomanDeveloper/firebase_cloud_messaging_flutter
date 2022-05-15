@@ -1,32 +1,53 @@
-// import 'package:firebase_cloud_messaging_backend/firebase_cloud_messaging_backend.dart';
+import 'package:firebase_cloud_messaging_backend/firebase_cloud_messaging_backend.dart';
 
-// class Example {
-//   String clientEmail = "The email address of the service account";
-//   String clientId = "The id of the client";
-//   String authKey =
-//       "Your private key - warning: confidential. Use the complete .pem like content";
-//   String privateKeyId = "Your private key id";
-//   String projectId = "Your project id";
-//   String token = "The token of the device/user you want to send a message to";
+void main() async {
+  /// My Service Account Json File Content
+  final Map<String, String> serviceAccountFileContent = {
+    "type": "",
+    "project_id": "",
+    "private_key_id": "",
+    "private_key": "",
+    "client_email": "",
+    "client_id": "",
+    "auth_uri": "",
+    "token_uri": "",
+    "auth_provider_x509_cert_url": "",
+    "client_x509_cert_url": ""
+  };
 
-//   void main() async {
-//     var server = FirebaseCloudMessagingServer(
-//         JWTClaim(
-//             client_email: "$clientEmail",
-//             client_id: "$clientId",
-//             private_key: authKey,
-//             private_key_id: "$privateKeyId"),
-//         "$projectId");
+  /// Add Your Service Account File Content as Map
+  FirebaseCloudMessagingServer server = FirebaseCloudMessagingServer(
+    serviceAccountFileContent,
+  );
 
-//     var result = await server.send(Send(
-//         validate_only: false,
-//         message: Message(
-//             notification: Notification(
-//                 title: "New content:", body: "John added something new!"),
-//             android: AndroidConfig(
-//                 notification: AndroidNotification(
-//                     icon: "ic_notification", color: "#009999")),
-//             token: token)));
-//     print(result.successful);
-//   }
-// }
+  /// Get Firebase  Messagin Token [Optional, If you want to send message to specific user]
+  /// Don't pass token if you want to send message to all registered users
+  // String? token = await FirebaseMessaging.instance.getToken();
+
+  /// Send a Message
+  var result = await server.send(
+    FirebaseSend(
+      validate_only: false,
+      message: FirebaseMessage(
+        notification: FirebaseNotification(
+          title: "Package by Ottoman",
+          body: "Ottoman added something new! 🔥",
+        ),
+        android: FirebaseAndroidConfig(
+          ttl: "3s",
+
+          /// Add Delay in String. If you want to add 1 minute delat then add it like "60s"
+          notification: FirebaseAndroidNotification(
+            icon: "ic_notification",
+            color: "#009999",
+          ),
+        ),
+        // token:
+        //     token, // only required If you want to send message to specific user.
+      ),
+    ),
+  );
+
+  /// Print Request response
+  print(result.toString());
+}

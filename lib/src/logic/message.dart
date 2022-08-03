@@ -11,50 +11,52 @@ part 'message.g.dart';
 @JsonSerializable()
 class FirebaseMessage {
   ///Output Only. The identifier of the message sent, in the format of projects/*/messages/{message_id}.
-  String? name;
+  final String? name;
 
   ///Input only. Arbitrary key/value payload. The key should not be a reserved word ("from", "message_type", or any word starting with "google" or "gcm").
   //
   //An object containing a list of "key": value pairs. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
-  Map<String, String>? data;
+  final Map<String, String>? data;
 
   ///Input only. Basic notification template to use across all platforms.
-  FirebaseNotification? notification;
+  final FirebaseNotification? notification;
 
   ///Input only. Android specific options for messages sent through FCM connection server.
-  FirebaseAndroidConfig? android;
-  FirebaseWebpushConfig? webpush;
-  FirebaseApnsConfig? apns;
-  FirebaseFcmOptions? fcm_options;
+  final FirebaseAndroidConfig? android;
+  final FirebaseWebpushConfig? webpush;
+  final FirebaseApnsConfig? apns;
+
+  @JsonKey(name: "fcm_options")
+  final FirebaseFcmOptions? fcmOptions;
 
   /// Registration token to send a message to.
   // Union field target can be only one of the following:
   ///Union field target. Required. Input only. Target to send a message to. target can be only one of token, topic or condition.
-  String? token;
+  final String? token;
 
   /// Topic name to send a message to, e.g. "weather". Note: "/topics/" prefix should not be provided.
   // Union field target can be only one of the following:
   ///Union field target. Required. Input only. Target to send a message to. target can be only one of token, topic or condition.
-  String? topic;
+  final String? topic;
 
   /// Condition to send a message to, e.g. "'foo' in topics && 'bar' in topics".
   // Union field target can be only one of the following:
   ///Union field target. Required. Input only. Target to send a message to. target can be only one of token, topic or condition.
-  String? condition;
+  final String? condition;
 
   factory FirebaseMessage.fromJson(Map<String, dynamic> json) =>
       _$FirebaseMessageFromJson(json);
 
   Map<String, dynamic> toJson() => _$FirebaseMessageToJson(this);
 
-  FirebaseMessage({
+  const FirebaseMessage({
     this.name,
     this.data,
     this.notification,
     this.android,
     this.webpush,
     this.apns,
-    this.fcm_options,
+    this.fcmOptions,
     this.token,
     this.topic,
     this.condition,
@@ -62,6 +64,6 @@ class FirebaseMessage {
 
   @override
   String toString() {
-    return 'Message{name: $name, data: $data, notification: $notification, android: $android, webpush: $webpush, apns: $apns, fcm_options: $fcm_options, token: $token, topic: $topic, condition: $condition}';
+    return 'Message{name: $name, data: $data, notification: $notification, android: $android, webpush: $webpush, apns: $apns, fcm_options: $fcmOptions, token: $token, topic: $topic, condition: $condition}';
   }
 }

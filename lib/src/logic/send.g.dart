@@ -7,7 +7,7 @@ part of 'send.dart';
 // **************************************************************************
 
 FirebaseSend _$FirebaseSendFromJson(Map<String, dynamic> json) => FirebaseSend(
-      validate_only: json['validate_only'] as bool? ?? false,
+      validateOnly: json['validate_only'] as bool? ?? false,
       message: json['message'] == null
           ? null
           : FirebaseMessage.fromJson(json['message'] as Map<String, dynamic>),
@@ -15,6 +15,6 @@ FirebaseSend _$FirebaseSendFromJson(Map<String, dynamic> json) => FirebaseSend(
 
 Map<String, dynamic> _$FirebaseSendToJson(FirebaseSend instance) =>
     <String, dynamic>{
-      'validate_only': instance.validate_only,
+      'validate_only': instance.validateOnly,
       'message': instance.message,
     };

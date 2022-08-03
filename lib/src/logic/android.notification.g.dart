@@ -15,35 +15,35 @@ FirebaseAndroidNotification _$FirebaseAndroidNotificationFromJson(
       color: json['color'] as String?,
       sound: json['sound'] as String?,
       tag: json['tag'] as String?,
-      click_action: json['click_action'] as String?,
-      body_loc_key: json['body_loc_key'] as String?,
-      body_loc_args: (json['body_loc_args'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-      title_loc_key: json['title_loc_key'] as String?,
-      title_loc_args: (json['title_loc_args'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-      channel_id: json['channel_id'] as String?,
       ticker: json['ticker'] as String?,
       sticky: json['sticky'] as bool?,
-      event_time: json['event_time'] as String?,
-      local_only: json['local_only'] as bool?,
-      notification_priority: $enumDecodeNullable(
-          _$NotificationPriorityEnumMap, json['notification_priority']),
-      default_sound: json['default_sound'] as bool?,
-      default_vibrate_timings: json['default_vibrate_timings'] as bool?,
-      default_light_settings: json['default_light_settings'] as bool?,
-      vibrate_timings: (json['vibrate_timings'] as List<dynamic>?)
+      visibility: $enumDecodeNullable(_$VisibilityEnumMap, json['visibility']),
+      image: json['image'] as String?,
+      clickAction: json['click_action'] as String?,
+      bodyLocKey: json['body_loc_key'] as String?,
+      bodyLocArgs: (json['body_loc_args'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      visibility: $enumDecodeNullable(_$VisibilityEnumMap, json['visibility']),
-      notification_count: json['notification_count'] as int?,
-      light_settings: json['light_settings'] == null
+      titleLocKey: json['title_loc_key'] as String?,
+      titleLocArgs: (json['title_loc_args'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      channelID: json['channel_id'] as String?,
+      eventTime: json['event_time'] as String?,
+      localOnly: json['local_only'] as bool?,
+      notificationPriority: $enumDecodeNullable(
+          _$NotificationPriorityEnumMap, json['notification_priority']),
+      defaultSound: json['default_sound'] as bool?,
+      defaultVibrateTimings: json['default_vibrate_timings'] as bool?,
+      defaultLightSettings: json['default_light_settings'] as bool?,
+      vibrateTimings: (json['vibrate_timings'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      notificationCount: json['notification_count'] as int?,
+      lightSettings: json['light_settings'] == null
           ? null
           : LightSettings.fromJson(
               json['light_settings'] as Map<String, dynamic>),
-      image: json['image'] as String?,
     );
 
 Map<String, dynamic> _$FirebaseAndroidNotificationToJson(
@@ -55,27 +55,34 @@ Map<String, dynamic> _$FirebaseAndroidNotificationToJson(
       'color': instance.color,
       'sound': instance.sound,
       'tag': instance.tag,
-      'click_action': instance.click_action,
-      'body_loc_key': instance.body_loc_key,
-      'body_loc_args': instance.body_loc_args,
-      'title_loc_key': instance.title_loc_key,
-      'title_loc_args': instance.title_loc_args,
-      'channel_id': instance.channel_id,
+      'click_action': instance.clickAction,
+      'body_loc_key': instance.bodyLocKey,
+      'body_loc_args': instance.bodyLocArgs,
+      'title_loc_key': instance.titleLocKey,
+      'title_loc_args': instance.titleLocArgs,
+      'channel_id': instance.channelID,
       'ticker': instance.ticker,
       'sticky': instance.sticky,
-      'event_time': instance.event_time,
-      'local_only': instance.local_only,
+      'event_time': instance.eventTime,
+      'local_only': instance.localOnly,
       'notification_priority':
-          _$NotificationPriorityEnumMap[instance.notification_priority],
-      'default_sound': instance.default_sound,
-      'default_vibrate_timings': instance.default_vibrate_timings,
-      'default_light_settings': instance.default_light_settings,
-      'vibrate_timings': instance.vibrate_timings,
+          _$NotificationPriorityEnumMap[instance.notificationPriority],
+      'default_sound': instance.defaultSound,
+      'default_vibrate_timings': instance.defaultVibrateTimings,
+      'default_light_settings': instance.defaultLightSettings,
+      'vibrate_timings': instance.vibrateTimings,
       'visibility': _$VisibilityEnumMap[instance.visibility],
-      'notification_count': instance.notification_count,
-      'light_settings': instance.light_settings,
+      'notification_count': instance.notificationCount,
+      'light_settings': instance.lightSettings,
       'image': instance.image,
     };
+
+const _$VisibilityEnumMap = {
+  Visibility.VISIBILITY_UNSPECIFIED: 'VISIBILITY_UNSPECIFIED',
+  Visibility.PRIVATE: 'PRIVATE',
+  Visibility.PUBLIC: 'PUBLIC',
+  Visibility.SECRET: 'SECRET',
+};
 
 const _$NotificationPriorityEnumMap = {
   NotificationPriority.PRIORITY_UNSPECIFIED: 'PRIORITY_UNSPECIFIED',
@@ -86,27 +93,20 @@ const _$NotificationPriorityEnumMap = {
   NotificationPriority.PRIORITY_MAX: 'PRIORITY_MAX',
 };
 
-const _$VisibilityEnumMap = {
-  Visibility.VISIBILITY_UNSPECIFIED: 'VISIBILITY_UNSPECIFIED',
-  Visibility.PRIVATE: 'PRIVATE',
-  Visibility.PUBLIC: 'PUBLIC',
-  Visibility.SECRET: 'SECRET',
-};
-
 LightSettings _$LightSettingsFromJson(Map<String, dynamic> json) =>
     LightSettings(
       color: json['color'] == null
           ? null
           : FCMColor.fromJson(json['color'] as Map<String, dynamic>),
-      light_on_duration: json['light_on_duration'] as String?,
-      light_off_duration: json['light_off_duration'] as String?,
+      lightOnDuration: json['light_on_duration'] as String?,
+      lightOffDuration: json['light_off_duration'] as String?,
     );
 
 Map<String, dynamic> _$LightSettingsToJson(LightSettings instance) =>
     <String, dynamic>{
       'color': instance.color,
-      'light_on_duration': instance.light_on_duration,
-      'light_off_duration': instance.light_off_duration,
+      'light_on_duration': instance.lightOnDuration,
+      'light_off_duration': instance.lightOffDuration,
     };
 
 FCMColor _$FCMColorFromJson(Map<String, dynamic> json) => FCMColor(

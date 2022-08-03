@@ -8,10 +8,10 @@ part of 'fcm.options.dart';
 
 FirebaseFcmOptions _$FirebaseFcmOptionsFromJson(Map<String, dynamic> json) =>
     FirebaseFcmOptions(
-      analytics_label: json['analytics_label'] as String?,
+      analyticsLabel: json['analytics_label'] as String?,
     );
 
 Map<String, dynamic> _$FirebaseFcmOptionsToJson(FirebaseFcmOptions instance) =>
     <String, dynamic>{
-      'analytics_label': instance.analytics_label,
+      'analytics_label': instance.analyticsLabel,
     };

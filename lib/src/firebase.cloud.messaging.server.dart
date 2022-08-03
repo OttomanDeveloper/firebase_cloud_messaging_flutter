@@ -75,7 +75,7 @@ class FirebaseCloudMessagingServer {
     /// Send Message Request and Save it's response
     var response = await Client().post(
       Uri.parse(
-        'https://fcm.googleapis.com/v1/projects/${FirebaseServiceModel.fromJson(firebaseServiceCredentials).project_id}/messages:send',
+        'https://fcm.googleapis.com/v1/projects/${FirebaseServiceModel.fromJson(firebaseServiceCredentials).projectID}/messages:send',
       ),
       headers: {
         'Content-Type': 'application/json',

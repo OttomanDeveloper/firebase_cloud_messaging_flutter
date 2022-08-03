@@ -2,7 +2,7 @@ name: firebase_cloud_messaging_flutter
 description: Send Firebase Cloud Message Messages directly from your flutter or
   Dart Application.
 
-version: 1.0.2
+version: 1.0.3
 
 homepage: https://github.com/OttomanDeveloper/firebase_cloud_messaging_flutter
 
@@ -18,5 +18,5 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.2.0
-  pedantic: ^1.11.1
+  lints: ^2.0.0
   test: ^1.21.4

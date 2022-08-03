@@ -1,3 +1,7 @@
+## 1.0.3
+
+- Improved Code Structure and Quality
+
 ## 1.0.2
 
 - Updated Dependencies

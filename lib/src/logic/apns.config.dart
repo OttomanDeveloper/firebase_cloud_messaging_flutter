@@ -4,13 +4,13 @@ part 'apns.config.g.dart';
 
 @JsonSerializable()
 class FirebaseApnsConfig {
-  Map<String, String>? headers;
-  Map<String, String>? payload;
+  final Map<String, String>? headers;
+  final Map<String, String>? payload;
 
   factory FirebaseApnsConfig.fromJson(Map<String, dynamic> json) =>
       _$FirebaseApnsConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$FirebaseApnsConfigToJson(this);
 
-  FirebaseApnsConfig({this.headers, this.payload});
+  const FirebaseApnsConfig({this.headers, this.payload});
 }

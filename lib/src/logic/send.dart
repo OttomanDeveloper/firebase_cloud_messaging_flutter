@@ -5,13 +5,14 @@ part 'send.g.dart';
 
 @JsonSerializable()
 class FirebaseSend {
-  bool? validate_only;
-  FirebaseMessage? message;
+  @JsonKey(name: "validate_only")
+  final bool? validateOnly;
+  final FirebaseMessage? message;
 
   factory FirebaseSend.fromJson(Map<String, dynamic> json) =>
       _$FirebaseSendFromJson(json);
 
   Map<String, dynamic> toJson() => _$FirebaseSendToJson(this);
 
-  FirebaseSend({this.validate_only = false, this.message});
+  const FirebaseSend({this.validateOnly = false, this.message});
 }

@@ -27,7 +27,7 @@ FirebaseMessage _$FirebaseMessageFromJson(Map<String, dynamic> json) =>
       apns: json['apns'] == null
           ? null
           : FirebaseApnsConfig.fromJson(json['apns'] as Map<String, dynamic>),
-      fcm_options: json['fcm_options'] == null
+      fcmOptions: json['fcm_options'] == null
           ? null
           : FirebaseFcmOptions.fromJson(
               json['fcm_options'] as Map<String, dynamic>),
@@ -44,7 +44,7 @@ Map<String, dynamic> _$FirebaseMessageToJson(FirebaseMessage instance) =>
       'android': instance.android,
       'webpush': instance.webpush,
       'apns': instance.apns,
-      'fcm_options': instance.fcm_options,
+      'fcm_options': instance.fcmOptions,
       'token': instance.token,
       'topic': instance.topic,
       'condition': instance.condition,

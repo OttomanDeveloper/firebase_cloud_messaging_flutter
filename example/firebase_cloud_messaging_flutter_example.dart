@@ -27,7 +27,7 @@ void main() async {
   /// Send a Message
   var result = await server.send(
     FirebaseSend(
-      validate_only: false,
+      validateOnly: false,
       message: FirebaseMessage(
         notification: FirebaseNotification(
           title: 'Package by Ottoman',

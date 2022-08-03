@@ -4,25 +4,51 @@ part 'firebase.service.model.g.dart';
 
 @JsonSerializable()
 class FirebaseServiceModel {
-  final String? client_x509_cert_url;
-  final String? type, project_id, private_key_id, private_key, client_email;
-  final String? client_id, auth_uri, token_uri, auth_provider_x509_cert_url;
+  @JsonKey(name: "client_x509_cert_url")
+  final String? clientX509Certurl;
+
+  @JsonKey(name: "type")
+  final String? type;
+
+  @JsonKey(name: "project_id")
+  final String? projectID;
+
+  @JsonKey(name: "private_key_id")
+  final String? privateKeyId;
+
+  @JsonKey(name: "private_key")
+  final String? privateKey;
+
+  @JsonKey(name: "client_email")
+  final String? clientEmail;
+
+  @JsonKey(name: "client_id")
+  final String? clientId;
+
+  @JsonKey(name: "auth_uri")
+  final String? authUri;
+
+  @JsonKey(name: "token_uri")
+  final String? tokenUri;
+
+  @JsonKey(name: "auth_provider_x509_cert_url")
+  final String? authProviderX509CertUrl;
 
   factory FirebaseServiceModel.fromJson(Map<String, dynamic> json) =>
       _$FirebaseServiceModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$FirebaseServiceModelToJson(this);
 
-  FirebaseServiceModel({
-    this.client_x509_cert_url,
+  const FirebaseServiceModel({
+    this.clientX509Certurl,
     this.type,
-    this.project_id,
-    this.private_key_id,
-    this.private_key,
-    this.client_email,
-    this.client_id,
-    this.auth_uri,
-    this.token_uri,
-    this.auth_provider_x509_cert_url,
+    this.projectID,
+    this.privateKeyId,
+    this.privateKey,
+    this.clientEmail,
+    this.clientId,
+    this.authUri,
+    this.tokenUri,
+    this.authProviderX509CertUrl,
   });
 }

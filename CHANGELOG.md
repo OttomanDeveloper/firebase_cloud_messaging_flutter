@@ -1,3 +1,7 @@
+## 1.0.5
+
+- Improved code structure and quality
+
 ## 1.0.4
 
 - Updated dependencies
@@ -5,7 +9,7 @@
 
 ## 1.0.3
 
-- Improved Code Structure and Quality
+- Improved code structure and quality
 
 ## 1.0.2
 

@@ -1,9 +1,7 @@
 import 'dart:convert';
+import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/http.dart';
-import 'logic/firebase.service.model.dart';
-import 'logic/message.dart';
-import 'logic/send.dart';
 
 /// Send Firebase Cloud Messages directly from your Dart or Flutter App
 class FirebaseCloudMessagingServer {

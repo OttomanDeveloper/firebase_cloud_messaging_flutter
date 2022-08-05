@@ -35,6 +35,6 @@ Map<String, dynamic> _$FirebaseAndroidConfigToJson(
     };
 
 const _$AndroidMessagePriorityEnumMap = {
-  AndroidMessagePriority.NORMAL: 'NORMAL',
-  AndroidMessagePriority.HIGH: 'HIGH',
+  AndroidMessagePriority.normal: 'normal',
+  AndroidMessagePriority.high: 'high',
 };

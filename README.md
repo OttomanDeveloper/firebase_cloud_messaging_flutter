@@ -4,6 +4,13 @@ Created using the HTTPv1 API of Firebase Cloud Messaging - you can find more on 
 
 Not affiliated in any way with the official Firebase team or Google. We just trying to help flutter & dart developers to send messages without using any external server.
 
+## Developer Contact Details
+- [Instagram](https://www.instagram.com/ottoman_coder/​)
+- [Telegram](https://t.me/ottomancoder​)
+- [Skype ID](https://join.skype.com/invite/Udbe33x6J98H)
+- [Facebook Page](https://web.facebook.com/ottomancoder/)
+- [Youtube Channel](https://www.youtube.com/c/OttomanCoder/videos)
+
 ## Usage
 
 Settings > Service Accounts > Generate new key > Copy important informations directly from the created file or load it with FirebaseCloudMessagingServer( Your Service Account Content )
@@ -40,7 +47,7 @@ void main() async {
   /// Send a Message
   var result = await server.send(
     FirebaseSend(
-      validate_only: false,
+      validateOnly: false,
       message: FirebaseMessage(
         notification: FirebaseNotification(
           title: 'Package by Ottoman',

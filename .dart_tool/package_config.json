@@ -165,7 +165,7 @@
     },
     {
       "name": "http",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/http-0.13.4",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/http-0.13.5",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
@@ -428,7 +428,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2022-08-03T05:21:53.730883Z",
+  "generated": "2022-08-05T16:52:16.600781Z",
   "generator": "pub",
   "generatorVersion": "2.17.6"
 }

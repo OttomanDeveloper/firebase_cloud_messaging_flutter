@@ -1,9 +1,9 @@
 import 'dart:convert';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:http/http.dart';
+import 'logic/firebase.service.model.dart';
 import 'logic/message.dart';
 import 'logic/send.dart';
-import 'package:http/http.dart';
-import 'package:googleapis_auth/auth_io.dart';
-import 'logic/firebase.service.model.dart';
 
 /// Send Firebase Cloud Messages directly from your Dart or Flutter App
 class FirebaseCloudMessagingServer {
@@ -11,10 +11,11 @@ class FirebaseCloudMessagingServer {
   ///open settings > Service Accounts
   ///Generate New Private Key > Generate Key
   /// Open Your Json file and Copy all the code.
-  Map<String, dynamic> firebaseServiceCredentials;
+  final Map<String, dynamic> firebaseServiceCredentials;
 
   ///Caches authCredentials(up to 1 hour)
-  bool cacheAuth;
+  final bool cacheAuth;
+
   AccessCredentials? accessCredentials;
 
   FirebaseCloudMessagingServer(
@@ -24,14 +25,18 @@ class FirebaseCloudMessagingServer {
 
   Future<AccessCredentials?> performAuth() async {
     /// Get Service Account Credentials from Given Map
-    var accountCredentials =
-        ServiceAccountCredentials.fromJson(firebaseServiceCredentials);
+    final ServiceAccountCredentials accountCredentials =
+        ServiceAccountCredentials.fromJson(
+      firebaseServiceCredentials,
+    );
 
     /// We only required messaging scope to send messages
-    var scopes = <String>['https://www.googleapis.com/auth/firebase.messaging'];
+    final List<String> scopes = <String>[
+      'https://www.googleapis.com/auth/firebase.messaging',
+    ];
 
     /// Create a instance of HTTP Client to perform server request
-    var client = Client();
+    final Client client = Client();
 
     /// Get Access to Requested Scop via service account details
     accessCredentials = await obtainAccessCredentialsViaServiceAccount(
@@ -39,7 +44,8 @@ class FirebaseCloudMessagingServer {
       scopes,
       client,
     );
-    // Close Http server request
+
+    /// Close Http server request
     client.close();
 
     /// send acess credentials
@@ -47,17 +53,19 @@ class FirebaseCloudMessagingServer {
   }
 
   /// Send Only One Message
-  Future<ServerResult> send(FirebaseSend sendObject) async {
-    return await _send(sendObject);
-  }
+  Future<ServerResult> send(FirebaseSend ob) async => await _send(ob);
 
   /// Send Multiple Messages at once
   Future<List<ServerResult>> sendMessages(
-      List<FirebaseSend> sendObjects) async {
-    var results = <ServerResult>[];
-    for (var sendObject in sendObjects) {
+    List<FirebaseSend> sendObjects,
+  ) async {
+    // Create a list and Hold Messages sent result
+    final List<ServerResult> results = [];
+    // Send all message one by one and add sent result in `results` lsit
+    for (FirebaseSend sendObject in sendObjects) {
       results.add((await _send(sendObject)));
     }
+    // return sent messages results
     return results;
   }
 
@@ -73,7 +81,7 @@ class FirebaseCloudMessagingServer {
     }
 
     /// Send Message Request and Save it's response
-    var response = await Client().post(
+    final Response response = await Client().post(
       Uri.parse(
         'https://fcm.googleapis.com/v1/projects/${FirebaseServiceModel.fromJson(firebaseServiceCredentials).projectID}/messages:send',
       ),
@@ -83,13 +91,15 @@ class FirebaseCloudMessagingServer {
       },
       body: json.encode(sendObject.toJson()),
     );
-    var successful = response.statusCode == 200;
+
+    /// Get request response
+    final bool successful = response.statusCode == 200;
 
     /// Print Request response
     print('successful: $successful');
 
     /// Get Server Request result from Request Body [response.body]
-    var serverResult = ServerResult(
+    final ServerResult serverResult = ServerResult(
       successful: successful,
       statusCode: response.statusCode,
       errorPhrase: response.reasonPhrase,
@@ -108,12 +118,12 @@ class FirebaseCloudMessagingServer {
 
 /// Hold Message request response
 class ServerResult {
-  bool successful;
-  int statusCode;
-  FirebaseMessage messageSent;
-  String? errorPhrase;
+  final bool successful;
+  final int statusCode;
+  final FirebaseMessage messageSent;
+  final String? errorPhrase;
 
-  ServerResult({
+  const ServerResult({
     required this.successful,
     required this.statusCode,
     required this.messageSent,
@@ -123,5 +133,23 @@ class ServerResult {
   @override
   String toString() {
     return 'ServerResult{successful: $successful, statusCode: $statusCode, messageSent: $messageSent, errorPhrase: $errorPhrase}';
+  }
+
+  @override
+  bool operator ==(covariant ServerResult other) {
+    if (identical(this, other)) return true;
+
+    return other.successful == successful &&
+        other.statusCode == statusCode &&
+        other.messageSent == messageSent &&
+        other.errorPhrase == errorPhrase;
+  }
+
+  @override
+  int get hashCode {
+    return successful.hashCode ^
+        statusCode.hashCode ^
+        messageSent.hashCode ^
+        errorPhrase.hashCode;
   }
 }

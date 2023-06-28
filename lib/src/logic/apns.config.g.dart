@@ -11,9 +11,7 @@ FirebaseApnsConfig _$FirebaseApnsConfigFromJson(Map<String, dynamic> json) =>
       headers: (json['headers'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
       ),
-      payload: (json['payload'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as String),
-      ),
+      payload: json['payload'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$FirebaseApnsConfigToJson(FirebaseApnsConfig instance) =>

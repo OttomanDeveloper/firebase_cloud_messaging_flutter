@@ -4,14 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dca89ac5-0ac4-4a7f-af40-f198a825282f" name="Changes" comment="">
+    <list default="true" id="dca89ac5-0ac4-4a7f-af40-f198a825282f" name="Changes" comment="Fixes issues #1 and #2.">
+      <change beforePath="$PROJECT_DIR$/.dart_tool/build/entrypoint/.packageLocations" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/build/entrypoint/.packageLocations" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/build/entrypoint/build.dart" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/build/entrypoint/build.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/build/entrypoint/build.dart.dill" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/build/entrypoint/build.dart.dill" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/build/fcd1995bc647fb959e82ea360c6c2c9a/asset_graph.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/build/fcd1995bc647fb959e82ea360c6c2c9a/asset_graph.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/build/generated/firebase_cloud_messaging_flutter/lib/src/logic/apns.config.json_serializable.g.part" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/build/generated/firebase_cloud_messaging_flutter/lib/src/logic/apns.config.json_serializable.g.part" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/build_resolvers/sdk.sum" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/build_resolvers/sdk.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/build_resolvers/sdk.sum.deps" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/build_resolvers/sdk.sum.deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config_subset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/version" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/firebase_cloud_messaging_flutter.iml" beforeDir="false" afterPath="$PROJECT_DIR$/firebase_cloud_messaging_flutter.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/firebase_cloud_messaging_flutter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/firebase_cloud_messaging_flutter.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/firebase.cloud.messaging.server.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/firebase.cloud.messaging.server.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/logic/apns.config.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logic/apns.config.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/logic/apns.config.g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logic/apns.config.g.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,8 +85,17 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1687984572913</updated>
-      <workItem from="1687984575381" duration="309000" />
+      <workItem from="1687984575381" duration="1760000" />
     </task>
+    <task id="LOCAL-00001" summary="Fixes issues #1 and #2.">
+      <option name="closed" value="true" />
+      <created>1687984917959</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1687984917959</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -88,6 +106,10 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Fixes issues #1 and #2." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixes issues #1 and #2." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

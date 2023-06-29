@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dca89ac5-0ac4-4a7f-af40-f198a825282f" name="Changes" comment="Allow map values for APNS payload values.">
+    <list default="true" id="dca89ac5-0ac4-4a7f-af40-f198a825282f" name="Changes" comment="Allow arbitrary values for Webpush notification and add webPushFcmOptions.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/src/logic/webpush.config.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/logic/webpush.config.dart" afterDir="false" />
     </list>
@@ -72,7 +72,7 @@
       <option name="presentableId" value="Default" />
       <updated>1687984572913</updated>
       <workItem from="1687984575381" duration="2528000" />
-      <workItem from="1688055098841" duration="84000" />
+      <workItem from="1688055098841" duration="426000" />
     </task>
     <task id="LOCAL-00001" summary="Fixes issues #1 and #2.">
       <option name="closed" value="true" />
@@ -90,7 +90,15 @@
       <option name="project" value="LOCAL" />
       <updated>1687989992528</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Allow arbitrary values for Webpush notification and add webPushFcmOptions.">
+      <option name="closed" value="true" />
+      <created>1688055265714</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1688055265714</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -116,7 +124,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Fixes issues #1 and #2." />
     <MESSAGE value="Allow map values for APNS payload values." />
-    <option name="LAST_COMMIT_MESSAGE" value="Allow map values for APNS payload values." />
+    <MESSAGE value="Allow arbitrary values for Webpush notification and add webPushFcmOptions." />
+    <option name="LAST_COMMIT_MESSAGE" value="Allow arbitrary values for Webpush notification and add webPushFcmOptions." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

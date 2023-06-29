@@ -7,6 +7,7 @@ class FirebaseWebpushConfig {
   final Map<String, String>? headers;
   final Map<String, String>? data;
   final Map<String, dynamic>? notification;
+  @JsonKey(name: 'fcm_options')
   final Map<String, dynamic>? webPushFcmOptions;
 
   factory FirebaseWebpushConfig.fromJson(Map<String, dynamic> json) =>

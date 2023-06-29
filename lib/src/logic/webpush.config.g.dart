@@ -16,7 +16,7 @@ FirebaseWebpushConfig _$FirebaseWebpushConfigFromJson(
         (k, e) => MapEntry(k, e as String),
       ),
       notification: json['notification'] as Map<String, dynamic>?,
-      webPushFcmOptions: json['webPushFcmOptions'] as Map<String, dynamic>?,
+      webPushFcmOptions: json['fcm_options'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$FirebaseWebpushConfigToJson(
@@ -25,5 +25,5 @@ Map<String, dynamic> _$FirebaseWebpushConfigToJson(
       'headers': instance.headers,
       'data': instance.data,
       'notification': instance.notification,
-      'webPushFcmOptions': instance.webPushFcmOptions,
+      'fcm_options': instance.webPushFcmOptions,
     };

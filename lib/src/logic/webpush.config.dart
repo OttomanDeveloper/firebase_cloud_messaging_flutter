@@ -6,12 +6,18 @@ part 'webpush.config.g.dart';
 class FirebaseWebpushConfig {
   final Map<String, String>? headers;
   final Map<String, String>? data;
-  final Map<String, String>? notification;
+  final Map<String, dynamic>? notification;
+  final Map<String, dynamic>? webPushFcmOptions;
 
   factory FirebaseWebpushConfig.fromJson(Map<String, dynamic> json) =>
       _$FirebaseWebpushConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$FirebaseWebpushConfigToJson(this);
 
-  const FirebaseWebpushConfig({this.headers, this.data, this.notification});
+  const FirebaseWebpushConfig({
+    this.headers,
+    this.data,
+    this.notification,
+    this.webPushFcmOptions,
+  });
 }

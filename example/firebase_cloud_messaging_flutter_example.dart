@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'dart:convert';
 import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
 
 /// Example file demonstrating the firebase_cloud_messaging_flutter v2.0.0 API.
@@ -8,53 +10,34 @@ import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutte
 /// Obtain service account credentials from:
 ///   Firebase Console → Settings → Service Accounts → Generate new private key
 void main() async {
-  // --------------------------------------------------------------------------
-  // 1. Load credentials — multiple options
-  // --------------------------------------------------------------------------
+  // 1. Initialize the Server
+  // Using explicit service account map parsing:
+  final credentials = jsonDecode(
+    File('service_account.json').readAsStringSync(),
+  ) as Map<String, dynamic>;
 
-  // Option A: from a Map (e.g. loaded from environment variables in CI)
-  final Map<String, dynamic> credentialsMap = {
-    'type': 'service_account',
-    'project_id': 'YOUR_PROJECT_ID',
-    'private_key_id': 'YOUR_KEY_ID',
-    'private_key': 'YOUR_PRIVATE_KEY',
-    'client_email': 'YOUR_CLIENT_EMAIL',
-    'client_id': 'YOUR_CLIENT_ID',
-    'auth_uri': 'https://accounts.google.com/o/oauth2/auth',
-    'token_uri': 'https://oauth2.googleapis.com/token',
-    'auth_provider_x509_cert_url': 'https://www.googleapis.com/oauth2/v1/certs',
-    'client_x509_cert_url': 'YOUR_CERT_URL',
-  };
-
-  // Option B: from a JSON file on disk (recommended for server-side apps)
-  // final server = FirebaseCloudMessagingServer.fromServiceAccountFile(
-  //   File('service_account.json'),
-  // );
-
-  // Option C: from a JSON string (e.g. loaded from a secret manager)
-  // final server = FirebaseCloudMessagingServer.fromJsonString(
-  //   Platform.environment['FCM_SERVICE_ACCOUNT']!,
-  // );
-
-  // --------------------------------------------------------------------------
-  // 2. Create the server instance with optional logger + retry config
-  // --------------------------------------------------------------------------
-  final server = FirebaseCloudMessagingServer(
-    credentialsMap,
-    cacheAuth: true,
-    retryConfig: const FcmRetryConfig(
-      maxRetries: 3,
-      initialDelay: Duration(seconds: 1),
-    ),
+  var server = FirebaseCloudMessagingServer(
+    credentials,
     logger: (level, message, {error, stackTrace}) {
-      // Wire into your preferred logging framework here.
       print('[FCM ${level.name.toUpperCase()}] $message');
       if (error != null) print('  Error: $error');
     },
   );
 
+  // Alternatively, using Application Default Credentials (ADC)
+  // ideal for Google Cloud Run / Firebase Functions deployment:
+  /*
+  server = FirebaseCloudMessagingServer.applicationDefault(
+    projectId: 'my-project-id',
+    logger: (level, message, {error, stackTrace}) {
+      print('[FCM ${level.name.toUpperCase()}] $message');
+      if (error != null) print('  Error: $error');
+    },
+  );
+  */
+
   // --------------------------------------------------------------------------
-  // 3. Send to a single device token
+  // 2. Send to a single device token
   // --------------------------------------------------------------------------
   const deviceToken = 'REPLACE_WITH_YOUR_DEVICE_TOKEN';
 
@@ -148,18 +131,28 @@ void main() async {
     }
   }
 
-  // --------------------------------------------------------------------------
-  // 5. Send to a topic (new convenience method in v2.0.0)
-  // --------------------------------------------------------------------------
-  await server.sendToTopic(
-    'breaking-news',
+  // ---------------------------------------------------------------------------
+  // 3. Topic Subscriptions & Topic Messaging
+  // ---------------------------------------------------------------------------
+
+  // A. Subscribe tokens to a topic (Up to 1000 tokens per request)
+  final topicResult = await server.subscribeTokensToTopic(
+    topic: 'sports',
+    tokens: ['fake-token-4', 'fake-token-5'],
+  );
+  print('Topic subscription successful: ${topicResult.successCount}');
+
+  // B. Send message to the topic
+  final topicSendResult = await server.sendToTopic(
+    'sports',
     const FirebaseMessage(
       notification: FirebaseNotification(
-        title: '🔥 Breaking News',
-        body: 'A major event just happened.',
+        title: 'Goal!',
+        body: 'The local team scored.',
       ),
     ),
   );
+  print('Topic send successful: ${topicSendResult.successful}');
 
   // --------------------------------------------------------------------------
   // 6. Send to a condition (new convenience method in v2.0.0)

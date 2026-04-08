@@ -15,6 +15,8 @@ library firebase_cloud_messaging_flutter;
 // Server entry point & result types
 // ---------------------------------------------------------------------------
 export 'src/firebase.cloud.messaging.server.dart';
+export 'src/logic/batch.result.dart';
+export 'src/logic/topic.management.result.dart';
 
 // ---------------------------------------------------------------------------
 // Logger
@@ -24,11 +26,11 @@ export 'src/fcm.logger.dart';
 // ---------------------------------------------------------------------------
 // Core message models
 // ---------------------------------------------------------------------------
+export 'src/logic/fcm.options.dart';
+export 'src/logic/firebase.service.model.dart';
 export 'src/logic/message.dart';
 export 'src/logic/notification.dart';
 export 'src/logic/send.dart';
-export 'src/logic/firebase.service.model.dart';
-export 'src/logic/fcm.options.dart';
 
 // ---------------------------------------------------------------------------
 // Android
@@ -53,8 +55,3 @@ export 'src/logic/webpush.notification.dart';
 // ---------------------------------------------------------------------------
 export 'src/logic/fcm.error.dart';
 export 'src/logic/fcm.retry.dart';
-
-// ---------------------------------------------------------------------------
-// Batch send support
-// ---------------------------------------------------------------------------
-export 'src/logic/batch.result.dart';

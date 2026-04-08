@@ -34,10 +34,22 @@ dependencies:
   firebase_cloud_messaging_flutter: ^2.0.0
 ```
 
-### 2. Get service account credentials
+### 2. Initializing the Service Account Credentials (Important)
 
-In the Firebase Console: **Settings → Service Accounts → Generate new private key**.  
-Download the JSON file and keep it safe — it grants full project access.
+Your Firebase project requires authentication to send messages. For server-to-server communication (or Dart backends), this is done using a **Service Account JSON file**.
+
+**How to get it:**
+1. Go to the [Firebase Console](https://console.firebase.google.com/).
+2. Select your project.
+3. Click the gear icon (Project Settings) > **Service accounts**.
+4. Click **Generate new private key**.
+5. This downloads a `service_account.json` file.
+
+**Where to put it:**
+Place this file in a secure location in your Dart/Flutter backend application. (e.g., the root of your server project).
+
+> [!WARNING]
+> **NEVER commit this file to public version control (like GitHub).** It grants full administrative access to your Firebase project. Always add `service_account.json` to your `.gitignore` file. If running in a managed environment, consider using Application Default Credentials (ADC) or Secret Managers instead (see the ADC section below).
 
 ### 3. Import
 
@@ -53,13 +65,18 @@ import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutte
 
 ```dart
 import 'dart:io';
+import 'dart:convert';
 import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
 
 void main() async {
-  // Load credentials from the service account JSON file.
-  final server = FirebaseCloudMessagingServer.fromServiceAccountFile(
-    File('service_account.json'),
-  );
+  // Pass the contents of the downloaded JSON file to the constructor.
+  // - Option A (Persistent auth): FirebaseCloudMessagingServer(credentials, cacheAuth: true) (Recommended)
+  // - Option B (One-time auth): FirebaseCloudMessagingServer(credentials, cacheAuth: false)
+  final credentials = jsonDecode(
+    File('service_account.json').readAsStringSync(),
+  ) as Map<String, dynamic>;
+
+  final server = FirebaseCloudMessagingServer(credentials);
 
   final result = await server.send(
     FirebaseSend(
@@ -85,6 +102,16 @@ void main() async {
 }
 ```
 
+### Application Default Credentials (ADC)
+
+If your Dart backend executes inside a Google serverless environment (e.g. Cloud Run, App Engine, or Firebase Cloud Functions), you can securely bypass tracking raw JSON files by adopting Application Default Credentials.
+
+```dart
+final server = FirebaseCloudMessagingServer.applicationDefault(
+  projectId: 'my-project-id', 
+);
+```
+
 ### Send to multiple tokens in parallel
 
 ```dart
@@ -108,15 +135,56 @@ for (final r in batch.failedResults) {
 }
 ```
 
-### Send to a topic
+### Running Tests
+
+This package includes a comprehensive test suite to ensure message serialization and error handling are correct.
+
+### Using Dart (Pure Dart projects)
+
+```bash
+dart pub get
+dart test
+```
+
+### Using Flutter (Flutter projects or misconfigured environments)
+
+If your environment's `dart test` complains about missing snapshots (common in Flutter-managed SDKs), use:
+
+```bash
+flutter test
+```
+
+---
+
+## Sending to a Topic or Condition
+
+You can route messages via FCM Publisher Topics or via Logical Conditions.
 
 ```dart
-await server.sendToTopic(
-  'breaking-news',          // no "/topics/" prefix
-  const FirebaseMessage(
-    notification: FirebaseNotification(title: '🔥 Breaking News'),
+final result = await server.sendToTopic(
+  'breaking-news', // Note: omit the `/topics/` prefix here
+  FirebaseMessage(
+    notification: FirebaseNotification(title: 'News Alert'),
   ),
 );
+```
+
+### Managing Topic Subscriptions natively
+
+This package includes a wrapper for the Firebase Instance ID API, allowing you to explicitly subscribe or unsubscribe device tokens to a topic sequentially.
+
+```dart
+final bulkSubResult = await server.subscribeTokensToTopic(
+  topic: 'breaking-news',
+  tokens: ['token1', 'token2', 'token3'], // Up to 1000 tokens
+);
+
+if (!bulkSubResult.allSuccessful) {
+  print('Some tokens failed: ${bulkSubResult.failedResults}');
+}
+
+// To unsubscribe:
+// await server.unsubscribeTokensFromTopic(topic: 'breaking-news', tokens: ['token1']);
 ```
 
 ### Send to a condition
@@ -228,6 +296,12 @@ if (!result.successful) {
 4. If you relied on `AndroidMessagePriority` serializing to lowercase (`"normal"`/`"high"`),
    update your FCM server-side expectations — the correct values are `"NORMAL"`/`"HIGH"`.
 5. Call `server.dispose()` when you are done with the server instance.
+
+---
+
+## Contributing
+
+We welcome contributions of all kinds! Whether you're fixing bugs, improving documentation, or adding new FCM features, please read our [Contributing Guide](CONTRIBUTING.md) to get started.
 
 ---
 

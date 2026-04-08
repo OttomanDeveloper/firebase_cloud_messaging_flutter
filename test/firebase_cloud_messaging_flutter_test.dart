@@ -112,7 +112,8 @@ void main() {
         ),
       );
 
-      final map = message.toJson();
+      final encoded = jsonEncode(message.toJson());
+      final map = jsonDecode(encoded) as Map<String, dynamic>;
       expect(map['token'], equals('device-token-abc'));
       expect(map['data'], equals({'key': 'value'}));
       expect(map['notification']['title'], equals('Hello'));

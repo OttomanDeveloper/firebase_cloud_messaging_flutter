@@ -65,7 +65,9 @@ class FirebaseCloudMessagingServer {
   /// The service account credentials loaded from Firebase Console.
   ///
   /// This is the entire JSON map from the downloaded service-account file.
-  final Map<String, dynamic> firebaseServiceCredentials;
+  /// If `null`, the server expects to authenticate using Google Application
+  /// Default Credentials (ADC).
+  final Map<String, dynamic>? firebaseServiceCredentials;
 
   /// When `true` (default), the OAuth access token is cached and reused until
   /// it expires. Set to `false` to force a fresh token on every request.
@@ -94,6 +96,10 @@ class FirebaseCloudMessagingServer {
   /// Closed by [dispose].
   final http.Client _httpClient;
 
+  /// Prevents multiple simultaneous authentication refreshes when
+  /// many requests are fired in parallel.
+  Future<void>? _authFuture;
+
   // ---------------------------------------------------------------------------
   // Constructors
   // ---------------------------------------------------------------------------
@@ -109,20 +115,57 @@ class FirebaseCloudMessagingServer {
   ///
   /// [retryConfig] — retry behaviour for retryable FCM errors
   /// (default: 3 retries with exponential back-off).
+  ///
+  /// [projectId] — required ONLY if [firebaseServiceCredentials] is `null` (ADC mode).
   FirebaseCloudMessagingServer(
     this.firebaseServiceCredentials, {
+    String? projectId,
     this.cacheAuth = true,
     this.logger = fcmSilentLogger,
     this.retryConfig = const FcmRetryConfig(),
     http.Client? httpClient,
   }) : _httpClient = httpClient ?? http.Client() {
-    // Cache the projectId so we don't re-parse the entire JSON on every send.
-    final model = FirebaseServiceModel.fromJson(firebaseServiceCredentials);
-    _projectId = model.projectID ?? '';
-    assert(
-      _projectId.isNotEmpty,
-      'project_id not found in firebaseServiceCredentials. '
-      'Ensure the service account JSON is complete.',
+    if (firebaseServiceCredentials != null) {
+      // Cache the projectId so we don't re-parse the entire JSON on every send.
+      final model = FirebaseServiceModel.fromJson(firebaseServiceCredentials!);
+      _projectId = model.projectID ?? '';
+      assert(
+        _projectId.isNotEmpty,
+        'project_id not found in firebaseServiceCredentials. '
+        'Ensure the service account JSON is complete.',
+      );
+    } else {
+      assert(
+        projectId != null && projectId.isNotEmpty,
+        'projectId must be provided explicitly when using '
+        'Application Default Credentials (ADC).',
+      );
+      _projectId = projectId!;
+    }
+  }
+
+  /// Creates a server instance that authenticates using Google Application
+  /// Default Credentials (ADC).
+  ///
+  /// This is the recommended approach for serverless environments like
+  /// Google Cloud Run, App Engine, or Firebase Cloud Functions, as it securely
+  /// detects the ambient Google Cloud service account identity automatically.
+  /// No static JSON file is required.
+  ///
+  /// Because ADC does not supply the `project_id` upfront, you must provide
+  /// your Firebase [projectId] manually.
+  factory FirebaseCloudMessagingServer.applicationDefault({
+    required String projectId,
+    bool cacheAuth = true,
+    FcmLogger? logger,
+    FcmRetryConfig retryConfig = const FcmRetryConfig(),
+  }) {
+    return FirebaseCloudMessagingServer(
+      null,
+      projectId: projectId,
+      cacheAuth: cacheAuth,
+      logger: logger ?? fcmSilentLogger,
+      retryConfig: retryConfig,
     );
   }
 
@@ -321,24 +364,37 @@ class FirebaseCloudMessagingServer {
   Future<AccessCredentials> performAuth() async {
     logger(FcmLogLevel.debug, 'Requesting new OAuth access token from Google');
 
-    final ServiceAccountCredentials accountCredentials =
-        ServiceAccountCredentials.fromJson(firebaseServiceCredentials);
-
-    // Only the messaging scope is needed to send FCM messages.
     const List<String> scopes = [
       'https://www.googleapis.com/auth/firebase.messaging',
     ];
 
-    // Use a temporary client just for auth — the send client is separate.
-    final tempClient = http.Client();
-    try {
-      _accessCredentials = await obtainAccessCredentialsViaServiceAccount(
-        accountCredentials,
-        scopes,
-        tempClient,
-      );
-    } finally {
-      tempClient.close();
+    if (firebaseServiceCredentials != null) {
+      final ServiceAccountCredentials accountCredentials =
+          ServiceAccountCredentials.fromJson(firebaseServiceCredentials!);
+
+      // Use a temporary client just for auth — the send client is separate.
+      final tempClient = http.Client();
+      try {
+        _accessCredentials = await obtainAccessCredentialsViaServiceAccount(
+          accountCredentials,
+          scopes,
+          tempClient,
+        );
+      } finally {
+        tempClient.close();
+      }
+    } else {
+      // Application Default Credentials (ADC)
+      // clientViaApplicationDefaultCredentials creates its own AuthClient
+      // wrapping a default inner HTTP client, which we then close after grabbing
+      // the token, avoiding resource leaks.
+      final authClient =
+          await clientViaApplicationDefaultCredentials(scopes: scopes);
+      try {
+        _accessCredentials = authClient.credentials;
+      } finally {
+        authClient.close();
+      }
     }
 
     logger(
@@ -452,6 +508,93 @@ class FirebaseCloudMessagingServer {
   }
 
   // ---------------------------------------------------------------------------
+  // Topic Management
+  // ---------------------------------------------------------------------------
+
+  /// Subscribes a list of registration [tokens] to an FCM [topic].
+  ///
+  /// This utilizes the Firebase Instance ID API `batchAdd` endpoint.
+  /// You can subscribe up to 1,000 tokens in a single request.
+  /// The [topic] should not include the `"/topics/"` prefix.
+  Future<TopicManagementResult> subscribeTokensToTopic({
+    required String topic,
+    required List<String> tokens,
+  }) async {
+    return _modifyTopicSubscription(
+      topic: topic,
+      tokens: tokens,
+      isSubscription: true,
+    );
+  }
+
+  /// Unsubscribes a list of registration [tokens] from an FCM [topic].
+  ///
+  /// This utilizes the Firebase Instance ID API `batchRemove` endpoint.
+  /// You can unsubscribe up to 1,000 tokens in a single request.
+  /// The [topic] should not include the `"/topics/"` prefix.
+  Future<TopicManagementResult> unsubscribeTokensFromTopic({
+    required String topic,
+    required List<String> tokens,
+  }) async {
+    return _modifyTopicSubscription(
+      topic: topic,
+      tokens: tokens,
+      isSubscription: false,
+    );
+  }
+
+  /// Internal driver for the Firebase Instance ID API since the `messages:send`
+  /// endpoint only _sends_ to topics but doesn't _manage_ them.
+  Future<TopicManagementResult> _modifyTopicSubscription({
+    required String topic,
+    required List<String> tokens,
+    required bool isSubscription,
+  }) async {
+    assert(
+      tokens.isNotEmpty && tokens.length <= 1000,
+      'Topic management supports between 1 and 1000 tokens per request.',
+    );
+    assert(
+      !topic.contains('/'),
+      'Topic string should not contain the `/topics/` prefix — simply provide the name (e.g. "news").',
+    );
+
+    // Topic management uses the exact same OAuth 2.0 access token as message delivery.
+    await _ensureValidToken();
+
+    final action = isSubscription ? 'batchAdd' : 'batchRemove';
+    final url = Uri.parse('https://iid.googleapis.com/iid/v1:$action');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${_accessCredentials!.accessToken.data}',
+      // IID endpoint enforces this explicit header when using OAuth 2.0 tokens
+      // rather than legacy Server Keys.
+      'access_token_auth': 'true',
+    };
+
+    final body = json.encode({
+      'to': '/topics/$topic',
+      'registration_tokens': tokens,
+    });
+
+    logger(FcmLogLevel.debug,
+        'Topic Management: $action for ${tokens.length} tokens on topic: $topic');
+
+    final response = await _httpClient.post(url, headers: headers, body: body);
+
+    Map<String, dynamic> bodyMap;
+    try {
+      bodyMap = json.decode(response.body) as Map<String, dynamic>;
+    } catch (_) {
+      // Failsafe in case Google API returns a non-JSON HTML blob.
+      bodyMap = {};
+    }
+
+    return TopicManagementResult.fromJson(bodyMap, tokens);
+  }
+
+  // ---------------------------------------------------------------------------
   // Token validation helper
   // ---------------------------------------------------------------------------
 
@@ -463,7 +606,19 @@ class FirebaseCloudMessagingServer {
     final bool forceRefresh = !cacheAuth;
 
     if (!hasCredentials || isExpired || forceRefresh) {
-      await performAuth();
+      // If an auth request is already in progress, wait for it.
+      if (_authFuture != null) {
+        await _authFuture;
+        return;
+      }
+
+      // Capture the future to prevent duplicate triggers.
+      _authFuture = performAuth();
+      try {
+        await _authFuture;
+      } finally {
+        _authFuture = null;
+      }
     }
   }
 

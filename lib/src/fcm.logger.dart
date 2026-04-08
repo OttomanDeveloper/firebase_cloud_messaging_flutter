@@ -50,6 +50,30 @@ typedef FcmLogger = void Function(
 });
 
 // ---------------------------------------------------------------------------
+// Registration Callback
+// ---------------------------------------------------------------------------
+
+/// Status of a device token after an FCM attempt.
+enum FcmRegistrationStatus {
+  /// The token is no longer valid or has been unregistered from the project.
+  /// You should remove this token from your database.
+  unregistered,
+
+  /// The token is valid and successfully received the message.
+  active,
+}
+
+/// A callback triggered when a specific device token's registration status changes.
+///
+/// This is highly recommended for keeping your device database synchronized.
+/// If you receive an [FcmRegistrationStatus.unregistered], you should delete
+/// the [token] from your persistent storage.
+typedef FcmRegistrationCallback = void Function(
+  String token,
+  FcmRegistrationStatus status,
+);
+
+// ---------------------------------------------------------------------------
 // No-op default logger (used internally when user does not supply one)
 // ---------------------------------------------------------------------------
 

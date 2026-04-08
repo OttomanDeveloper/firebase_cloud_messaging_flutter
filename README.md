@@ -39,6 +39,7 @@ dependencies:
 Your Firebase project requires authentication to send messages. For server-to-server communication (or Dart backends), this is done using a **Service Account JSON file**.
 
 **How to get it:**
+
 1. Go to the [Firebase Console](https://console.firebase.google.com/).
 2. Select your project.
 3. Click the gear icon (Project Settings) > **Service accounts**.

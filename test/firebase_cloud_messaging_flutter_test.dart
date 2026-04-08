@@ -348,4 +348,58 @@ void main() {
       expect(result, equals(same));
     });
   });
+
+  // -------------------------------------------------------------------------
+  // FirebaseApnsConfig — Nesting verification
+  // -------------------------------------------------------------------------
+  group('FirebaseApnsConfig nesting', () {
+    test('notification is nested inside payload.aps in toJson()', () {
+      final config = FirebaseApnsConfig(
+        notification: const FirebaseApnsNotification(
+          title: 'APNs Title',
+          badge: 5,
+        ),
+      );
+
+      final json = config.toJson();
+
+      // Should not be at the top level
+      expect(json.containsKey('notification'), isFalse);
+
+      // Should be inside payload -> aps
+      expect(json['payload'], isNotNull);
+      expect(json['payload']['aps'], isNotNull);
+      expect(json['payload']['aps']['title'], equals('APNs Title'));
+      expect(json['payload']['aps']['badge'], equals(5));
+    });
+
+    test('round-trips notification from payload.aps in fromJson()', () {
+      final json = {
+        'payload': {
+          'aps': {
+            'title': 'iOS Alert',
+            'sound': 'default',
+          }
+        }
+      };
+
+      final config = FirebaseApnsConfig.fromJson(json);
+
+      expect(config.notification, isNotNull);
+      expect(config.notification?.title, equals('iOS Alert'));
+      expect(config.notification?.sound, equals('default'));
+    });
+
+    test('merges notification into existing payload fields', () {
+      final config = FirebaseApnsConfig(
+        payload: {'custom-key': 'custom-value'},
+        notification: const FirebaseApnsNotification(badge: 1),
+      );
+
+      final json = config.toJson();
+
+      expect(json['payload']['custom-key'], equals('custom-value'));
+      expect(json['payload']['aps']['badge'], equals(1));
+    });
+  });
 }

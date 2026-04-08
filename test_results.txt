@@ -1,0 +1,43 @@
+00:00 +0: loading test/firebase_cloud_messaging_flutter_test.dart
+Could not find a command named "C:\src\flutter\bin\cache\dart-sdk\bin\snapshots\frontend_server.dart.snapshot".
+
+Usage: dart <command|dart-file> [arguments]
+
+Global options:
+-v, --verbose               Show additional command output.
+    --version               Print the Dart SDK version.
+    --enable-analytics      Enable analytics.
+    --disable-analytics     Disable analytics.
+    --suppress-analytics    Disallow analytics for this `dart *` run without changing the analytics configuration.
+-h, --help                  Print this usage information.
+
+Available commands:
+
+Global
+  install     Install or upgrade a Dart CLI tool for global use.
+  installed   List globally installed Dart CLI tools.
+  uninstall   Remove a globally installed Dart CLI tool.
+
+Project
+  build       Build a Dart application including code assets.
+  compile     Compile Dart to various formats.
+  create      Create a new Dart project.
+  pub         Work with packages.
+  run         Run a Dart program from a file or a local package.
+  test        Run tests for a project.
+
+Source code
+  analyze     Analyze Dart code in a directory.
+  doc         Generate API documentation for Dart projects.
+  fix         Apply automated fixes to Dart source code.
+  format      Idiomatically format Dart source code.
+
+Tools
+  devtools    Open DevTools (optionally connecting to an existing application).
+  info        Show diagnostic information about the installed tooling.
+
+Run "dart help <command>" for more information about a command.
+See https://dart.dev/tools/dart-tool for detailed documentation.
+00:00 +0 -1: loading test/firebase_cloud_messaging_flutter_test.dart [E]
+  Failed to load "test/firebase_cloud_messaging_flutter_test.dart": 
+00:00 +0 -1: Some tests failed.

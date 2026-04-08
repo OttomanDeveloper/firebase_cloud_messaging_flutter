@@ -22,12 +22,13 @@ This release elevates the package from a comprehensive server-side SDK by introd
 * **`sendToTopic()`** — targeted topic messages.
 * **`sendToCondition()`** — targeted condition messages.
 * **`validateMessage()`** — dry-run support.
+* **`onRegistrationChange`** — registration status callback.
 * **`FcmLogger`** — structured logging.
 * **`FcmRetryConfig`** — exponential back-off retries.
 * **`FirebaseCloudMessagingServer.fromJsonString()`** — load from JSON string.
 * **`FirebaseCloudMessagingServer.fromServiceAccountFile()`** — load from File.
 * **`dispose()`** — clean resource cleanup.
-* **`FcmError`** + **`FcmErrorCode`** — typed FCM error extracted from failed
+* **`FcmError`** + **`FcmErrorCode`** — typed FCM error extracted from failed requests.
   responses. Use `isRetryable` to decide whether to back off.
 * **`BatchResult`** / **`TokenResult`** — aggregated result from `sendToMultiple`.
 

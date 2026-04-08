@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 /// A server-side client for sending Firebase Cloud Messages via the
 /// FCM HTTP v1 API directly from Dart or Flutter.
 ///
-/// The default base endpoint used is [fcmApiEndpoint].
+/// The default base endpoint used is [_fcmApiEndpoint].
 ///
 /// ## Quick start
 /// ```dart
@@ -56,7 +56,16 @@ class FirebaseCloudMessagingServer {
   // ---------------------------------------------------------------------------
 
   /// The base URL path for the FCM HTTP v1 API.
-  static const String fcmApiEndpoint = 'https://fcm.googleapis.com/v1/projects';
+  static const String _fcmApiEndpoint =
+      'https://fcm.googleapis.com/v1/projects';
+
+  /// The endpoint for the IID batch registration API (Subscribe).
+  static const String _iidBatchAddEndpoint =
+      'https://iid.googleapis.com/iid/v1:batchAdd';
+
+  /// The endpoint for the IID batch registration API (Unsubscribe).
+  static const String _iidBatchRemoveEndpoint =
+      'https://iid.googleapis.com/iid/v1:batchRemove';
 
   // ---------------------------------------------------------------------------
   // Constructor & fields
@@ -84,6 +93,9 @@ class FirebaseCloudMessagingServer {
   ///
   /// Defaults to [FcmRetryConfig] (3 retries, exponential back-off).
   final FcmRetryConfig retryConfig;
+
+  /// Optional callback triggered when a token registration becomes invalid.
+  final FcmRegistrationCallback? onRegistrationChange;
 
   /// The FCM project ID extracted from [firebaseServiceCredentials].
   /// Cached at construction time to avoid repeated JSON parsing.
@@ -123,6 +135,7 @@ class FirebaseCloudMessagingServer {
     this.cacheAuth = true,
     this.logger = fcmSilentLogger,
     this.retryConfig = const FcmRetryConfig(),
+    this.onRegistrationChange,
     http.Client? httpClient,
   }) : _httpClient = httpClient ?? http.Client() {
     if (firebaseServiceCredentials != null) {
@@ -159,6 +172,7 @@ class FirebaseCloudMessagingServer {
     bool cacheAuth = true,
     FcmLogger? logger,
     FcmRetryConfig retryConfig = const FcmRetryConfig(),
+    FcmRegistrationCallback? onRegistrationChange,
   }) {
     return FirebaseCloudMessagingServer(
       null,
@@ -166,6 +180,7 @@ class FirebaseCloudMessagingServer {
       cacheAuth: cacheAuth,
       logger: logger ?? fcmSilentLogger,
       retryConfig: retryConfig,
+      onRegistrationChange: onRegistrationChange,
     );
   }
 
@@ -183,6 +198,7 @@ class FirebaseCloudMessagingServer {
     bool cacheAuth = true,
     FcmLogger? logger,
     FcmRetryConfig retryConfig = const FcmRetryConfig(),
+    FcmRegistrationCallback? onRegistrationChange,
   }) {
     final Map<String, dynamic> credentials =
         json.decode(jsonString) as Map<String, dynamic>;
@@ -191,6 +207,7 @@ class FirebaseCloudMessagingServer {
       cacheAuth: cacheAuth,
       logger: logger ?? fcmSilentLogger,
       retryConfig: retryConfig,
+      onRegistrationChange: onRegistrationChange,
     );
   }
 
@@ -206,12 +223,14 @@ class FirebaseCloudMessagingServer {
     bool cacheAuth = true,
     FcmLogger? logger,
     FcmRetryConfig retryConfig = const FcmRetryConfig(),
+    FcmRegistrationCallback? onRegistrationChange,
   }) {
     return FirebaseCloudMessagingServer.fromJsonString(
       file.readAsStringSync(),
       cacheAuth: cacheAuth,
       logger: logger ?? fcmSilentLogger,
       retryConfig: retryConfig,
+      onRegistrationChange: onRegistrationChange,
     );
   }
 
@@ -299,7 +318,13 @@ class FirebaseCloudMessagingServer {
     FirebaseMessage message,
   ) {
     return _send(
-      FirebaseSend(message: message.copyWith(topic: topic)),
+      FirebaseSend(
+        message: message.copyWith(
+          topic: topic,
+          token: null,
+          condition: null,
+        ),
+      ),
     );
   }
 
@@ -318,7 +343,13 @@ class FirebaseCloudMessagingServer {
     FirebaseMessage message,
   ) {
     return _send(
-      FirebaseSend(message: message.copyWith(condition: condition)),
+      FirebaseSend(
+        message: message.copyWith(
+          condition: condition,
+          token: null,
+          topic: null,
+        ),
+      ),
     );
   }
 
@@ -372,17 +403,12 @@ class FirebaseCloudMessagingServer {
       final ServiceAccountCredentials accountCredentials =
           ServiceAccountCredentials.fromJson(firebaseServiceCredentials!);
 
-      // Use a temporary client just for auth — the send client is separate.
-      final tempClient = http.Client();
-      try {
-        _accessCredentials = await obtainAccessCredentialsViaServiceAccount(
-          accountCredentials,
-          scopes,
-          tempClient,
-        );
-      } finally {
-        tempClient.close();
-      }
+      // Use the shared client for auth.
+      _accessCredentials = await obtainAccessCredentialsViaServiceAccount(
+        accountCredentials,
+        scopes,
+        _httpClient,
+      );
     } else {
       // Application Default Credentials (ADC)
       // clientViaApplicationDefaultCredentials creates its own AuthClient
@@ -423,7 +449,7 @@ class FirebaseCloudMessagingServer {
     required int attempt,
   }) async {
     final url = Uri.parse(
-      '$fcmApiEndpoint/$_projectId/messages:send',
+      '$_fcmApiEndpoint/$_projectId/messages:send',
     );
 
     final headers = {
@@ -477,8 +503,13 @@ class FirebaseCloudMessagingServer {
           : const FirebaseMessage(),
     );
 
+    final targetToken = sendObject.message?.token;
+
     if (successful) {
       logger(FcmLogLevel.info, 'Message sent: ${result.messageSent?.name}');
+      if (targetToken != null) {
+        onRegistrationChange?.call(targetToken, FcmRegistrationStatus.active);
+      }
       return result;
     }
 
@@ -487,6 +518,13 @@ class FirebaseCloudMessagingServer {
       'FCM request failed [${response.statusCode}]: '
       '${fcmError?.status ?? response.reasonPhrase}',
     );
+
+    // Trigger registration callback if the token is unregistered.
+    if (fcmError?.errorCode == FcmErrorCode.unregistered &&
+        targetToken != null) {
+      onRegistrationChange?.call(
+          targetToken, FcmRegistrationStatus.unregistered);
+    }
 
     // Retry if the error is transient and we have retries remaining.
     if (fcmError != null &&
@@ -563,7 +601,8 @@ class FirebaseCloudMessagingServer {
     await _ensureValidToken();
 
     final action = isSubscription ? 'batchAdd' : 'batchRemove';
-    final url = Uri.parse('https://iid.googleapis.com/iid/v1:$action');
+    final url = Uri.parse(
+        isSubscription ? _iidBatchAddEndpoint : _iidBatchRemoveEndpoint);
 
     final headers = {
       'Content-Type': 'application/json',

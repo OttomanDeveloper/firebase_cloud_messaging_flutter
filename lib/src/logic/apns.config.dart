@@ -47,8 +47,39 @@ class FirebaseApnsConfig {
     this.payload,
   });
 
-  factory FirebaseApnsConfig.fromJson(Map<String, dynamic> json) =>
-      _$FirebaseApnsConfigFromJson(json);
+  factory FirebaseApnsConfig.fromJson(Map<String, dynamic> json) {
+    // Standard deserialisation
+    final config = _$FirebaseApnsConfigFromJson(json);
 
-  Map<String, dynamic> toJson() => _$FirebaseApnsConfigToJson(this);
+    // If 'notification' is missing as a top-level key (which it should be for
+    // valid FCM JSON), try to extract it from payload['aps'] to support
+    // round-tripping.
+    if (config.notification == null && json['payload']?['aps'] != null) {
+      return FirebaseApnsConfig(
+        headers: config.headers,
+        fcmOptions: config.fcmOptions,
+        payload: config.payload,
+        notification: FirebaseApnsNotification.fromJson(
+          json['payload']['aps'] as Map<String, dynamic>,
+        ),
+      );
+    }
+    return config;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = _$FirebaseApnsConfigToJson(this);
+
+    // The typed 'notification' field must be nested inside 'payload.aps'
+    // to be valid FCM v1. We remove the top-level 'notification' key
+    // and merge it into 'payload'.
+    if (notification != null) {
+      json.remove('notification');
+      final payload = Map<String, dynamic>.from(this.payload ?? {});
+      payload['aps'] = notification!.toJson();
+      json['payload'] = payload;
+    }
+
+    return json;
+  }
 }

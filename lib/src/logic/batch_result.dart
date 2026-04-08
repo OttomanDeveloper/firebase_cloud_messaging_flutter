@@ -10,7 +10,7 @@ import 'package:firebase_cloud_messaging_dart/firebase_cloud_messaging_dart.dart
 // ---------------------------------------------------------------------------
 
 /// The outcome of sending a message to a single device [token].
-class TokenResult {
+final class TokenResult {
   /// The device registration token this result applies to.
   final String token;
 
@@ -55,7 +55,7 @@ class TokenResult {
 ///   }
 /// }
 /// ```
-class BatchResult {
+final class BatchResult {
   /// Individual outcome for every token in the batch, in the same order
   /// as the input token list.
   final List<TokenResult> results;

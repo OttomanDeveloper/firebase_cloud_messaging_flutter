@@ -11,7 +11,7 @@ part 'webpush_config.g.dart';
 /// FCM Reference:
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#webpushconfig
 @JsonSerializable()
-class FirebaseWebpushConfig {
+final class FirebaseWebpushConfig {
   /// HTTP headers defined in the Web Push protocol.
   ///
   /// Refer to the Web Push specification for supported header keys.

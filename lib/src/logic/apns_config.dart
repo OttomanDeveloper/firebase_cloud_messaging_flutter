@@ -14,7 +14,7 @@ part 'apns_config.g.dart';
 /// FCM Reference:
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#apnsconfig
 @JsonSerializable()
-class FirebaseApnsConfig {
+final class FirebaseApnsConfig {
   /// HTTP request headers defined in the APNs request.
   ///
   /// Refer to the APNs request headers documentation for supported header keys.

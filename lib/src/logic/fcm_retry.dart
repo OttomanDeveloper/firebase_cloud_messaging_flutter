@@ -17,7 +17,7 @@
 // ---------------------------------------------------------------------------
 
 /// Controls how [FirebaseCloudMessagingServer] retries failed send requests.
-class FcmRetryConfig {
+final class FcmRetryConfig {
   /// Maximum number of retry attempts after the first failure.
   ///
   /// Set to `0` to disable retries entirely. Defaults to `3`.

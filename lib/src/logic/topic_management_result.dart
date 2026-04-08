@@ -22,7 +22,7 @@ class TopicManagementTokenResult {
 }
 
 /// The aggregate result from a batch subscribe/unsubscribe operation.
-class TopicManagementResult {
+final class TopicManagementResult {
   /// The total number of tokens successfully processed.
   final int successCount;
 

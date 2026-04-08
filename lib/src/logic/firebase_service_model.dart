@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'firebase_service_model.g.dart';
 
 @JsonSerializable()
-class FirebaseServiceModel {
+final class FirebaseServiceModel {
   @JsonKey(name: "client_x509_cert_url")
   final String? clientX509Certurl;
 

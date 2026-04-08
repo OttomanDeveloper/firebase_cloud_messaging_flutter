@@ -1,9 +1,9 @@
 import 'package:firebase_cloud_messaging_dart/firebase_cloud_messaging_dart.dart';
 
-/// Example file demonstrating the firebase_cloud_messaging_dart v2.1.0 API.
+/// Example file demonstrating the firebase_cloud_messaging_dart v3.0.0 API.
 ///
-/// To run this example, replace the placeholder values with your actual
-/// Firebase service account credentials and device tokens.
+/// This example leverages Dart 3 features such as sealed classes and pattern
+/// matching for robust FCM result handling.
 ///
 /// Obtain service account credentials from:
 ///   Firebase Console → Settings → Service Accounts → Generate new private key
@@ -104,9 +104,15 @@ void main() async {
   );
 
   print('Single send result: $result');
-  if (!result.successful) {
-    print('Error code: ${result.fcmError?.errorCode}');
-    print('Is retryable: ${result.fcmError?.isRetryable}');
+
+  // Dart 3 Exhaustive Pattern Matching for handling send outcomes
+  switch (result) {
+    case ServerSuccess(:final messageSent):
+      print('✅ Message sent successfully! ID: ${messageSent.name}');
+    case ServerFailure(:final fcmError):
+      print('❌ FCM Error: ${fcmError?.errorCode}');
+      print('   Summary: ${fcmError?.message}');
+      print('   Is Retryable: ${fcmError?.isRetryable}');
   }
 
   // --------------------------------------------------------------------------

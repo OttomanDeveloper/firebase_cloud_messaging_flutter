@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'notification.g.dart';
 
 @JsonSerializable()
-class FirebaseNotification {
+final class FirebaseNotification {
   ///The notification's title.
   final String? title;
 

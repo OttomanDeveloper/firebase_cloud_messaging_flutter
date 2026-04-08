@@ -274,11 +274,16 @@ void main() {
   // -------------------------------------------------------------------------
   group('BatchResult', () {
     ServerResult makeResult({required bool successful, int code = 200}) {
-      return ServerResult(
-        successful: successful,
-        statusCode: successful ? 200 : code,
-        messageSent: const FirebaseMessage(),
-      );
+      if (successful) {
+        return const ServerSuccess(
+          statusCode: 200,
+          messageSent: FirebaseMessage(),
+        );
+      } else {
+        return ServerFailure(
+          statusCode: code,
+        );
+      }
     }
 
     test('successCount and failureCount are correct', () {
@@ -323,17 +328,25 @@ void main() {
   // ServerResult
   // -------------------------------------------------------------------------
   group('ServerResult', () {
-    const result = ServerResult(
-      successful: true,
+    const result = ServerSuccess(
       statusCode: 200,
       messageSent: FirebaseMessage(name: 'projects/p/messages/1'),
     );
 
-    test('copyWith changes only specified fields', () {
-      final copy = result.copyWith(statusCode: 500, successful: false);
-      expect(copy.successful, isFalse);
-      expect(copy.statusCode, equals(500));
-      expect(copy.messageSent?.name, equals('projects/p/messages/1'));
+    test('ServerSuccess holds correct data', () {
+      expect(result.successful, isTrue);
+      expect(result.statusCode, equals(200));
+      expect(result.messageSent.name, equals('projects/p/messages/1'));
+    });
+
+    test('ServerFailure holds error details', () {
+      const failure = ServerFailure(
+        statusCode: 500,
+        errorPhrase: 'Internal Error',
+      );
+      expect(failure.successful, isFalse);
+      expect(failure.statusCode, equals(500));
+      expect(failure.errorPhrase, equals('Internal Error'));
     });
 
     test('toString includes key fields', () {
@@ -342,8 +355,7 @@ void main() {
     });
 
     test('equality works', () {
-      const same = ServerResult(
-        successful: true,
+      const same = ServerSuccess(
         statusCode: 200,
         messageSent: FirebaseMessage(name: 'projects/p/messages/1'),
       );

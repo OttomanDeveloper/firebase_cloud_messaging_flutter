@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'android.notification.g.dart';
+part 'android_notification.g.dart';
 
 /// Android-specific notification content for FCM messages.
 ///

@@ -1,7 +1,7 @@
-import 'apns.notification.dart';
+import 'apns_notification.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'apns.config.g.dart';
+part 'apns_config.g.dart';
 
 /// Configuration for messages sent through the
 /// Apple Push Notification Service (APNs) channel.

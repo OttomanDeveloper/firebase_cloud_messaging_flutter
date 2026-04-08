@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'firebase.service.model.dart';
+part of 'firebase_service_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

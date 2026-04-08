@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'fcm.options.dart';
+part of 'fcm_options.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

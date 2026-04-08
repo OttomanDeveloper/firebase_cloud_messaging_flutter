@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'webpush.notification.g.dart';
+part 'webpush_notification.g.dart';
 
 /// Typed models for Web Push notifications delivered through FCM.
 ///
@@ -11,6 +11,28 @@ part 'webpush.notification.g.dart';
 ///
 /// FCM Reference:
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#webpushconfig
+///
+/// Web Notification Spec:
+/// https://developer.mozilla.org/en-US/docs/Web/API/Notification
+
+// ---------------------------------------------------------------------------
+// Webpush Direction
+// ---------------------------------------------------------------------------
+
+/// The direction in which to display the notification.
+enum WebpushDirection {
+  /// The system chooses the direction based on the language.
+  @JsonValue('auto')
+  auto,
+
+  /// Left to right.
+  @JsonValue('ltr')
+  ltr,
+
+  /// Right to left.
+  @JsonValue('rtl')
+  rtl,
+}
 
 // ---------------------------------------------------------------------------
 // Webpush Action
@@ -86,6 +108,24 @@ class FirebaseWebpushNotification {
   /// Action buttons to show in the expanded notification.
   final List<WebpushAction>? actions;
 
+  /// The direction in which to display the notification.
+  final WebpushDirection? dir;
+
+  /// The notification's language (BCP 47 language tag).
+  final String? lang;
+
+  /// Whether the user should be notified after a new notification replaces
+  /// an old one.
+  final bool? renotify;
+
+  /// A timestamp value for the notification (milliseconds since epoch).
+  ///
+  /// Represented as a string in Protobuf (Int64).
+  final String? timestamp;
+
+  /// Arbitrary data payload for the notification (distinct from top-level data).
+  final Map<String, dynamic>? data;
+
   const FirebaseWebpushNotification({
     this.title,
     this.body,
@@ -97,6 +137,11 @@ class FirebaseWebpushNotification {
     this.requireInteraction,
     this.silent,
     this.actions,
+    this.dir,
+    this.lang,
+    this.renotify,
+    this.timestamp,
+    this.data,
   });
 
   factory FirebaseWebpushNotification.fromJson(Map<String, dynamic> json) =>

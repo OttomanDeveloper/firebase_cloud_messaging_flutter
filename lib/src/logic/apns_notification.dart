@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'apns.notification.g.dart';
+part 'apns_notification.g.dart';
 
 /// Typed model for Apple Push Notification Service (APNs) notifications.
 ///
@@ -11,6 +11,36 @@ part 'apns.notification.g.dart';
 ///
 /// FCM Reference:
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#apnsconfig
+///
+/// APNs APS Reference:
+/// https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/generating_a_remote_notification
+
+// ---------------------------------------------------------------------------
+// APNs Interruption Level (iOS 15+)
+// ---------------------------------------------------------------------------
+
+/// The interruption level that determines the priority and delivery behaviour
+/// of a notification on iOS 15.0 and later.
+enum InterruptionLevel {
+  /// The system presents the notification immediately and lights up the screen.
+  @JsonValue('active')
+  active,
+
+  /// The system presents the notification immediately, lights up the screen,
+  /// and can bypass a Focus or Do Not Disturb.
+  @JsonValue('critical')
+  critical,
+
+  /// The system adds the notification to the notification list without
+  /// lighting up the screen or playing a sound.
+  @JsonValue('passive')
+  passive,
+
+  /// The system presents the notification immediately, lights up the screen,
+  /// and can be delivered during a Focus.
+  @JsonValue('time-sensitive')
+  timeSensitive,
+}
 
 // ---------------------------------------------------------------------------
 // APNs Alert
@@ -114,6 +144,20 @@ class FirebaseApnsNotification {
   @JsonKey(name: 'mutable-content')
   final int? mutableContent;
 
+  /// An identifier used by the system to group related notifications.
+  /// (iOS 13+).
+  @JsonKey(name: 'target-content-id')
+  final String? targetContentId;
+
+  /// The interruption level for the notification (iOS 15+).
+  @JsonKey(name: 'interruption-level')
+  final InterruptionLevel? interruptionLevel;
+
+  /// A number between 0 and 1 that determines how the system sorts the
+  /// notification in the user's notification list (iOS 15+).
+  @JsonKey(name: 'relevance-score')
+  final double? relevanceScore;
+
   const FirebaseApnsNotification({
     this.alert,
     this.title,
@@ -124,6 +168,9 @@ class FirebaseApnsNotification {
     this.threadId,
     this.contentAvailable,
     this.mutableContent,
+    this.targetContentId,
+    this.interruptionLevel,
+    this.relevanceScore,
   });
 
   factory FirebaseApnsNotification.fromJson(Map<String, dynamic> json) =>

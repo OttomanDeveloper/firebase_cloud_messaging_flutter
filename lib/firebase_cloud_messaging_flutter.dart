@@ -14,20 +14,20 @@ library firebase_cloud_messaging_flutter;
 // ---------------------------------------------------------------------------
 // Server entry point & result types
 // ---------------------------------------------------------------------------
-export 'src/firebase.cloud.messaging.server.dart';
-export 'src/logic/batch.result.dart';
-export 'src/logic/topic.management.result.dart';
+export 'src/firebase_cloud_messaging_server.dart';
+export 'src/logic/batch_result.dart';
+export 'src/logic/topic_management_result.dart';
 
 // ---------------------------------------------------------------------------
 // Logger
 // ---------------------------------------------------------------------------
-export 'src/fcm.logger.dart';
+export 'src/fcm_logger.dart';
 
 // ---------------------------------------------------------------------------
 // Core message models
 // ---------------------------------------------------------------------------
-export 'src/logic/fcm.options.dart';
-export 'src/logic/firebase.service.model.dart';
+export 'src/logic/fcm_options.dart';
+export 'src/logic/firebase_service_model.dart';
 export 'src/logic/message.dart';
 export 'src/logic/notification.dart';
 export 'src/logic/send.dart';
@@ -35,23 +35,23 @@ export 'src/logic/send.dart';
 // ---------------------------------------------------------------------------
 // Android
 // ---------------------------------------------------------------------------
-export 'src/logic/android.config.dart';
-export 'src/logic/android.notification.dart';
+export 'src/logic/android_config.dart';
+export 'src/logic/android_notification.dart';
 
 // ---------------------------------------------------------------------------
 // Apple (APNs)
 // ---------------------------------------------------------------------------
-export 'src/logic/apns.config.dart';
-export 'src/logic/apns.notification.dart';
+export 'src/logic/apns_config.dart';
+export 'src/logic/apns_notification.dart';
 
 // ---------------------------------------------------------------------------
 // Web Push
 // ---------------------------------------------------------------------------
-export 'src/logic/webpush.config.dart';
-export 'src/logic/webpush.notification.dart';
+export 'src/logic/webpush_config.dart';
+export 'src/logic/webpush_notification.dart';
 
 // ---------------------------------------------------------------------------
 // Error handling & retry
 // ---------------------------------------------------------------------------
-export 'src/logic/fcm.error.dart';
-export 'src/logic/fcm.retry.dart';
+export 'src/logic/fcm_error.dart';
+export 'src/logic/fcm_retry.dart';

@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'firebase.service.model.g.dart';
+part 'firebase_service_model.g.dart';
 
 @JsonSerializable()
 class FirebaseServiceModel {

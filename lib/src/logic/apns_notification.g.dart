@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'apns.notification.dart';
+part of 'apns_notification.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -45,6 +45,10 @@ FirebaseApnsNotification _$FirebaseApnsNotificationFromJson(
       threadId: json['thread-id'] as String?,
       contentAvailable: json['content-available'] as int?,
       mutableContent: json['mutable-content'] as int?,
+      targetContentId: json['target-content-id'] as String?,
+      interruptionLevel: $enumDecodeNullable(
+          _$InterruptionLevelEnumMap, json['interruption-level']),
+      relevanceScore: (json['relevance-score'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$FirebaseApnsNotificationToJson(
@@ -61,7 +65,21 @@ Map<String, dynamic> _$FirebaseApnsNotificationToJson(
         'content-available': instance.contentAvailable,
       if (instance.mutableContent != null)
         'mutable-content': instance.mutableContent,
+      if (instance.targetContentId != null)
+        'target-content-id': instance.targetContentId,
+      if (instance.interruptionLevel != null)
+        'interruption-level':
+            _$InterruptionLevelEnumMap[instance.interruptionLevel],
+      if (instance.relevanceScore != null)
+        'relevance-score': instance.relevanceScore,
     };
+
+const _$InterruptionLevelEnumMap = {
+  InterruptionLevel.active: 'active',
+  InterruptionLevel.critical: 'critical',
+  InterruptionLevel.passive: 'passive',
+  InterruptionLevel.timeSensitive: 'time-sensitive',
+};
 
 ApnsFcmOptions _$ApnsFcmOptionsFromJson(Map<String, dynamic> json) =>
     ApnsFcmOptions(

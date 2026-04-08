@@ -5,6 +5,7 @@ This release elevates the package from a comprehensive server-side SDK by introd
 * **Feat (Auth)**: Introduced `FirebaseCloudMessagingServer.applicationDefault({ required String projectId })`. Supports Google Application Default Credentials (ADC) for serverless environments.
 * **Feat (Topic APIs)**: Introduced `subscribeTokensToTopic()` and `unsubscribeTokensFromTopic()`. Supports batch management of up to 1,000 tokens.
 * **Refactor**: Cleaned up internal barrel file exports and resolved diagnostic warnings.
+* **Refactor (Breaking)**: Migrated project-wide filename convention from dot-delimited (e.g., `android.config.dart`) to standard Dart snake_case (e.g., `android_config.dart`). Internal imports and public exports have been updated accordingly.
 
 ## 2.0.0
 
@@ -25,7 +26,7 @@ This release elevates the package from a comprehensive server-side SDK by introd
 * **`onRegistrationChange`** — registration status callback.
 * **`FcmLogger`** — structured logging.
 * **`FcmRetryConfig`** — exponential back-off retries.
-* **`FirebaseCloudMessagingServer.fromJsonString()`** — load from JSON string.
+* **`FirebaseCloudMessagingServer.fromServiceAccountJson()`** — load from JSON string.
 * **`FirebaseCloudMessagingServer.fromServiceAccountFile()`** — load from File.
 * **`dispose()`** — clean resource cleanup.
 * **`FcmError`** + **`FcmErrorCode`** — typed FCM error extracted from failed requests.

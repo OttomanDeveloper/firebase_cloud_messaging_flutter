@@ -1,10 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'android.config.dart';
-import 'apns.config.dart';
-import 'fcm.options.dart';
+import 'android_config.dart';
+import 'apns_config.dart';
+import 'fcm_options.dart';
 import 'notification.dart';
-import 'webpush.config.dart';
+import 'webpush_config.dart';
 
 part 'message.g.dart';
 

@@ -402,4 +402,52 @@ void main() {
       expect(json['payload']['aps']['badge'], equals(1));
     });
   });
+
+  // -------------------------------------------------------------------------
+  // New Platform Expansions (v2.1.0)
+  // -------------------------------------------------------------------------
+  group('v2.1.0 Platform Expansions', () {
+    test('APNs: interruption-level, relevance-score, target-content-id', () {
+      const notification = FirebaseApnsNotification(
+        interruptionLevel: InterruptionLevel.timeSensitive,
+        relevanceScore: 0.75,
+        targetContentId: 'group-123',
+      );
+
+      final json = notification.toJson();
+      expect(json['interruption-level'], equals('time-sensitive'));
+      expect(json['relevance-score'], equals(0.75));
+      expect(json['target-content-id'], equals('group-123'));
+
+      final decoded = FirebaseApnsNotification.fromJson(json);
+      expect(
+          decoded.interruptionLevel, equals(InterruptionLevel.timeSensitive));
+      expect(decoded.relevanceScore, equals(0.75));
+      expect(decoded.targetContentId, equals('group-123'));
+    });
+
+    test('Webpush: dir, lang, renotify, timestamp, data', () {
+      const notification = FirebaseWebpushNotification(
+        dir: WebpushDirection.rtl,
+        lang: 'ar',
+        renotify: true,
+        timestamp: '1625097600000',
+        data: {'click_url': 'https://example.com'},
+      );
+
+      final json = notification.toJson();
+      expect(json['dir'], equals('rtl'));
+      expect(json['lang'], equals('ar'));
+      expect(json['renotify'], isTrue);
+      expect(json['timestamp'], equals('1625097600000'));
+      expect(json['data'], equals({'click_url': 'https://example.com'}));
+
+      final decoded = FirebaseWebpushNotification.fromJson(json);
+      expect(decoded.dir, equals(WebpushDirection.rtl));
+      expect(decoded.lang, equals('ar'));
+      expect(decoded.renotify, isTrue);
+      expect(decoded.timestamp, equals('1625097600000'));
+      expect(decoded.data, equals({'click_url': 'https://example.com'}));
+    });
+  });
 }

@@ -1,7 +1,7 @@
-import 'webpush.notification.dart';
+import 'webpush_notification.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'webpush.config.g.dart';
+part 'webpush_config.g.dart';
 
 /// Configuration for messages delivered through the Web Push protocol.
 ///

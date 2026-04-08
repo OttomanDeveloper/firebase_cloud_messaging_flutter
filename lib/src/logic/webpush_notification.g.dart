@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'webpush.notification.dart';
+part of 'webpush_notification.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -37,6 +37,11 @@ FirebaseWebpushNotification _$FirebaseWebpushNotificationFromJson(
       actions: (json['actions'] as List<dynamic>?)
           ?.map((e) => WebpushAction.fromJson(e as Map<String, dynamic>))
           .toList(),
+      dir: $enumDecodeNullable(_$WebpushDirectionEnumMap, json['dir']),
+      lang: json['lang'] as String?,
+      renotify: json['renotify'] as bool?,
+      timestamp: json['timestamp'] as String?,
+      data: json['data'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$FirebaseWebpushNotificationToJson(
@@ -54,7 +59,18 @@ Map<String, dynamic> _$FirebaseWebpushNotificationToJson(
       if (instance.silent != null) 'silent': instance.silent,
       if (instance.actions != null)
         'actions': instance.actions?.map((e) => e.toJson()).toList(),
+      if (instance.dir != null) 'dir': _$WebpushDirectionEnumMap[instance.dir],
+      if (instance.lang != null) 'lang': instance.lang,
+      if (instance.renotify != null) 'renotify': instance.renotify,
+      if (instance.timestamp != null) 'timestamp': instance.timestamp,
+      if (instance.data != null) 'data': instance.data,
     };
+
+const _$WebpushDirectionEnumMap = {
+  WebpushDirection.auto: 'auto',
+  WebpushDirection.ltr: 'ltr',
+  WebpushDirection.rtl: 'rtl',
+};
 
 WebpushFcmOptions _$WebpushFcmOptionsFromJson(Map<String, dynamic> json) =>
     WebpushFcmOptions(

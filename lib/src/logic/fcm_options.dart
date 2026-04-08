@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'fcm.options.g.dart';
+part 'fcm_options.g.dart';
 
 /// Cross-platform FCM options that apply regardless of the target channel
 /// (Android, iOS, or Web).

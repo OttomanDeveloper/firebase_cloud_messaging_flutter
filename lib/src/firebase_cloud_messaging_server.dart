@@ -144,14 +144,12 @@ class FirebaseCloudMessagingServer {
       _projectId = model.projectID ?? '';
       assert(
         _projectId.isNotEmpty,
-        'project_id not found in firebaseServiceCredentials. '
-        'Ensure the service account JSON is complete.',
+        'Service account JSON is missing the "project_id" field.',
       );
     } else {
       assert(
-        projectId != null && projectId.isNotEmpty,
-        'projectId must be provided explicitly when using '
-        'Application Default Credentials (ADC).',
+        projectId != null,
+        'Project ID must be provided when using ADC mode.',
       );
       _projectId = projectId!;
     }
@@ -184,21 +182,21 @@ class FirebaseCloudMessagingServer {
     );
   }
 
-  /// Creates a server instance by parsing a raw JSON [string].
+  /// Creates a server instance from a service-account JSON [String].
   ///
-  /// Useful when loading credentials directly from a file or environment
-  /// variable:
+  /// This is a convenience for loading the file content directly.
+  ///
   /// ```dart
-  /// final server = FirebaseCloudMessagingServer.fromJsonString(
-  ///   File('service_account.json').readAsStringSync(),
-  /// );
+  /// final json = await File('key.json').readAsString();
+  /// final server = FirebaseCloudMessagingServer.fromServiceAccountJson(json);
   /// ```
-  factory FirebaseCloudMessagingServer.fromJsonString(
+  factory FirebaseCloudMessagingServer.fromServiceAccountJson(
     String jsonString, {
     bool cacheAuth = true,
     FcmLogger? logger,
     FcmRetryConfig retryConfig = const FcmRetryConfig(),
     FcmRegistrationCallback? onRegistrationChange,
+    http.Client? httpClient,
   }) {
     final Map<String, dynamic> credentials =
         json.decode(jsonString) as Map<String, dynamic>;
@@ -208,6 +206,7 @@ class FirebaseCloudMessagingServer {
       logger: logger ?? fcmSilentLogger,
       retryConfig: retryConfig,
       onRegistrationChange: onRegistrationChange,
+      httpClient: httpClient,
     );
   }
 
@@ -224,13 +223,15 @@ class FirebaseCloudMessagingServer {
     FcmLogger? logger,
     FcmRetryConfig retryConfig = const FcmRetryConfig(),
     FcmRegistrationCallback? onRegistrationChange,
+    http.Client? httpClient,
   }) {
-    return FirebaseCloudMessagingServer.fromJsonString(
+    return FirebaseCloudMessagingServer.fromServiceAccountJson(
       file.readAsStringSync(),
       cacheAuth: cacheAuth,
       logger: logger ?? fcmSilentLogger,
       retryConfig: retryConfig,
       onRegistrationChange: onRegistrationChange,
+      httpClient: httpClient,
     );
   }
 
@@ -437,6 +438,11 @@ class FirebaseCloudMessagingServer {
 
   /// Sends [sendObject] to FCM, handling auth refresh and retries.
   Future<ServerResult> _send(FirebaseSend sendObject) async {
+    assert(
+      sendObject.message != null,
+      'FirebaseSend.message must not be null. Either provide a token, topic, or condition.',
+    );
+
     // Ensure we have a valid, non-expired access token.
     await _ensureValidToken();
 

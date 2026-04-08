@@ -1,219 +1,165 @@
 # firebase_cloud_messaging_flutter
 
-Send Firebase Cloud Messages directly from your **Dart or Flutter** application — no external server required.
+[![pub package](https://img.shields.io/pub/v/firebase_cloud_messaging_flutter.svg)](https://pub.dev/packages/firebase_cloud_messaging_flutter)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Built on the [FCM HTTP v1 REST API](https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages). Supports Android, iOS (APNs), and Web Push targets.
-
-> Not affiliated with Firebase or Google. This is a community package.
 
 ---
 
-## Features
+## 🚀 Key Features
 
-| Feature | Description |
-|---------|-------------|
-| `send()` | Send a message to a single device token |
-| `sendToMultiple()` | Fan-out to many tokens in **parallel** |
-| `sendToTopic()` | Send to an FCM topic |
-| `sendToCondition()` | Send to a boolean topic condition |
-| `validateMessage()` | Dry-run a message without delivering it |
-| `FcmLogger` | Optional structured logging hook |
-| `FcmRetryConfig` | Exponential back-off for retryable errors |
-| `FcmError` | Typed error codes (`UNREGISTERED`, `QUOTA_EXCEEDED`, …) |
-| Typed APNs config | `FirebaseApnsNotification`, `ApnsAlert`, `ApnsFcmOptions` |
-| Typed Web Push config | `FirebaseWebpushNotification`, `WebpushFcmOptions`, `WebpushAction` |
+* **Zero-Dependency on Firebase SDK**: Works in pure Dart environments (backends, CLI, etc.) as well as Flutter.
+* **Application Default Credentials (ADC)**: Native support for ambient identity on Google Cloud (Cloud Run, Functions, etc.).
+* **Topic Management**: Natively subscribe or unsubscribe device tokens to topics (Instance ID API).
+* **Parallel Delivery**: Built-in support for sending to multiple tokens efficiently.
+* **Structured Error Handling**: Deep visibility into FCM errors (`UNREGISTERED`, `QUOTA_EXCEEDED`, etc.) with typed objects.
+* **Automatic Retries**: Intelligent exponential back-off for transient Google API errors.
+* **Type-Safe Platforms**: Dedicated, typed configurations for Android, APNs (iOS/macOS), and Web Push.
 
 ---
 
-## Getting started
+## 📦 Getting Started
 
-### 1. Add to `pubspec.yaml`
+### 1. Add dependency
+
+Add this to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  firebase_cloud_messaging_flutter: ^2.0.0
+  firebase_cloud_messaging_flutter: ^2.1.0
 ```
 
-### 2. Initializing the Service Account Credentials (Important)
+### 2. Authentication Setup
 
-Your Firebase project requires authentication to send messages. For server-to-server communication (or Dart backends), this is done using a **Service Account JSON file**.
+You have two primary ways to authenticate with Google:
 
-**How to get it:**
+#### Option A: Service Account JSON (Standard)
 
-1. Go to the [Firebase Console](https://console.firebase.google.com/).
-2. Select your project.
-3. Click the gear icon (Project Settings) > **Service accounts**.
-4. Click **Generate new private key**.
-5. This downloads a `service_account.json` file.
+1. Download your `service-account.json` from **Firebase Console → Project Settings → Service accounts**.
+2. Store it in your project root (e.g., `service-account.json`).
+3. **Important**: Add `service-account.json` to your `.gitignore` to prevent leaking credentials.
 
-**Where to put it:**
-Place this file in a secure location in your Dart/Flutter backend application. (e.g., the root of your server project).
+> [!CAUTION]
+> **NEVER** include your `service-account.json` in your source code or repository. It grants full administrative access to your Firebase project.
 
-> [!WARNING]
-> **NEVER commit this file to public version control (like GitHub).** It grants full administrative access to your Firebase project. Always add `service_account.json` to your `.gitignore` file. If running in a managed environment, consider using Application Default Credentials (ADC) or Secret Managers instead (see the ADC section below).
+#### Option B: Application Default Credentials (ADC)
 
-### 3. Import
-
-```dart
-import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
-```
+If running on **Google Cloud Run, App Engine, or Firebase Functions**, you don't need a JSON file. The SDK will automatically detect the service identity.
 
 ---
 
-## Usage
+## 🛠 Usage
 
-### Basic — send to one device
+### Initialization
 
 ```dart
-import 'dart:io';
-import 'dart:convert';
 import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
 
-void main() async {
-  // Pass the contents of the downloaded JSON file to the constructor.
-  // - Option A (Persistent auth): FirebaseCloudMessagingServer(credentials, cacheAuth: true) (Recommended)
-  // - Option B (One-time auth): FirebaseCloudMessagingServer(credentials, cacheAuth: false)
-  final credentials = jsonDecode(
-    File('service_account.json').readAsStringSync(),
-  ) as Map<String, dynamic>;
+// Option 1: Via Service Account File (Easiest for local/server)
+final server = FirebaseCloudMessagingServer.fromServiceAccountFile('service-account.json');
 
-  final server = FirebaseCloudMessagingServer(credentials);
+// Option 2: Via Service Account JSON Map
+// final server = FirebaseCloudMessagingServer(serviceAccountMap);
 
-  final result = await server.send(
-    FirebaseSend(
-      message: FirebaseMessage(
-        token: '<device-registration-token>',
-        notification: const FirebaseNotification(
-          title: 'Hello!',
-          body: 'Message from Dart 🎯',
-        ),
-        android: FirebaseAndroidConfig(
-          priority: AndroidMessagePriority.high,
-          notification: const FirebaseAndroidNotification(
-            channelID: 'default',
-            color: '#FF6D00',
-          ),
+// Option 3: Via ADC (Recommended for Google Cloud/Firebase Functions)
+final server = FirebaseCloudMessagingServer.applicationDefault(projectId: 'my-project-id');
+```
+
+### Sending to a Single Device
+
+```dart
+final result = await server.send(
+  FirebaseSend(
+    message: FirebaseMessage(
+      token: 'device-token',
+      notification: FirebaseNotification(
+        title: 'Project Update',
+        body: 'New version 2.1.0 is live!',
+      ),
+      android: FirebaseAndroidConfig(
+        priority: AndroidMessagePriority.high,
+        notification: FirebaseAndroidNotification(
+          color: '#4CAF50',
+          sound: 'default',
         ),
       ),
     ),
-  );
+  ),
+);
 
-  print(result.successful ? 'Sent ✓' : 'Error: ${result.fcmError}');
-  server.dispose();
+if (result.successful) {
+  print('Message sent: ${result.messageId}');
+} else {
+  print('FCM Error: ${result.fcmError}');
 }
 ```
 
-### Application Default Credentials (ADC)
+### Topic Management
 
-If your Dart backend executes inside a Google serverless environment (e.g. Cloud Run, App Engine, or Firebase Cloud Functions), you can securely bypass tracking raw JSON files by adopting Application Default Credentials.
+You can subscribe users to topics and send messages to them without managing tokens manually.
 
 ```dart
-final server = FirebaseCloudMessagingServer.applicationDefault(
-  projectId: 'my-project-id', 
+// 1. Subscribe tokens to a topic
+final subResult = await server.subscribeTokensToTopic(
+  topic: 'news_alerts',
+  tokens: ['token1', 'token2', 'token3'], // Up to 1,000 tokens
+);
+
+// 2. Send message to everyone on that topic
+final topicResult = await server.sendToTopic(
+  'news_alerts',
+  FirebaseMessage(
+    notification: FirebaseNotification(title: 'Breaking News!'),
+  ),
 );
 ```
 
-### Send to multiple tokens in parallel
+### Sending to Multiple Tokens (Batch)
+
+The `sendToMultiple` method fans out messages in parallel and aggregates the results.
 
 ```dart
 final batch = await server.sendToMultiple(
-  tokens: listOfDeviceTokens,
-  messageTemplate: const FirebaseMessage(
-    notification: FirebaseNotification(
-      title: 'Update available',
-      body: 'Version 2.0 is here!',
-    ),
+  tokens: ['token_a', 'token_b', 'token_c'],
+  messageTemplate: FirebaseMessage(
+    notification: FirebaseNotification(title: 'Hello!'),
   ),
 );
 
 print('Success: ${batch.successCount} / ${batch.results.length}');
 
-// Remove stale tokens
-for (final r in batch.failedResults) {
-  if (r.serverResult.fcmError?.errorCode == FcmErrorCode.unregistered) {
-    await db.removeToken(r.token);
+// Handle stale tokens automatically
+for (final res in batch.failedResults) {
+  if (res.serverResult.fcmError?.errorCode == FcmErrorCode.unregistered) {
+    // Clear token from your database
+    await myDatabase.removeToken(res.token);
   }
 }
 ```
 
-### Running Tests
+---
 
-This package includes a comprehensive test suite to ensure message serialization and error handling are correct.
+## 📱 Platform Specifics
 
-### Using Dart (Pure Dart projects)
+### Android
 
-```bash
-dart pub get
-dart test
-```
+Supports `direct_boot_ok`, `priority`, `ttl`, and detailed `AndroidNotification` options (icons, colors, sounds, channel IDs).
 
-### Using Flutter (Flutter projects or misconfigured environments)
+### APNs (iOS/macOS)
 
-If your environment's `dart test` complains about missing snapshots (common in Flutter-managed SDKs), use:
+Typed `FirebaseApnsNotification` supports `badge`, `category`, `thread_id`, and `sound`. Custom data can still be passed via the `payload` map.
 
-```bash
-flutter test
-```
+### Web Push
+
+Supports `requireInteraction`, `actions` (buttons), and `WebpushFcmOptions` (including browser click-through links).
 
 ---
 
-## Sending to a Topic or Condition
+## 🛡 Advanced Configuration
 
-You can route messages via FCM Publisher Topics or via Logical Conditions.
+### Logging
 
-```dart
-final result = await server.sendToTopic(
-  'breaking-news', // Note: omit the `/topics/` prefix here
-  FirebaseMessage(
-    notification: FirebaseNotification(title: 'News Alert'),
-  ),
-);
-```
-
-### Managing Topic Subscriptions natively
-
-This package includes a wrapper for the Firebase Instance ID API, allowing you to explicitly subscribe or unsubscribe device tokens to a topic sequentially.
-
-```dart
-final bulkSubResult = await server.subscribeTokensToTopic(
-  topic: 'breaking-news',
-  tokens: ['token1', 'token2', 'token3'], // Up to 1000 tokens
-);
-
-if (!bulkSubResult.allSuccessful) {
-  print('Some tokens failed: ${bulkSubResult.failedResults}');
-}
-
-// To unsubscribe:
-// await server.unsubscribeTokensFromTopic(topic: 'breaking-news', tokens: ['token1']);
-```
-
-### Send to a condition
-
-```dart
-await server.sendToCondition(
-  "'sports' in topics || 'news' in topics",
-  const FirebaseMessage(
-    notification: FirebaseNotification(title: 'Alert for sports & news fans'),
-  ),
-);
-```
-
-### Validate without sending
-
-```dart
-final dryRun = await server.validateMessage(
-  FirebaseSend(
-    message: FirebaseMessage(
-      token: someToken,
-      notification: const FirebaseNotification(title: 'Test'),
-    ),
-  ),
-);
-print('Payload valid: ${dryRun.successful}');
-```
-
-### With logger and retry config
+Integrate with your own logging framework by providing a callback:
 
 ```dart
 final server = FirebaseCloudMessagingServer(
@@ -221,7 +167,17 @@ final server = FirebaseCloudMessagingServer(
   logger: (level, message, {error, stackTrace}) {
     print('[FCM ${level.name}] $message');
   },
-  retryConfig: const FcmRetryConfig(
+);
+```
+
+### Automatic Retries
+
+Transient errors like `UNAVAILABLE` or `QUOTA_EXCEEDED` can be handled automatically:
+
+```dart
+final server = FirebaseCloudMessagingServer(
+  credentials,
+  retryConfig: FcmRetryConfig(
     maxRetries: 3,
     initialDelay: Duration(seconds: 1),
     maxDelay: Duration(seconds: 30),
@@ -229,83 +185,24 @@ final server = FirebaseCloudMessagingServer(
 );
 ```
 
-### iOS (APNs) specific configuration
+---
+
+## 🧹 Resource Management
+
+Always dispose of the server instance when you are done to close the underlying HTTP client and prevent memory leaks.
 
 ```dart
-apns: FirebaseApnsConfig(
-  headers: const {'apns-priority': '10'},
-  notification: const FirebaseApnsNotification(
-    title: 'Hello iOS',
-    body: 'With album artwork thumbnail',
-    badge: 1,
-    sound: 'default',
-    category: 'MESSAGE',
-  ),
-  fcmOptions: const ApnsFcmOptions(
-    analyticsLabel: 'ios_campaign',
-    image: 'https://example.com/thumbnail.jpg',
-  ),
-),
-```
-
-### Web Push specific configuration
-
-```dart
-webpush: FirebaseWebpushConfig(
-  notification: const FirebaseWebpushNotification(
-    title: 'Hello Web',
-    body: 'With action buttons',
-    requireInteraction: true,
-    actions: [
-      WebpushAction(action: 'open', title: 'Open app'),
-      WebpushAction(action: 'dismiss', title: 'Dismiss'),
-    ],
-  ),
-  fcmOptions: const WebpushFcmOptions(link: 'https://yourapp.com'),
-),
+server.dispose();
 ```
 
 ---
 
-## Handling errors
+## 🤝 Contributing
 
-```dart
-final result = await server.send(sendObject);
-
-if (!result.successful) {
-  final err = result.fcmError;
-  switch (err?.errorCode) {
-    case FcmErrorCode.unregistered:
-      // Remove the token from your database.
-      break;
-    case FcmErrorCode.quotaExceeded:
-      // Back off — the server will retry automatically if FcmRetryConfig is set.
-      break;
-    default:
-      print('FCM error: $err');
-  }
-}
-```
+Contributions are welcome! If you find a bug or have a feature request, please open an issue. If you'd like to contribute code, please check out our [Contributing Guide](CONTRIBUTING.md).
 
 ---
 
-## Upgrading from v1.x
+## 📄 License
 
-1. Run `dart pub upgrade` to get v2.0.0.
-2. Run `dart run build_runner build --delete-conflicting-outputs` to regenerate `.g.dart` files.
-3. Check uses of `FirebaseWebpushConfig` — `notification` and `webPushFcmOptions` are now typed.
-4. If you relied on `AndroidMessagePriority` serializing to lowercase (`"normal"`/`"high"`),
-   update your FCM server-side expectations — the correct values are `"NORMAL"`/`"HIGH"`.
-5. Call `server.dispose()` when you are done with the server instance.
-
----
-
-## Contributing
-
-We welcome contributions of all kinds! Whether you're fixing bugs, improving documentation, or adding new FCM features, please read our [Contributing Guide](CONTRIBUTING.md) to get started.
-
----
-
-## Developer Contact
-- [GitHub](https://github.com/OttomanDeveloper/firebase_cloud_messaging_flutter)
-- [Issue Tracker](https://github.com/OttomanDeveloper/firebase_cloud_messaging_flutter/issues)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
+import 'package:firebase_cloud_messaging_flutter/src/logic/fcm_topic_management.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/http.dart' as http;
 
@@ -60,12 +61,10 @@ class FirebaseCloudMessagingServer {
       'https://fcm.googleapis.com/v1/projects';
 
   /// The endpoint for the IID batch registration API (Subscribe).
-  static const String _iidBatchAddEndpoint =
-      'https://iid.googleapis.com/iid/v1:batchAdd';
+  // MOVED to FcmTopicManagement
 
   /// The endpoint for the IID batch registration API (Unsubscribe).
-  static const String _iidBatchRemoveEndpoint =
-      'https://iid.googleapis.com/iid/v1:batchRemove';
+  // MOVED to FcmTopicManagement
 
   // ---------------------------------------------------------------------------
   // Constructor & fields
@@ -171,6 +170,7 @@ class FirebaseCloudMessagingServer {
     FcmLogger? logger,
     FcmRetryConfig retryConfig = const FcmRetryConfig(),
     FcmRegistrationCallback? onRegistrationChange,
+    http.Client? httpClient,
   }) {
     return FirebaseCloudMessagingServer(
       null,
@@ -179,6 +179,7 @@ class FirebaseCloudMessagingServer {
       logger: logger ?? fcmSilentLogger,
       retryConfig: retryConfig,
       onRegistrationChange: onRegistrationChange,
+      httpClient: httpClient,
     );
   }
 
@@ -210,21 +211,27 @@ class FirebaseCloudMessagingServer {
     );
   }
 
-  /// Creates a server instance by reading a service-account JSON [file].
+  /// Creates a server instance by reading a service-account JSON file.
+  ///
+  /// The [serviceAccountFile] can be a [File] object or a [String] path.
   ///
   /// ```dart
   /// final server = FirebaseCloudMessagingServer.fromServiceAccountFile(
-  ///   File('service_account.json'),
+  ///   'service_account.json',
   /// );
   /// ```
   factory FirebaseCloudMessagingServer.fromServiceAccountFile(
-    File file, {
+    Object serviceAccountFile, {
     bool cacheAuth = true,
     FcmLogger? logger,
     FcmRetryConfig retryConfig = const FcmRetryConfig(),
     FcmRegistrationCallback? onRegistrationChange,
     http.Client? httpClient,
   }) {
+    final file = serviceAccountFile is String
+        ? File(serviceAccountFile)
+        : serviceAccountFile as File;
+
     return FirebaseCloudMessagingServer.fromServiceAccountJson(
       file.readAsStringSync(),
       cacheAuth: cacheAuth,
@@ -606,37 +613,14 @@ class FirebaseCloudMessagingServer {
     // Topic management uses the exact same OAuth 2.0 access token as message delivery.
     await _ensureValidToken();
 
-    final action = isSubscription ? 'batchAdd' : 'batchRemove';
-    final url = Uri.parse(
-        isSubscription ? _iidBatchAddEndpoint : _iidBatchRemoveEndpoint);
-
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${_accessCredentials!.accessToken.data}',
-      // IID endpoint enforces this explicit header when using OAuth 2.0 tokens
-      // rather than legacy Server Keys.
-      'access_token_auth': 'true',
-    };
-
-    final body = json.encode({
-      'to': '/topics/$topic',
-      'registration_tokens': tokens,
-    });
-
-    logger(FcmLogLevel.debug,
-        'Topic Management: $action for ${tokens.length} tokens on topic: $topic');
-
-    final response = await _httpClient.post(url, headers: headers, body: body);
-
-    Map<String, dynamic> bodyMap;
-    try {
-      bodyMap = json.decode(response.body) as Map<String, dynamic>;
-    } catch (_) {
-      // Failsafe in case Google API returns a non-JSON HTML blob.
-      bodyMap = {};
-    }
-
-    return TopicManagementResult.fromJson(bodyMap, tokens);
+    return FcmTopicManagement.performBatchOperation(
+      topic: topic,
+      tokens: tokens,
+      accessToken: _accessCredentials!.accessToken.data,
+      client: _httpClient,
+      isSubscription: isSubscription,
+      logger: logger,
+    );
   }
 
   // ---------------------------------------------------------------------------

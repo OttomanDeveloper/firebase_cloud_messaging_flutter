@@ -1,8 +1,6 @@
-import 'dart:io';
-import 'dart:convert';
 import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
 
-/// Example file demonstrating the firebase_cloud_messaging_flutter v2.0.0 API.
+/// Example file demonstrating the firebase_cloud_messaging_flutter v2.1.0 API.
 ///
 /// To run this example, replace the placeholder values with your actual
 /// Firebase service account credentials and device tokens.
@@ -11,24 +9,30 @@ import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutte
 ///   Firebase Console → Settings → Service Accounts → Generate new private key
 void main() async {
   // 1. Initialize the Server
-  // Using explicit service account map parsing:
-  final credentials = jsonDecode(
-    File('service_account.json').readAsStringSync(),
-  ) as Map<String, dynamic>;
-
-  var server = FirebaseCloudMessagingServer(
-    credentials,
+  // Option A: Using a service account file directly (Easiest)
+  var server = FirebaseCloudMessagingServer.fromServiceAccountFile(
+    'service_account.json',
     logger: (level, message, {error, stackTrace}) {
       print('[FCM ${level.name.toUpperCase()}] $message');
       if (error != null) print('  Error: $error');
     },
   );
 
+  // Option B: Alternatively, using pre-parsed JSON:
+  /*
+  final credentials = jsonDecode(
+    File('service_account.json').readAsStringSync(),
+  ) as Map<String, dynamic>;
+  server = FirebaseCloudMessagingServer(credentials);
+  */
+
   // Alternatively, using Application Default Credentials (ADC)
-  // ideal for Google Cloud Run / Firebase Functions deployment:
+  // Recommended for Google Cloud Run / Firebase Functions deployment:
   /*
   server = FirebaseCloudMessagingServer.applicationDefault(
     projectId: 'my-project-id',
+    // Optional: Pass a shared httpClient for efficiency
+    // httpClient: mySharedClient,
     logger: (level, message, {error, stackTrace}) {
       print('[FCM ${level.name.toUpperCase()}] $message');
       if (error != null) print('  Error: $error');
@@ -46,8 +50,8 @@ void main() async {
       message: FirebaseMessage(
         token: deviceToken,
         notification: const FirebaseNotification(
-          title: 'Hello from v2.0.0 🚀',
-          body: 'The package has been completely upgraded!',
+          title: 'Hello from v2.1.0 🚀',
+          body: 'The package has been completely hardened!',
           image: 'https://example.com/banner.png',
         ),
         android: FirebaseAndroidConfig(
@@ -106,7 +110,8 @@ void main() async {
   }
 
   // --------------------------------------------------------------------------
-  // 4. Send to multiple tokens in parallel (new in v2.0.0)
+  // 4. Send to multiple tokens in parallel
+
   // --------------------------------------------------------------------------
   final tokens = ['token_a', 'token_b', 'token_c'];
 
@@ -140,7 +145,8 @@ void main() async {
     topic: 'sports',
     tokens: ['fake-token-4', 'fake-token-5'],
   );
-  print('Topic subscription successful: ${topicResult.successCount}');
+  print(
+      'Topic subscription result: ${topicResult.successCount} success, ${topicResult.failureCount} failed');
 
   // B. Send message to the topic
   final topicSendResult = await server.sendToTopic(
@@ -155,7 +161,8 @@ void main() async {
   print('Topic send successful: ${topicSendResult.successful}');
 
   // --------------------------------------------------------------------------
-  // 6. Send to a condition (new convenience method in v2.0.0)
+  // 6. Send to a condition
+
   // --------------------------------------------------------------------------
   await server.sendToCondition(
     "'sports' in topics || 'news' in topics",
@@ -168,7 +175,8 @@ void main() async {
   );
 
   // --------------------------------------------------------------------------
-  // 7. Validate a message without sending it (new in v2.0.0)
+  // 7. Validate a message without sending it
+
   // --------------------------------------------------------------------------
   final validationResult = await server.validateMessage(
     FirebaseSend(
@@ -181,7 +189,8 @@ void main() async {
   print('Validation passed: ${validationResult.successful}');
 
   // --------------------------------------------------------------------------
-  // 8. Always dispose the server when done (new in v2.0.0)
+  // 8. Always dispose the server when done
+
   // --------------------------------------------------------------------------
   server.dispose();
 }

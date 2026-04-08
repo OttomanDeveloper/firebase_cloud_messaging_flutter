@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
 import 'package:test/test.dart';
 
-/// Unit tests for firebase_cloud_messaging_flutter v2.0.0
+/// Unit tests for firebase_cloud_messaging_flutter v2.1.0
+
 ///
 /// Run with:
 ///   dart run build_runner build --delete-conflicting-outputs
@@ -39,7 +40,8 @@ void main() {
   });
 
   // -------------------------------------------------------------------------
-  // AndroidNotificationProxy serialization (new in v2.0.0)
+  // AndroidNotificationProxy serialization (new in v2.1.0)
+
   // -------------------------------------------------------------------------
   group('AndroidNotificationProxy JSON values', () {
     test('allow serializes to "ALLOW"', () {

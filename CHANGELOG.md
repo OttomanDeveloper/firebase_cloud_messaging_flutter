@@ -1,11 +1,14 @@
 ## 2.1.0
 
-This release elevates the package from a comprehensive server-side SDK by introducing native ambient credentials and topic management.
+This release elevates the package to a production-hardened server-side SDK by introducing native ambient credentials and dedicated topic management.
 
-* **Feat (Auth)**: Introduced `FirebaseCloudMessagingServer.applicationDefault({ required String projectId })`. Supports Google Application Default Credentials (ADC) for serverless environments.
-* **Feat (Topic APIs)**: Introduced `subscribeTokensToTopic()` and `unsubscribeTokensFromTopic()`. Supports batch management of up to 1,000 tokens.
-* **Refactor**: Cleaned up internal barrel file exports and resolved diagnostic warnings.
-* **Refactor (Breaking)**: Migrated project-wide filename convention from dot-delimited (e.g., `android.config.dart`) to standard Dart snake_case (e.g., `android_config.dart`). Internal imports and public exports have been updated accordingly.
+* **Feat (Auth)**: Introduced `FirebaseCloudMessagingServer.applicationDefault({ required String projectId })`. Supports Google Application Default Credentials (ADC) for seamless authentication in Cloud Run, App Engine, and Firebase Functions.
+* **Feat (Topic Management)**: Added `subscribeTokensToTopic()` and `unsubscribeTokensFromTopic()`. These utilize the Firebase Instance ID API for efficient batch management (up to 1,000 tokens per request).
+* **Refactor (Architecture)**: Introduced `FcmTopicManagement` internal class to centralize topic lifecycle logic.
+* **Refactor (Breaking)**: Migrated project-wide filename convention to standard Dart snake_case (e.g., `android_config.dart`). All internal imports and public exports have been updated.
+* **Hardening**: Consolidated network logic into a shared, reusable `http.Client` to prevent socket leaks.
+* **Typing**: Added missing priority and visibility fields to platform-specific configs.
+
 
 ## 2.0.0
 
@@ -48,11 +51,11 @@ This release elevates the package from a comprehensive server-side SDK by introd
 
 ### Bug Fixes
 
-*   Fixed HTTP client leak: a single `http.Client` is now reused across all
-    send calls and closed via `dispose()`. Previously a new client was created
-    (and leaked) on every `send()` invocation.
-*   Fixed `projectID` being re-parsed from JSON on every request; now cached at
-    construction time.
+* Fixed HTTP client leak: a single `http.Client` is now reused across all
+  send calls and closed via `dispose()`. Previously a new client was created
+  (and leaked) on every `send()` invocation.
+* Fixed `projectID` being re-parsed from JSON on every request; now cached at
+  construction time.
 
 ### Quality
 

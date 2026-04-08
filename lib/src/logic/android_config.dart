@@ -1,5 +1,6 @@
-import 'android_notification.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'android_notification.dart';
 
 part 'android_config.g.dart';
 
@@ -9,6 +10,19 @@ part 'android_config.g.dart';
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#androidconfig
 @JsonSerializable()
 final class FirebaseAndroidConfig {
+
+  const FirebaseAndroidConfig({
+    this.collapseKey,
+    this.priority,
+    this.ttl,
+    this.restrictedPackageName,
+    this.data,
+    this.notification,
+    this.directBootOk,
+  });
+
+  factory FirebaseAndroidConfig.fromJson(Map<String, dynamic> json) =>
+      _$FirebaseAndroidConfigFromJson(json);
   /// An identifier for a group of messages that can be collapsed so that only
   /// the most recent message is delivered when the device comes online.
   ///
@@ -51,19 +65,6 @@ final class FirebaseAndroidConfig {
   /// to be declared as `directBootAware`.
   @JsonKey(name: 'direct_boot_ok')
   final bool? directBootOk;
-
-  const FirebaseAndroidConfig({
-    this.collapseKey,
-    this.priority,
-    this.ttl,
-    this.restrictedPackageName,
-    this.data,
-    this.notification,
-    this.directBootOk,
-  });
-
-  factory FirebaseAndroidConfig.fromJson(Map<String, dynamic> json) =>
-      _$FirebaseAndroidConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$FirebaseAndroidConfigToJson(this);
 }

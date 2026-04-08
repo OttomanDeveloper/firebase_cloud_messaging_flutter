@@ -3,19 +3,25 @@
 [![pub package](https://img.shields.io/pub/v/firebase_cloud_messaging_dart.svg)](https://pub.dev/packages/firebase_cloud_messaging_dart)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+> [!TIP]
+> **Found an issue?** We strive for 100% type safety and reliability. If you encounter any bugs or have feature requests, please [open an issue on GitHub](https://github.com/OttomanDeveloper/firebase_cloud_messaging_dart/issues).
+
 Send Firebase Cloud Messages (FCM) and manage topics directly from your **Dart or Flutter** application. This package provides a pure-Dart, type-safe wrapper around the [FCM HTTP v1 REST API](https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages), removing the need for an intermediate server or the complex Firebase Admin SDK in many scenarios.
 
 ---
 
 ## 🚀 Key Features
 
-* **Zero-Dependency on Firebase SDK**: Works in pure Dart environments (backends, CLI, etc.) as well as Flutter.
-* **Application Default Credentials (ADC)**: Native support for ambient identity on Google Cloud (Cloud Run, Functions, etc.).
-* **Topic Management**: Natively subscribe or unsubscribe device tokens to topics (Instance ID API).
-* **Parallel Delivery**: Built-in support for sending to multiple tokens efficiently.
-* **Structured Error Handling**: Deep visibility into FCM errors (`UNREGISTERED`, `QUOTA_EXCEEDED`, etc.) with typed objects.
-* **Automatic Retries**: Intelligent exponential back-off for transient Google API errors.
-* **Type-Safe Platforms**: Dedicated, typed configurations for Android, APNs (iOS/macOS), and Web Push.
+* Zero-Dependency on Firebase SDK: Works in pure Dart environments (backends, CLI, etc.) as well as Flutter.
+* Enterprise-Grade Hardening: Built with strict analysis rules (`avoid_dynamic_calls`, `strict-inference`) and 100% explicit typing.
+* Dart 3 Modernized: Utilizes `sealed` classes, Records, and Pattern matching for high-performance and exhaustive logic.
+* Backward Compatible: Supports **Dart 3.0.0** and above for maximum reach across the Flutter and Dart ecosystem.
+* Application Default Credentials (ADC)
+* Topic Management: Natively subscribe or unsubscribe device tokens to topics (Instance ID API).
+* Parallel Delivery: Built-in support for sending to multiple tokens efficiently with Record-based results.
+* Structured Error Handling: Deep visibility into FCM errors (`UNREGISTERED`, `QUOTA_EXCEEDED`, etc.) with typed objects.
+* Automatic Retries: Intelligent exponential back-off for transient Google API errors.
+* Type-Safe Platforms: Dedicated, typed configurations for Android, APNs (iOS/macOS), and Web Push.
 
 ---
 

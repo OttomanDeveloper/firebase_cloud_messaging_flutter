@@ -20,16 +20,6 @@ part 'send.g.dart';
 /// ```
 @JsonSerializable()
 final class FirebaseSend {
-  /// When `true`, validates the request without sending the message.
-  ///
-  /// The API will process the request and return the result as if the message
-  /// was sent, but it will not actually be delivered. Useful for testing
-  /// payloads before going live.
-  @JsonKey(name: 'validate_only')
-  final bool? validateOnly;
-
-  /// The message to send. Must not be null when actually sending.
-  final FirebaseMessage? message;
 
   const FirebaseSend({
     this.validateOnly = false,
@@ -42,6 +32,16 @@ final class FirebaseSend {
 
   factory FirebaseSend.fromJson(Map<String, dynamic> json) =>
       _$FirebaseSendFromJson(json);
+  /// When `true`, validates the request without sending the message.
+  ///
+  /// The API will process the request and return the result as if the message
+  /// was sent, but it will not actually be delivered. Useful for testing
+  /// payloads before going live.
+  @JsonKey(name: 'validate_only')
+  final bool? validateOnly;
+
+  /// The message to send. Must not be null when actually sending.
+  final FirebaseMessage? message;
 
   Map<String, dynamic> toJson() => _$FirebaseSendToJson(this);
 

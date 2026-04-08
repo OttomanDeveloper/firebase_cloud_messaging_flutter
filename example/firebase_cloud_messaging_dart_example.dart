@@ -10,9 +10,9 @@ import 'package:firebase_cloud_messaging_dart/firebase_cloud_messaging_dart.dart
 void main() async {
   // 1. Initialize the Server
   // Option A: Using a service account file directly (Easiest)
-  var server = FirebaseCloudMessagingServer.fromServiceAccountFile(
+  final FirebaseCloudMessagingServer server = FirebaseCloudMessagingServer.fromServiceAccountFile(
     'service_account.json',
-    logger: (level, message, {error, stackTrace}) {
+    logger: (FcmLogLevel level, String message, {Object? error, StackTrace? stackTrace}) {
       print('[FCM ${level.name.toUpperCase()}] $message');
       if (error != null) print('  Error: $error');
     },
@@ -43,13 +43,13 @@ void main() async {
   // --------------------------------------------------------------------------
   // 2. Send to a single device token
   // --------------------------------------------------------------------------
-  const deviceToken = 'REPLACE_WITH_YOUR_DEVICE_TOKEN';
+  const String deviceToken = 'REPLACE_WITH_YOUR_DEVICE_TOKEN';
 
-  final result = await server.send(
-    FirebaseSend(
+  final ServerResult result = await server.send(
+    const FirebaseSend(
       message: FirebaseMessage(
         token: deviceToken,
-        notification: const FirebaseNotification(
+        notification: FirebaseNotification(
           title: 'Hello from v2.1.0 🚀',
           body: 'The package has been completely hardened!',
           image: 'https://example.com/banner.png',
@@ -58,7 +58,7 @@ void main() async {
           ttl: '86400s', // 24 hours
           priority: AndroidMessagePriority.high,
           directBootOk: false,
-          notification: const FirebaseAndroidNotification(
+          notification: FirebaseAndroidNotification(
             icon: 'ic_notification',
             color: '#FF6D00',
             channelID: 'default_channel',
@@ -67,35 +67,35 @@ void main() async {
           ),
         ),
         apns: FirebaseApnsConfig(
-          headers: const {'apns-priority': '10'},
-          notification: const FirebaseApnsNotification(
+          headers: <String, String>{'apns-priority': '10'},
+          notification: FirebaseApnsNotification(
             title: 'Hello!',
             body: 'iOS-specific notification body.',
             badge: 1,
             sound: 'default',
           ),
-          fcmOptions: const ApnsFcmOptions(
+          fcmOptions: ApnsFcmOptions(
             analyticsLabel: 'v2_launch',
             image: 'https://example.com/ios-banner.png',
           ),
         ),
         webpush: FirebaseWebpushConfig(
-          notification: const FirebaseWebpushNotification(
+          notification: FirebaseWebpushNotification(
             title: 'Hello!',
             body: 'Web-specific notification body.',
             icon: 'https://example.com/icon.png',
             requireInteraction: true,
-            actions: [
+            actions: <WebpushAction>[
               WebpushAction(action: 'open_app', title: 'Open'),
               WebpushAction(action: 'dismiss', title: 'Dismiss'),
             ],
           ),
-          fcmOptions: const WebpushFcmOptions(
+          fcmOptions: WebpushFcmOptions(
             link: 'https://example.com',
             analyticsLabel: 'web_push',
           ),
         ),
-        fcmOptions: const FirebaseFcmOptions(
+        fcmOptions: FirebaseFcmOptions(
           analyticsLabel: 'example',
           image: 'https://example.com/cross-platform.png',
         ),
@@ -107,9 +107,9 @@ void main() async {
 
   // Dart 3 Exhaustive Pattern Matching for handling send outcomes
   switch (result) {
-    case ServerSuccess(:final messageSent):
+    case ServerSuccess(:final FirebaseMessage messageSent):
       print('✅ Message sent successfully! ID: ${messageSent.name}');
-    case ServerFailure(:final fcmError):
+    case ServerFailure(:final FcmError? fcmError):
       print('❌ FCM Error: ${fcmError?.errorCode}');
       print('   Summary: ${fcmError?.message}');
       print('   Is Retryable: ${fcmError?.isRetryable}');
@@ -119,9 +119,9 @@ void main() async {
   // 4. Send to multiple tokens in parallel
 
   // --------------------------------------------------------------------------
-  final tokens = ['token_a', 'token_b', 'token_c'];
+  final List<String> tokens = <String>['token_a', 'token_b', 'token_c'];
 
-  final batchResult = await server.sendToMultiple(
+  final BatchResult batchResult = await server.sendToMultiple(
     tokens: tokens,
     messageTemplate: const FirebaseMessage(
       notification: FirebaseNotification(
@@ -136,7 +136,7 @@ void main() async {
   print('  Failed:    ${batchResult.failureCount}');
 
   // Remove stale tokens from your database
-  for (final r in batchResult.failedResults) {
+  for (final TokenResult r in batchResult.failedResults) {
     if (r.serverResult.fcmError?.errorCode == FcmErrorCode.unregistered) {
       print('  Stale token (remove from DB): ${r.token}');
     }
@@ -147,15 +147,15 @@ void main() async {
   // ---------------------------------------------------------------------------
 
   // A. Subscribe tokens to a topic (Up to 1000 tokens per request)
-  final topicResult = await server.subscribeTokensToTopic(
+  final TopicManagementResult topicResult = await server.subscribeTokensToTopic(
     topic: 'sports',
-    tokens: ['fake-token-4', 'fake-token-5'],
+    tokens: <String>['fake-token-4', 'fake-token-5'],
   );
   print(
       'Topic subscription result: ${topicResult.successCount} success, ${topicResult.failureCount} failed');
 
   // B. Send message to the topic
-  final topicSendResult = await server.sendToTopic(
+  final ServerResult topicSendResult = await server.sendToTopic(
     'sports',
     const FirebaseMessage(
       notification: FirebaseNotification(
@@ -184,9 +184,9 @@ void main() async {
   // 7. Validate a message without sending it
 
   // --------------------------------------------------------------------------
-  final validationResult = await server.validateMessage(
-    FirebaseSend(
-      message: const FirebaseMessage(
+  final ServerResult validationResult = await server.validateMessage(
+    const FirebaseSend(
+      message: FirebaseMessage(
         token: 'some-token',
         notification: FirebaseNotification(title: 'Test'),
       ),

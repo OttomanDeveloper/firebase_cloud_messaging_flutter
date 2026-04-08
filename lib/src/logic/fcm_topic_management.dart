@@ -1,12 +1,13 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+
 import 'package:firebase_cloud_messaging_dart/firebase_cloud_messaging_dart.dart';
+import 'package:http/http.dart' as http;
 
 /// Internal utility for managing FCM topics via the Firebase Instance ID API.
 ///
 /// This implements the server-side subscription and unsubscription logic
 /// using the standard logic from the IID batch API.
-class FcmTopicManagement {
+final class FcmTopicManagement {
   // ---------------------------------------------------------------------------
   // Endpoints
   // ---------------------------------------------------------------------------
@@ -38,12 +39,12 @@ class FcmTopicManagement {
     required bool isSubscription,
     FcmLogger? logger,
   }) async {
-    final action = isSubscription ? 'batchAdd' : 'batchRemove';
-    final url = Uri.parse(
+    final String action = isSubscription ? 'batchAdd' : 'batchRemove';
+    final Uri url = Uri.parse(
       isSubscription ? iidBatchAddEndpoint : iidBatchRemoveEndpoint,
     );
 
-    final headers = {
+    final Map<String, String> headers = <String, String>{
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $accessToken',
       // IID endpoint enforces this explicit header when using OAuth 2.0 tokens
@@ -51,7 +52,7 @@ class FcmTopicManagement {
       'access_token_auth': 'true',
     };
 
-    final body = json.encode({
+    final String body = json.encode(<String, Object>{
       'to': '/topics/$topic',
       'registration_tokens': tokens,
     });
@@ -61,14 +62,14 @@ class FcmTopicManagement {
       'Topic Management: $action for ${tokens.length} tokens on topic: $topic',
     );
 
-    final response = await client.post(url, headers: headers, body: body);
+    final http.Response response = await client.post(url, headers: headers, body: body);
 
     Map<String, dynamic> bodyMap;
     try {
       bodyMap = json.decode(response.body) as Map<String, dynamic>;
     } catch (_) {
       // Failsafe in case Google API returns a non-JSON HTML blob.
-      bodyMap = {};
+      bodyMap = <String, dynamic>{};
     }
 
     return TopicManagementResult.fromJson(bodyMap, tokens);

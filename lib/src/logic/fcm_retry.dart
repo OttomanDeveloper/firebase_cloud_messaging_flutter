@@ -18,6 +18,12 @@
 
 /// Controls how [FirebaseCloudMessagingServer] retries failed send requests.
 final class FcmRetryConfig {
+
+  const FcmRetryConfig({
+    this.maxRetries = 3,
+    this.initialDelay = const Duration(seconds: 1),
+    this.maxDelay = const Duration(seconds: 30),
+  }) : assert(maxRetries >= 0, 'maxRetries must be non-negative');
   /// Maximum number of retry attempts after the first failure.
   ///
   /// Set to `0` to disable retries entirely. Defaults to `3`.
@@ -31,12 +37,6 @@ final class FcmRetryConfig {
   /// have been attempted. Defaults to 30 seconds.
   final Duration maxDelay;
 
-  const FcmRetryConfig({
-    this.maxRetries = 3,
-    this.initialDelay = const Duration(seconds: 1),
-    this.maxDelay = const Duration(seconds: 30),
-  }) : assert(maxRetries >= 0, 'maxRetries must be non-negative');
-
   /// A convenient preset that disables all retry behaviour.
   static const FcmRetryConfig none = FcmRetryConfig(maxRetries: 0);
 
@@ -44,9 +44,9 @@ final class FcmRetryConfig {
   /// exponential back-off capped at [maxDelay].
   Duration delayForAttempt(int attempt) {
     // 2^attempt * initialDelay, bounded by maxDelay
-    final multiplier = 1 << attempt; // 2^attempt
-    final rawMs = initialDelay.inMilliseconds * multiplier;
-    final cappedMs = rawMs.clamp(0, maxDelay.inMilliseconds);
+    final int multiplier = 1 << attempt; // 2^attempt
+    final int rawMs = initialDelay.inMilliseconds * multiplier;
+    final int cappedMs = rawMs.clamp(0, maxDelay.inMilliseconds);
     return Duration(milliseconds: cappedMs);
   }
 

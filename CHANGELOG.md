@@ -1,4 +1,14 @@
-# CHANGELOG
+# Changelog
+
+## 3.0.1 (Deep Hardening & Optimization)
+
+* **Records for Performance**: Integrated Dart 3 Records in `sendToMultiple` for efficient intermediate data mapping, reducing object allocation overhead during large fan-outs.
+* **Pattern Destructuring**: Modernized HTTP response handling and JSON parsing using pattern matching for cleaner, type-safe logic.
+* **Architectural Hardening**: Applied strict class modifiers (`final`, `base`) project-wide and resolved all 89 analysis violations including unsafe `dynamic` calls.
+* **Strict Quality**: Enabled `avoid_dynamic_calls`, `prefer_final_locals`, and `strict-inference` analysis flags for enterprise-grade safety.
+* **Backward Compatibility**: Optimized dependency constraints (`json_annotation: ^4.9.0`) to maintain full support for Dart 3.0.0 and resolve build-time SDK warnings.
+* **Memory Efficiency**: Enforced `const` constructors across all data models to minimize runtime memory footprint.
+* **Code Hygiene**: Refactored internal result handling and improved error extraction logic.
 
 ## 3.0.0 (Dart 3 Modernization)
 
@@ -29,7 +39,6 @@ This release elevates the package to a production-hardened server-side SDK by in
 * **Refactor (Breaking)**: Migrated project-wide filename convention to standard Dart snake_case (e.g., `android_config.dart`). All internal imports and public exports have been updated.
 * **Hardening**: Consolidated network logic into a shared, reusable `http.Client` to prevent socket leaks.
 * **Typing**: Added missing priority and visibility fields to platform-specific configs.
-
 
 ## 2.0.0
 
@@ -83,10 +92,10 @@ This release elevates the package to a production-hardened server-side SDK by in
 * Added `copyWith()` to `FirebaseMessage`, `FirebaseSend`, and `ServerResult`.
 * Added `ServerResult.errorBody` (raw response body on failure) and
   `ServerResult.fcmError` (typed error).
-*   `FirebaseSend` now asserts that `message` is non-null at construction time.
-*   Added full unit test suite in `test/`.
-*   Updated all dev dependencies to latest versions.
-*   Updated minimum SDK to `>=2.17.0`.
+* `FirebaseSend` now asserts that `message` is non-null at construction time.
+* Added full unit test suite in `test/`.
+* Updated all dev dependencies to latest versions.
+* Updated minimum SDK to `>=2.17.0`.
 
 ---
 

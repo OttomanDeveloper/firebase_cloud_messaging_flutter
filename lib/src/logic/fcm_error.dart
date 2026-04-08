@@ -56,6 +56,13 @@ enum FcmErrorCode {
 /// }
 /// ```
 final class FcmError {
+
+  const FcmError({
+    required this.code,
+    required this.message,
+    this.status,
+    required this.errorCode,
+  });
   /// The HTTP status code returned by FCM (e.g., 400, 401, 500).
   final int code;
 
@@ -68,13 +75,6 @@ final class FcmError {
   /// Typed representation of [status] for easy programmatic handling.
   final FcmErrorCode errorCode;
 
-  const FcmError({
-    required this.code,
-    required this.message,
-    this.status,
-    required this.errorCode,
-  });
-
   // ---------------------------------------------------------------------------
   // Factory: parse from a decoded FCM response body
   // ---------------------------------------------------------------------------
@@ -85,7 +85,7 @@ final class FcmError {
   /// Returns `null` if the map does not contain a recognisable error structure.
   static FcmError? fromResponseBody(Map<String, dynamic> body) {
     // FCM v1 errors live under a top-level "error" key.
-    final errorMap = body['error'];
+    final dynamic errorMap = body['error'];
     if (errorMap == null || errorMap is! Map<String, dynamic>) return null;
 
     final int httpCode = (errorMap['code'] as num?)?.toInt() ?? 0;

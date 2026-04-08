@@ -1,5 +1,6 @@
-import 'webpush_notification.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'webpush_notification.dart';
 
 part 'webpush_config.g.dart';
 
@@ -12,6 +13,16 @@ part 'webpush_config.g.dart';
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#webpushconfig
 @JsonSerializable()
 final class FirebaseWebpushConfig {
+
+  const FirebaseWebpushConfig({
+    this.headers,
+    this.data,
+    this.notification,
+    this.fcmOptions,
+  });
+
+  factory FirebaseWebpushConfig.fromJson(Map<String, dynamic> json) =>
+      _$FirebaseWebpushConfigFromJson(json);
   /// HTTP headers defined in the Web Push protocol.
   ///
   /// Refer to the Web Push specification for supported header keys.
@@ -32,16 +43,6 @@ final class FirebaseWebpushConfig {
   /// FCM-specific options for the webpush channel (link and analytics label).
   @JsonKey(name: 'fcm_options')
   final WebpushFcmOptions? fcmOptions;
-
-  const FirebaseWebpushConfig({
-    this.headers,
-    this.data,
-    this.notification,
-    this.fcmOptions,
-  });
-
-  factory FirebaseWebpushConfig.fromJson(Map<String, dynamic> json) =>
-      _$FirebaseWebpushConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$FirebaseWebpushConfigToJson(this);
 }

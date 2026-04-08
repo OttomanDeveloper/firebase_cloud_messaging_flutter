@@ -5,10 +5,26 @@ include: package:lints/recommended.yaml
 
 # For lint rules and documentation, see http://dart-lang.github.io/linter/lints.
 # Uncomment to specify additional rules.
-# linter:
-#   rules:
-#     - camel_case_types
-
 analyzer:
-#   exclude:
-#     - path/to/excluded/files/**
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  exclude:
+    - "**/*.g.dart"
+
+linter:
+  rules:
+    - always_specify_types
+    - avoid_dynamic_calls
+    - prefer_final_locals
+    - prefer_const_constructors
+    - prefer_const_literals_to_create_immutables
+    - unnecessary_const
+    - use_super_parameters
+    - directives_ordering
+    - prefer_interpolation_to_compose_strings
+    - unnecessary_this
+    - prefer_final_in_for_each
+    - avoid_redundant_argument_values
+    - sort_constructors_first

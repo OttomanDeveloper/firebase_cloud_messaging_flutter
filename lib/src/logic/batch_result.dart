@@ -11,6 +11,11 @@ import 'package:firebase_cloud_messaging_dart/firebase_cloud_messaging_dart.dart
 
 /// The outcome of sending a message to a single device [token].
 final class TokenResult {
+
+  const TokenResult({
+    required this.token,
+    required this.serverResult,
+  });
   /// The device registration token this result applies to.
   final String token;
 
@@ -19,11 +24,6 @@ final class TokenResult {
 
   /// Whether the message was delivered successfully to this token.
   bool get successful => serverResult.successful;
-
-  const TokenResult({
-    required this.token,
-    required this.serverResult,
-  });
 
   @override
   String toString() => 'TokenResult{token: $token, successful: $successful, '
@@ -56,25 +56,25 @@ final class TokenResult {
 /// }
 /// ```
 final class BatchResult {
+
+  const BatchResult({required this.results});
   /// Individual outcome for every token in the batch, in the same order
   /// as the input token list.
   final List<TokenResult> results;
 
-  const BatchResult({required this.results});
-
   /// Number of tokens to which the message was delivered successfully.
-  int get successCount => results.where((r) => r.successful).length;
+  int get successCount => results.where((TokenResult r) => r.successful).length;
 
   /// Number of tokens for which delivery failed.
-  int get failureCount => results.where((r) => !r.successful).length;
+  int get failureCount => results.where((TokenResult r) => !r.successful).length;
 
   /// Subset of [results] where [TokenResult.successful] is `true`.
   List<TokenResult> get successfulResults =>
-      results.where((r) => r.successful).toList();
+      results.where((TokenResult r) => r.successful).toList();
 
   /// Subset of [results] where [TokenResult.successful] is `false`.
   List<TokenResult> get failedResults =>
-      results.where((r) => !r.successful).toList();
+      results.where((TokenResult r) => !r.successful).toList();
 
   /// Returns `true` if every token received the message successfully.
   bool get allSuccessful => failureCount == 0;

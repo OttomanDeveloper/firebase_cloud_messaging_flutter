@@ -18,6 +18,22 @@ part 'message.g.dart';
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages
 @JsonSerializable()
 final class FirebaseMessage {
+
+  const FirebaseMessage({
+    this.name,
+    this.data,
+    this.notification,
+    this.android,
+    this.webpush,
+    this.apns,
+    this.fcmOptions,
+    this.token,
+    this.topic,
+    this.condition,
+  });
+
+  factory FirebaseMessage.fromJson(Map<String, dynamic> json) =>
+      _$FirebaseMessageFromJson(json);
   /// Output-only identifier returned by FCM after a successful send.
   ///
   /// Format: `"projects/{project-id}/messages/{message-id}"`.
@@ -70,22 +86,6 @@ final class FirebaseMessage {
   ///
   /// Only one of [token], [topic], or [condition] may be set.
   final String? condition;
-
-  const FirebaseMessage({
-    this.name,
-    this.data,
-    this.notification,
-    this.android,
-    this.webpush,
-    this.apns,
-    this.fcmOptions,
-    this.token,
-    this.topic,
-    this.condition,
-  });
-
-  factory FirebaseMessage.fromJson(Map<String, dynamic> json) =>
-      _$FirebaseMessageFromJson(json);
 
   Map<String, dynamic> toJson() => _$FirebaseMessageToJson(this);
 

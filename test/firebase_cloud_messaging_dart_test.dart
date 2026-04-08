@@ -16,24 +16,25 @@ void main() {
   // -------------------------------------------------------------------------
   group('AndroidMessagePriority JSON values', () {
     test('normal serializes to "NORMAL"', () {
-      final config = FirebaseAndroidConfig(
+      final FirebaseAndroidConfig config = const FirebaseAndroidConfig(
         priority: AndroidMessagePriority.normal,
       );
-      final map = config.toJson();
+      final Map<String, dynamic> map = config.toJson();
       expect(map['priority'], equals('NORMAL'));
     });
 
     test('high serializes to "HIGH"', () {
-      final config = FirebaseAndroidConfig(
+      final FirebaseAndroidConfig config = const FirebaseAndroidConfig(
         priority: AndroidMessagePriority.high,
       );
-      final map = config.toJson();
+      final Map<String, dynamic> map = config.toJson();
       expect(map['priority'], equals('HIGH'));
     });
 
     test('round-trips from JSON', () {
-      const input = {'priority': 'HIGH'};
-      final config = FirebaseAndroidConfig.fromJson(input);
+      const Map<String, String> input = <String, String>{'priority': 'HIGH'};
+      final FirebaseAndroidConfig config =
+          FirebaseAndroidConfig.fromJson(input);
       expect(config.priority, AndroidMessagePriority.high);
       expect(config.toJson()['priority'], equals('HIGH'));
     });
@@ -45,15 +46,16 @@ void main() {
   // -------------------------------------------------------------------------
   group('AndroidNotificationProxy JSON values', () {
     test('allow serializes to "ALLOW"', () {
-      final notification = FirebaseAndroidNotification(
+      final FirebaseAndroidNotification notification =
+          const FirebaseAndroidNotification(
         proxy: AndroidNotificationProxy.allow,
       );
-      final map = notification.toJson();
+      final Map<String, dynamic> map = notification.toJson();
       expect(map['proxy'], equals('ALLOW'));
     });
 
     test('deny serializes to "DENY"', () {
-      final n = FirebaseAndroidNotification(
+      final FirebaseAndroidNotification n = const FirebaseAndroidNotification(
         proxy: AndroidNotificationProxy.deny,
       );
       expect(n.toJson()['proxy'], equals('DENY'));
@@ -65,12 +67,14 @@ void main() {
   // -------------------------------------------------------------------------
   group('FirebaseAndroidConfig', () {
     test('directBootOk serializes to "direct_boot_ok"', () {
-      const config = FirebaseAndroidConfig(directBootOk: true);
+      const FirebaseAndroidConfig config =
+          FirebaseAndroidConfig(directBootOk: true);
       expect(config.toJson()['direct_boot_ok'], isTrue);
     });
 
     test('directBootOk round-trips from JSON', () {
-      final config = FirebaseAndroidConfig.fromJson({'direct_boot_ok': false});
+      final FirebaseAndroidConfig config = FirebaseAndroidConfig.fromJson(
+          <String, dynamic>{'direct_boot_ok': false});
       expect(config.directBootOk, isFalse);
     });
   });
@@ -80,17 +84,18 @@ void main() {
   // -------------------------------------------------------------------------
   group('FirebaseFcmOptions', () {
     test('image field serializes correctly', () {
-      const opts = FirebaseFcmOptions(
+      const FirebaseFcmOptions opts = FirebaseFcmOptions(
         analyticsLabel: 'promo',
         image: 'https://example.com/img.png',
       );
-      final map = opts.toJson();
+      final Map<String, dynamic> map = opts.toJson();
       expect(map['analytics_label'], equals('promo'));
       expect(map['image'], equals('https://example.com/img.png'));
     });
 
     test('round-trips from JSON', () {
-      final opts = FirebaseFcmOptions.fromJson({
+      final FirebaseFcmOptions opts =
+          FirebaseFcmOptions.fromJson(<String, dynamic>{
         'analytics_label': 'test',
         'image': 'https://example.com/a.png',
       });
@@ -104,9 +109,9 @@ void main() {
   // -------------------------------------------------------------------------
   group('FirebaseMessage JSON round-trip', () {
     test('basic message serializes and deserializes', () {
-      const message = FirebaseMessage(
+      const FirebaseMessage message = FirebaseMessage(
         token: 'device-token-abc',
-        data: {'key': 'value'},
+        data: <String, String>{'key': 'value'},
         notification: FirebaseNotification(
           title: 'Hello',
           body: 'World',
@@ -114,27 +119,29 @@ void main() {
         ),
       );
 
-      final encoded = jsonEncode(message.toJson());
-      final map = jsonDecode(encoded) as Map<String, dynamic>;
+      final String encoded = jsonEncode(message.toJson());
+      final Map<String, dynamic> map =
+          jsonDecode(encoded) as Map<String, dynamic>;
       expect(map['token'], equals('device-token-abc'));
-      expect(map['data'], equals({'key': 'value'}));
-      expect(map['notification']['title'], equals('Hello'));
+      expect(map['data'], equals(<String, String>{'key': 'value'}));
+      expect((map['notification'] as Map<String, dynamic>)['title'],
+          equals('Hello'));
 
-      final decoded = FirebaseMessage.fromJson(map);
+      final FirebaseMessage decoded = FirebaseMessage.fromJson(map);
       expect(decoded.token, equals('device-token-abc'));
       expect(decoded.notification?.title, equals('Hello'));
     });
 
     test('copyWith replaces only specified fields', () {
-      const original = FirebaseMessage(token: 'abc', topic: null);
-      final copy = original.copyWith(token: 'xyz');
+      const FirebaseMessage original = FirebaseMessage(token: 'abc');
+      final FirebaseMessage copy = original.copyWith(token: 'xyz');
       expect(copy.token, equals('xyz'));
       expect(copy.topic, isNull);
     });
 
     test('copyWith(topic:) leaves token unchanged', () {
-      const original = FirebaseMessage(token: 'tok');
-      final copy = original.copyWith(topic: 'weather');
+      const FirebaseMessage original = FirebaseMessage(token: 'tok');
+      final FirebaseMessage copy = original.copyWith(topic: 'weather');
       // Note: in practice you would set only one target field.
       expect(copy.token, equals('tok'));
       expect(copy.topic, equals('weather'));
@@ -147,27 +154,26 @@ void main() {
   group('FirebaseSend', () {
     test('assert fires when message is null', () {
       expect(
-        () => FirebaseSend(message: null),
+        () => FirebaseSend(),
         throwsA(isA<AssertionError>()),
       );
     });
 
     test('copyWith replaces validateOnly', () {
-      final original = FirebaseSend(
-        validateOnly: false,
-        message: const FirebaseMessage(token: 'x'),
+      final FirebaseSend original = const FirebaseSend(
+        message: FirebaseMessage(token: 'x'),
       );
-      final copy = original.copyWith(validateOnly: true);
+      final FirebaseSend copy = original.copyWith(validateOnly: true);
       expect(copy.validateOnly, isTrue);
       expect(copy.message?.token, equals('x'));
     });
 
     test('serializes validate_only key', () {
-      final send = FirebaseSend(
+      final FirebaseSend send = const FirebaseSend(
         validateOnly: true,
-        message: const FirebaseMessage(token: 'tok'),
+        message: FirebaseMessage(token: 'tok'),
       );
-      final map = send.toJson();
+      final Map<String, dynamic> map = send.toJson();
       expect(map['validate_only'], isTrue);
     });
   });
@@ -177,7 +183,7 @@ void main() {
   // -------------------------------------------------------------------------
   group('FcmError', () {
     test('parses UNREGISTERED from response body', () {
-      final body = json.decode('''{
+      final Map<String, dynamic> body = json.decode('''{
         "error": {
           "code": 404,
           "message": "Requested entity was not found.",
@@ -185,7 +191,7 @@ void main() {
         }
       }''') as Map<String, dynamic>;
 
-      final error = FcmError.fromResponseBody(body);
+      final FcmError? error = FcmError.fromResponseBody(body);
       expect(error, isNotNull);
       expect(error!.code, equals(404));
       expect(error.errorCode, equals(FcmErrorCode.unregistered));
@@ -193,7 +199,7 @@ void main() {
     });
 
     test('parses QUOTA_EXCEEDED and marks it retryable', () {
-      final body = json.decode('''{
+      final Map<String, dynamic> body = json.decode('''{
         "error": {
           "code": 429,
           "message": "Quota exceeded.",
@@ -201,13 +207,13 @@ void main() {
         }
       }''') as Map<String, dynamic>;
 
-      final error = FcmError.fromResponseBody(body);
+      final FcmError? error = FcmError.fromResponseBody(body);
       expect(error!.errorCode, equals(FcmErrorCode.quotaExceeded));
       expect(error.isRetryable, isTrue);
     });
 
     test('parses UNAVAILABLE and marks it retryable', () {
-      final body = json.decode('''{
+      final Map<String, dynamic> body = json.decode('''{
         "error": {
           "code": 503,
           "message": "The service is currently unavailable.",
@@ -215,18 +221,19 @@ void main() {
         }
       }''') as Map<String, dynamic>;
 
-      final error = FcmError.fromResponseBody(body);
+      final FcmError? error = FcmError.fromResponseBody(body);
       expect(error!.errorCode, equals(FcmErrorCode.unavailable));
       expect(error.isRetryable, isTrue);
     });
 
     test('returns null when body has no error key', () {
-      final error = FcmError.fromResponseBody({'message': 'some-msg-id'});
+      final FcmError? error = FcmError.fromResponseBody(
+          <String, dynamic>{'message': 'some-msg-id'});
       expect(error, isNull);
     });
 
     test('maps unknown status to FcmErrorCode.unknown', () {
-      final body = json.decode('''{
+      final Map<String, dynamic> body = json.decode('''{
         "error": {
           "code": 999,
           "message": "Future error.",
@@ -234,7 +241,7 @@ void main() {
         }
       }''') as Map<String, dynamic>;
 
-      final error = FcmError.fromResponseBody(body);
+      final FcmError? error = FcmError.fromResponseBody(body);
       expect(error!.errorCode, equals(FcmErrorCode.unknown));
     });
   });
@@ -244,9 +251,8 @@ void main() {
   // -------------------------------------------------------------------------
   group('FcmRetryConfig', () {
     test('delayForAttempt doubles on each attempt', () {
-      const config = FcmRetryConfig(
+      const FcmRetryConfig config = FcmRetryConfig(
         maxRetries: 5,
-        initialDelay: Duration(seconds: 1),
         maxDelay: Duration(seconds: 60),
       );
       expect(config.delayForAttempt(0), equals(const Duration(seconds: 1)));
@@ -255,9 +261,8 @@ void main() {
     });
 
     test('delay is capped at maxDelay', () {
-      const config = FcmRetryConfig(
+      const FcmRetryConfig config = FcmRetryConfig(
         maxRetries: 10,
-        initialDelay: Duration(seconds: 1),
         maxDelay: Duration(seconds: 5),
       );
       // Attempt 3 → 8s, but capped at 5s
@@ -287,8 +292,8 @@ void main() {
     }
 
     test('successCount and failureCount are correct', () {
-      final batch = BatchResult(
-        results: [
+      final BatchResult batch = BatchResult(
+        results: <TokenResult>[
           TokenResult(token: 't1', serverResult: makeResult(successful: true)),
           TokenResult(
               token: 't2',
@@ -303,8 +308,8 @@ void main() {
     });
 
     test('failedResults contains only failed tokens', () {
-      final batch = BatchResult(
-        results: [
+      final BatchResult batch = BatchResult(
+        results: <TokenResult>[
           TokenResult(token: 't1', serverResult: makeResult(successful: true)),
           TokenResult(token: 't2', serverResult: makeResult(successful: false)),
         ],
@@ -314,8 +319,8 @@ void main() {
     });
 
     test('allSuccessful is true when all succeed', () {
-      final batch = BatchResult(
-        results: [
+      final BatchResult batch = BatchResult(
+        results: <TokenResult>[
           TokenResult(token: 't1', serverResult: makeResult(successful: true)),
           TokenResult(token: 't2', serverResult: makeResult(successful: true)),
         ],
@@ -328,7 +333,7 @@ void main() {
   // ServerResult
   // -------------------------------------------------------------------------
   group('ServerResult', () {
-    const result = ServerSuccess(
+    const ServerSuccess result = ServerSuccess(
       statusCode: 200,
       messageSent: FirebaseMessage(name: 'projects/p/messages/1'),
     );
@@ -340,7 +345,7 @@ void main() {
     });
 
     test('ServerFailure holds error details', () {
-      const failure = ServerFailure(
+      const ServerFailure failure = ServerFailure(
         statusCode: 500,
         errorPhrase: 'Internal Error',
       );
@@ -355,7 +360,7 @@ void main() {
     });
 
     test('equality works', () {
-      const same = ServerSuccess(
+      const ServerSuccess same = ServerSuccess(
         statusCode: 200,
         messageSent: FirebaseMessage(name: 'projects/p/messages/1'),
       );
@@ -368,36 +373,38 @@ void main() {
   // -------------------------------------------------------------------------
   group('FirebaseApnsConfig nesting', () {
     test('notification is nested inside payload.aps in toJson()', () {
-      final config = FirebaseApnsConfig(
-        notification: const FirebaseApnsNotification(
+      final FirebaseApnsConfig config = const FirebaseApnsConfig(
+        notification: FirebaseApnsNotification(
           title: 'APNs Title',
           badge: 5,
         ),
       );
 
-      final json = config.toJson();
+      final Map<String, dynamic> json = config.toJson();
 
       // Should not be at the top level
       expect(json.containsKey('notification'), isFalse);
 
       // Should be inside payload -> aps
-      expect(json['payload'], isNotNull);
-      expect(json['payload']['aps'], isNotNull);
-      expect(json['payload']['aps']['title'], equals('APNs Title'));
-      expect(json['payload']['aps']['badge'], equals(5));
+      final dynamic payload = json['payload'];
+      expect(payload, isNotNull);
+      final dynamic aps = (payload as Map<String, dynamic>)['aps'];
+      expect(aps, isNotNull);
+      expect((aps as Map<String, dynamic>)['title'], equals('APNs Title'));
+      expect(aps['badge'], equals(5));
     });
 
     test('round-trips notification from payload.aps in fromJson()', () {
-      final json = {
-        'payload': {
-          'aps': {
+      final Map<String, dynamic> json = <String, Map<String, dynamic>>{
+        'payload': <String, Map<String, String>>{
+          'aps': <String, String>{
             'title': 'iOS Alert',
             'sound': 'default',
           }
         }
       };
 
-      final config = FirebaseApnsConfig.fromJson(json);
+      final FirebaseApnsConfig config = FirebaseApnsConfig.fromJson(json);
 
       expect(config.notification, isNotNull);
       expect(config.notification?.title, equals('iOS Alert'));
@@ -405,15 +412,17 @@ void main() {
     });
 
     test('merges notification into existing payload fields', () {
-      final config = FirebaseApnsConfig(
-        payload: {'custom-key': 'custom-value'},
-        notification: const FirebaseApnsNotification(badge: 1),
+      final FirebaseApnsConfig config = const FirebaseApnsConfig(
+        payload: <String, dynamic>{'custom-key': 'custom-value'},
+        notification: FirebaseApnsNotification(badge: 1),
       );
 
-      final json = config.toJson();
+      final Map<String, dynamic> json = config.toJson();
 
-      expect(json['payload']['custom-key'], equals('custom-value'));
-      expect(json['payload']['aps']['badge'], equals(1));
+      final dynamic payload = json['payload'];
+      expect((payload as Map<String, dynamic>)['custom-key'],
+          equals('custom-value'));
+      expect((payload['aps'] as Map<String, dynamic>)['badge'], equals(1));
     });
   });
 
@@ -422,18 +431,19 @@ void main() {
   // -------------------------------------------------------------------------
   group('v2.1.0 Platform Expansions', () {
     test('APNs: interruption-level, relevance-score, target-content-id', () {
-      const notification = FirebaseApnsNotification(
+      const FirebaseApnsNotification notification = FirebaseApnsNotification(
         interruptionLevel: InterruptionLevel.timeSensitive,
         relevanceScore: 0.75,
         targetContentId: 'group-123',
       );
 
-      final json = notification.toJson();
+      final Map<String, dynamic> json = notification.toJson();
       expect(json['interruption-level'], equals('time-sensitive'));
       expect(json['relevance-score'], equals(0.75));
       expect(json['target-content-id'], equals('group-123'));
 
-      final decoded = FirebaseApnsNotification.fromJson(json);
+      final FirebaseApnsNotification decoded =
+          FirebaseApnsNotification.fromJson(json);
       expect(
           decoded.interruptionLevel, equals(InterruptionLevel.timeSensitive));
       expect(decoded.relevanceScore, equals(0.75));
@@ -441,27 +451,31 @@ void main() {
     });
 
     test('Webpush: dir, lang, renotify, timestamp, data', () {
-      const notification = FirebaseWebpushNotification(
+      const FirebaseWebpushNotification notification =
+          FirebaseWebpushNotification(
         dir: WebpushDirection.rtl,
         lang: 'ar',
         renotify: true,
         timestamp: '1625097600000',
-        data: {'click_url': 'https://example.com'},
+        data: <String, dynamic>{'click_url': 'https://example.com'},
       );
 
-      final json = notification.toJson();
+      final Map<String, dynamic> json = notification.toJson();
       expect(json['dir'], equals('rtl'));
       expect(json['lang'], equals('ar'));
       expect(json['renotify'], isTrue);
       expect(json['timestamp'], equals('1625097600000'));
-      expect(json['data'], equals({'click_url': 'https://example.com'}));
+      expect(json['data'],
+          equals(<String, String>{'click_url': 'https://example.com'}));
 
-      final decoded = FirebaseWebpushNotification.fromJson(json);
+      final FirebaseWebpushNotification decoded =
+          FirebaseWebpushNotification.fromJson(json);
       expect(decoded.dir, equals(WebpushDirection.rtl));
       expect(decoded.lang, equals('ar'));
       expect(decoded.renotify, isTrue);
       expect(decoded.timestamp, equals('1625097600000'));
-      expect(decoded.data, equals({'click_url': 'https://example.com'}));
+      expect(decoded.data,
+          equals(<String, String>{'click_url': 'https://example.com'}));
     });
   });
 }

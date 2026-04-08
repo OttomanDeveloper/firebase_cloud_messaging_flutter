@@ -1,5 +1,6 @@
-import 'apns_notification.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'apns_notification.dart';
 
 part 'apns_config.g.dart';
 
@@ -15,6 +16,36 @@ part 'apns_config.g.dart';
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#apnsconfig
 @JsonSerializable()
 final class FirebaseApnsConfig {
+  const FirebaseApnsConfig({
+    this.headers,
+    this.notification,
+    this.fcmOptions,
+    this.payload,
+  });
+
+  factory FirebaseApnsConfig.fromJson(Map<String, dynamic> json) {
+    // Standard deserialisation
+    final FirebaseApnsConfig config = _$FirebaseApnsConfigFromJson(json);
+
+    // If 'notification' is missing as a top-level key (which it should be for
+    // valid FCM JSON), try to extract it from payload['aps'] to support
+    // round-tripping.
+    final dynamic payload = json['payload'];
+    if (config.notification == null &&
+        payload is Map<String, dynamic> &&
+        payload['aps'] != null) {
+      return FirebaseApnsConfig(
+        headers: config.headers,
+        fcmOptions: config.fcmOptions,
+        payload: config.payload,
+        notification: FirebaseApnsNotification.fromJson(
+          payload['aps'] as Map<String, dynamic>,
+        ),
+      );
+    }
+    return config;
+  }
+
   /// HTTP request headers defined in the APNs request.
   ///
   /// Refer to the APNs request headers documentation for supported header keys.
@@ -40,33 +71,6 @@ final class FirebaseApnsConfig {
   /// An object containing a list of "key": value pairs.
   final Map<String, dynamic>? payload;
 
-  const FirebaseApnsConfig({
-    this.headers,
-    this.notification,
-    this.fcmOptions,
-    this.payload,
-  });
-
-  factory FirebaseApnsConfig.fromJson(Map<String, dynamic> json) {
-    // Standard deserialisation
-    final config = _$FirebaseApnsConfigFromJson(json);
-
-    // If 'notification' is missing as a top-level key (which it should be for
-    // valid FCM JSON), try to extract it from payload['aps'] to support
-    // round-tripping.
-    if (config.notification == null && json['payload']?['aps'] != null) {
-      return FirebaseApnsConfig(
-        headers: config.headers,
-        fcmOptions: config.fcmOptions,
-        payload: config.payload,
-        notification: FirebaseApnsNotification.fromJson(
-          json['payload']['aps'] as Map<String, dynamic>,
-        ),
-      );
-    }
-    return config;
-  }
-
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = _$FirebaseApnsConfigToJson(this);
 
@@ -75,7 +79,8 @@ final class FirebaseApnsConfig {
     // and merge it into 'payload'.
     if (notification != null) {
       json.remove('notification');
-      final payload = Map<String, dynamic>.from(this.payload ?? {});
+      final Map<String, dynamic> payload =
+          Map<String, dynamic>.from(this.payload ?? <dynamic, dynamic>{});
       payload['aps'] = notification!.toJson();
       json['payload'] = payload;
     }

@@ -5,14 +5,14 @@ import 'package:test/test.dart';
 void main() {
   group('TopicManagementResult', () {
     test('parses successful response correctly', () {
-      final json = jsonDecode('''{
+      final Map<String, dynamic> json = jsonDecode('''{
         "results": [
           {},
           {}
         ]
       }''') as Map<String, dynamic>;
 
-      final result = TopicManagementResult.fromJson(json, ['token1', 'token2']);
+      final TopicManagementResult result = TopicManagementResult.fromJson(json, <String>['token1', 'token2']);
 
       expect(result.results.length, 2);
       expect(result.successCount, 2);
@@ -22,7 +22,7 @@ void main() {
     });
 
     test('parses partially failed response correctly', () {
-      final json = jsonDecode('''{
+      final Map<String, dynamic> json = jsonDecode('''{
         "results": [
           {},
           {"error": "NOT_FOUND"},
@@ -30,15 +30,15 @@ void main() {
         ]
       }''') as Map<String, dynamic>;
 
-      final result =
-          TopicManagementResult.fromJson(json, ['token1', 'token2', 'token3']);
+      final TopicManagementResult result =
+          TopicManagementResult.fromJson(json, <String>['token1', 'token2', 'token3']);
 
       expect(result.results.length, 3);
       expect(result.successCount, 1);
       expect(result.failureCount, 2);
       expect(result.allSuccessful, isFalse);
 
-      final failures = result.failedResults;
+      final List<TopicManagementTokenResult> failures = result.failedResults;
       expect(failures.length, 2);
       expect(failures[0].token, 'token2');
       expect(failures[0].error, 'NOT_FOUND');
@@ -47,8 +47,8 @@ void main() {
     });
 
     test('handles empty results', () {
-      final json = <String, dynamic>{};
-      final result = TopicManagementResult.fromJson(json, []);
+      final Map<String, dynamic> json = <String, dynamic>{};
+      final TopicManagementResult result = TopicManagementResult.fromJson(json, <String>[]);
 
       expect(result.results, isEmpty);
       expect(result.successCount, 0);

@@ -52,64 +52,6 @@ import 'package:http/http.dart' as http;
 /// until it expires (≈1 hour), then refreshed automatically. Call [dispose]
 /// when you are done with the server to close the underlying HTTP client.
 class FirebaseCloudMessagingServer {
-  // ---------------------------------------------------------------------------
-  // Constants
-  // ---------------------------------------------------------------------------
-
-  /// The base URL path for the FCM HTTP v1 API.
-  static const String _fcmApiEndpoint =
-      'https://fcm.googleapis.com/v1/projects';
-
-  /// The endpoint for the IID batch registration API (Subscribe).
-  // MOVED to FcmTopicManagement
-
-  /// The endpoint for the IID batch registration API (Unsubscribe).
-  // MOVED to FcmTopicManagement
-
-  // ---------------------------------------------------------------------------
-  // Constructor & fields
-  // ---------------------------------------------------------------------------
-
-  /// The service account credentials loaded from Firebase Console.
-  ///
-  /// This is the entire JSON map from the downloaded service-account file.
-  /// If `null`, the server expects to authenticate using Google Application
-  /// Default Credentials (ADC).
-  final Map<String, dynamic>? firebaseServiceCredentials;
-
-  /// When `true` (default), the OAuth access token is cached and reused until
-  /// it expires. Set to `false` to force a fresh token on every request.
-  final bool cacheAuth;
-
-  /// Optional logger for diagnostic output.
-  ///
-  /// Defaults to [fcmSilentLogger] which discards all messages.
-  /// Supply your own callback to integrate with your logging framework.
-  final FcmLogger logger;
-
-  /// Controls automatic retry for retryable FCM errors
-  /// (`QUOTA_EXCEEDED` and `UNAVAILABLE`).
-  ///
-  /// Defaults to [FcmRetryConfig] (3 retries, exponential back-off).
-  final FcmRetryConfig retryConfig;
-
-  /// Optional callback triggered when a token registration becomes invalid.
-  final FcmRegistrationCallback? onRegistrationChange;
-
-  /// The FCM project ID extracted from [firebaseServiceCredentials].
-  /// Cached at construction time to avoid repeated JSON parsing.
-  late final String _projectId;
-
-  /// The cached OAuth 2.0 access token.
-  AccessCredentials? _accessCredentials;
-
-  /// Shared HTTP client reused across all send operations.
-  /// Closed by [dispose].
-  final http.Client _httpClient;
-
-  /// Prevents multiple simultaneous authentication refreshes when
-  /// many requests are fired in parallel.
-  Future<void>? _authFuture;
 
   // ---------------------------------------------------------------------------
   // Constructors
@@ -139,7 +81,8 @@ class FirebaseCloudMessagingServer {
   }) : _httpClient = httpClient ?? http.Client() {
     if (firebaseServiceCredentials != null) {
       // Cache the projectId so we don't re-parse the entire JSON on every send.
-      final model = FirebaseServiceModel.fromJson(firebaseServiceCredentials!);
+      final FirebaseServiceModel model =
+          FirebaseServiceModel.fromJson(firebaseServiceCredentials!);
       _projectId = model.projectID ?? '';
       assert(
         _projectId.isNotEmpty,
@@ -228,7 +171,7 @@ class FirebaseCloudMessagingServer {
     FcmRegistrationCallback? onRegistrationChange,
     http.Client? httpClient,
   }) {
-    final file = serviceAccountFile is String
+    final File file = serviceAccountFile is String
         ? File(serviceAccountFile)
         : serviceAccountFile as File;
 
@@ -241,6 +184,64 @@ class FirebaseCloudMessagingServer {
       httpClient: httpClient,
     );
   }
+  // ---------------------------------------------------------------------------
+  // Constants
+  // ---------------------------------------------------------------------------
+
+  /// The base URL path for the FCM HTTP v1 API.
+  static const String _fcmApiEndpoint =
+      'https://fcm.googleapis.com/v1/projects';
+
+  /// The endpoint for the IID batch registration API (Subscribe).
+  // MOVED to FcmTopicManagement
+
+  /// The endpoint for the IID batch registration API (Unsubscribe).
+  // MOVED to FcmTopicManagement
+
+  // ---------------------------------------------------------------------------
+  // Constructor & fields
+  // ---------------------------------------------------------------------------
+
+  /// The service account credentials loaded from Firebase Console.
+  ///
+  /// This is the entire JSON map from the downloaded service-account file.
+  /// If `null`, the server expects to authenticate using Google Application
+  /// Default Credentials (ADC).
+  final Map<String, dynamic>? firebaseServiceCredentials;
+
+  /// When `true` (default), the OAuth access token is cached and reused until
+  /// it expires. Set to `false` to force a fresh token on every request.
+  final bool cacheAuth;
+
+  /// Optional logger for diagnostic output.
+  ///
+  /// Defaults to [fcmSilentLogger] which discards all messages.
+  /// Supply your own callback to integrate with your logging framework.
+  final FcmLogger logger;
+
+  /// Controls automatic retry for retryable FCM errors
+  /// (`QUOTA_EXCEEDED` and `UNAVAILABLE`).
+  ///
+  /// Defaults to [FcmRetryConfig] (3 retries, exponential back-off).
+  final FcmRetryConfig retryConfig;
+
+  /// Optional callback triggered when a token registration becomes invalid.
+  final FcmRegistrationCallback? onRegistrationChange;
+
+  /// The FCM project ID extracted from [firebaseServiceCredentials].
+  /// Cached at construction time to avoid repeated JSON parsing.
+  late final String _projectId;
+
+  /// The cached OAuth 2.0 access token.
+  AccessCredentials? _accessCredentials;
+
+  /// Shared HTTP client reused across all send operations.
+  /// Closed by [dispose].
+  final http.Client _httpClient;
+
+  /// Prevents multiple simultaneous authentication refreshes when
+  /// many requests are fired in parallel.
+  Future<void>? _authFuture;
 
   // ---------------------------------------------------------------------------
   // Public send API
@@ -289,19 +290,25 @@ class FirebaseCloudMessagingServer {
     logger(
         FcmLogLevel.info, 'sendToMultiple: sending to ${tokens.length} tokens');
 
-    // Fan out all requests in parallel for maximum throughput.
-    final List<Future<TokenResult>> futures = tokens.map((token) async {
-      final serverResult = await _send(
+    // Fan out all requests in parallel with Record-based intermediate results.
+    final List<Future<(String, ServerResult)>> futures =
+        tokens.map((String token) async {
+      final ServerResult serverResult = await _send(
         FirebaseSend(
           validateOnly: validateOnly,
           message: messageTemplate.copyWith(token: token),
         ),
       );
-      return TokenResult(token: token, serverResult: serverResult);
+      return (token, serverResult);
     }).toList();
 
-    final List<TokenResult> results = await Future.wait(futures);
-    final batch = BatchResult(results: results);
+    final List<(String, ServerResult)> records = await Future.wait(futures);
+    final List<TokenResult> results = records
+        .map(((String, ServerResult) r) =>
+            TokenResult(token: r.$1, serverResult: r.$2))
+        .toList();
+
+    final BatchResult batch = BatchResult(results: results);
 
     logger(
       FcmLogLevel.info,
@@ -329,8 +336,6 @@ class FirebaseCloudMessagingServer {
       FirebaseSend(
         message: message.copyWith(
           topic: topic,
-          token: null,
-          condition: null,
         ),
       ),
     );
@@ -354,8 +359,6 @@ class FirebaseCloudMessagingServer {
       FirebaseSend(
         message: message.copyWith(
           condition: condition,
-          token: null,
-          topic: null,
         ),
       ),
     );
@@ -385,8 +388,8 @@ class FirebaseCloudMessagingServer {
   Future<List<ServerResult>> sendMessages(
     List<FirebaseSend> sendObjects,
   ) async {
-    final List<ServerResult> results = [];
-    for (final sendObject in sendObjects) {
+    final List<ServerResult> results = <ServerResult>[];
+    for (final FirebaseSend sendObject in sendObjects) {
       results.add(await _send(sendObject));
     }
     return results;
@@ -403,7 +406,7 @@ class FirebaseCloudMessagingServer {
   Future<AccessCredentials> performAuth() async {
     logger(FcmLogLevel.debug, 'Requesting new OAuth access token from Google');
 
-    const List<String> scopes = [
+    const List<String> scopes = <String>[
       'https://www.googleapis.com/auth/firebase.messaging',
     ];
 
@@ -422,7 +425,7 @@ class FirebaseCloudMessagingServer {
       // clientViaApplicationDefaultCredentials creates its own AuthClient
       // wrapping a default inner HTTP client, which we then close after grabbing
       // the token, avoiding resource leaks.
-      final authClient =
+      final AutoRefreshingAuthClient authClient =
           await clientViaApplicationDefaultCredentials(scopes: scopes);
       try {
         _accessCredentials = authClient.credentials;
@@ -461,11 +464,11 @@ class FirebaseCloudMessagingServer {
     FirebaseSend sendObject, {
     required int attempt,
   }) async {
-    final url = Uri.parse(
+    final Uri url = Uri.parse(
       '$_fcmApiEndpoint/$_projectId/messages:send',
     );
 
-    final headers = {
+    final Map<String, String> headers = <String, String>{
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${_accessCredentials!.accessToken.data}',
     };
@@ -488,15 +491,11 @@ class FirebaseCloudMessagingServer {
       rethrow;
     }
 
-    final bool successful = response.statusCode == 200;
-
-    // Parse the response body for the FCM message name or error details.
-    Map<String, dynamic>? bodyMap;
-    try {
-      bodyMap = json.decode(response.body) as Map<String, dynamic>?;
-    } catch (_) {
-      // Body is not JSON — leave bodyMap null.
-    }
+    // Use pattern destructuring to handle status and body parsing.
+    final (bool successful, Map<String, dynamic>? bodyMap) = (
+      response.statusCode == 200,
+      _tryParseJson(response.body),
+    );
 
     // Extract a typed FCM error when the request was not successful.
     FcmError? fcmError;
@@ -504,14 +503,14 @@ class FirebaseCloudMessagingServer {
       fcmError = FcmError.fromResponseBody(bodyMap);
     }
 
-    final targetToken = sendObject.message?.token;
+    final String? targetToken = sendObject.message?.token;
 
     if (successful) {
-      final messageSent = successful && bodyMap != null
+      final FirebaseMessage messageSent = successful && bodyMap != null
           ? FirebaseMessage.fromJson(bodyMap)
           : const FirebaseMessage();
 
-      final result = ServerSuccess(
+      final ServerSuccess result = ServerSuccess(
         statusCode: response.statusCode,
         messageSent: messageSent,
       );
@@ -523,7 +522,7 @@ class FirebaseCloudMessagingServer {
       return result;
     }
 
-    final result = ServerFailure(
+    final ServerFailure result = ServerFailure(
       statusCode: response.statusCode,
       errorPhrase: response.reasonPhrase,
       errorBody: response.body,
@@ -545,13 +544,13 @@ class FirebaseCloudMessagingServer {
     if (fcmError != null &&
         fcmError.isRetryable &&
         attempt < retryConfig.maxRetries) {
-      final delay = retryConfig.delayForAttempt(attempt);
+      final Duration delay = retryConfig.delayForAttempt(attempt);
       logger(
         FcmLogLevel.warning,
         'Retrying in ${delay.inMilliseconds}ms '
         '(attempt ${attempt + 1}/${retryConfig.maxRetries})',
       );
-      await Future.delayed(delay);
+      await Future<void>.delayed(delay);
       // Refresh token before retry in case it expired during the wait.
       await _ensureValidToken();
       return _sendWithRetry(sendObject, attempt: attempt + 1);
@@ -653,6 +652,15 @@ class FirebaseCloudMessagingServer {
     }
   }
 
+  /// Attempts to parse response body as JSON, returning `null` on failure.
+  Map<String, dynamic>? _tryParseJson(String body) {
+    try {
+      return json.decode(body) as Map<String, dynamic>?;
+    } catch (_) {
+      return null;
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Lifecycle
   // ---------------------------------------------------------------------------
@@ -684,6 +692,15 @@ class FirebaseCloudMessagingServer {
 /// }
 /// ```
 sealed class ServerResult {
+
+  const ServerResult({
+    required this.successful,
+    required this.statusCode,
+    this.messageSent,
+    this.errorPhrase,
+    this.errorBody,
+    this.fcmError,
+  });
   /// Whether FCM accepted and will deliver the message.
   final bool successful;
 
@@ -703,15 +720,6 @@ sealed class ServerResult {
 
   /// Structured FCM error extracted from [errorBody], when available.
   final FcmError? fcmError;
-
-  const ServerResult({
-    required this.successful,
-    required this.statusCode,
-    this.messageSent,
-    this.errorPhrase,
-    this.errorBody,
-    this.fcmError,
-  });
 
   @override
   String toString() {
@@ -747,13 +755,13 @@ sealed class ServerResult {
 
 /// Represents a successful FCM send outcome.
 final class ServerSuccess extends ServerResult {
-  @override
-  FirebaseMessage get messageSent => super.messageSent!;
 
   const ServerSuccess({
     required super.statusCode,
     required FirebaseMessage messageSent,
   }) : super(successful: true, messageSent: messageSent);
+  @override
+  FirebaseMessage get messageSent => super.messageSent!;
 }
 
 /// Represents a failed FCM send outcome.

@@ -4,6 +4,22 @@ part 'firebase_service_model.g.dart';
 
 @JsonSerializable()
 final class FirebaseServiceModel {
+
+  factory FirebaseServiceModel.fromJson(Map<String, dynamic> json) =>
+      _$FirebaseServiceModelFromJson(json);
+
+  const FirebaseServiceModel({
+    this.clientX509Certurl,
+    this.type,
+    this.projectID,
+    this.privateKeyId,
+    this.privateKey,
+    this.clientEmail,
+    this.clientId,
+    this.authUri,
+    this.tokenUri,
+    this.authProviderX509CertUrl,
+  });
   @JsonKey(name: "client_x509_cert_url")
   final String? clientX509Certurl;
 
@@ -34,21 +50,5 @@ final class FirebaseServiceModel {
   @JsonKey(name: "auth_provider_x509_cert_url")
   final String? authProviderX509CertUrl;
 
-  factory FirebaseServiceModel.fromJson(Map<String, dynamic> json) =>
-      _$FirebaseServiceModelFromJson(json);
-
   Map<String, dynamic> toJson() => _$FirebaseServiceModelToJson(this);
-
-  const FirebaseServiceModel({
-    this.clientX509Certurl,
-    this.type,
-    this.projectID,
-    this.privateKeyId,
-    this.privateKey,
-    this.clientEmail,
-    this.clientId,
-    this.authUri,
-    this.tokenUri,
-    this.authProviderX509CertUrl,
-  });
 }

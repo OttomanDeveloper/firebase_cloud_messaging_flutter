@@ -43,7 +43,12 @@ enum WebpushDirection {
 /// Corresponds to the [NotificationAction] dictionary in the
 /// Web Notifications specification.
 @JsonSerializable()
-class WebpushAction {
+final class WebpushAction {
+
+  const WebpushAction({this.action, this.title, this.icon});
+
+  factory WebpushAction.fromJson(Map<String, dynamic> json) =>
+      _$WebpushActionFromJson(json);
   /// An identifier for the action. Provided to the service worker when the
   /// button is clicked.
   final String? action;
@@ -53,11 +58,6 @@ class WebpushAction {
 
   /// A URL pointing to an icon image to display alongside the action button.
   final String? icon;
-
-  const WebpushAction({this.action, this.title, this.icon});
-
-  factory WebpushAction.fromJson(Map<String, dynamic> json) =>
-      _$WebpushActionFromJson(json);
 
   Map<String, dynamic> toJson() => _$WebpushActionToJson(this);
 }
@@ -73,6 +73,27 @@ class WebpushAction {
 /// the top-level [FirebaseNotification] values for browsers.
 @JsonSerializable()
 final class FirebaseWebpushNotification {
+
+  const FirebaseWebpushNotification({
+    this.title,
+    this.body,
+    this.icon,
+    this.badge,
+    this.image,
+    this.tag,
+    this.vibrate,
+    this.requireInteraction,
+    this.silent,
+    this.actions,
+    this.dir,
+    this.lang,
+    this.renotify,
+    this.timestamp,
+    this.data,
+  });
+
+  factory FirebaseWebpushNotification.fromJson(Map<String, dynamic> json) =>
+      _$FirebaseWebpushNotificationFromJson(json);
   /// The title shown in the notification banner.
   final String? title;
 
@@ -126,27 +147,6 @@ final class FirebaseWebpushNotification {
   /// Arbitrary data payload for the notification (distinct from top-level data).
   final Map<String, dynamic>? data;
 
-  const FirebaseWebpushNotification({
-    this.title,
-    this.body,
-    this.icon,
-    this.badge,
-    this.image,
-    this.tag,
-    this.vibrate,
-    this.requireInteraction,
-    this.silent,
-    this.actions,
-    this.dir,
-    this.lang,
-    this.renotify,
-    this.timestamp,
-    this.data,
-  });
-
-  factory FirebaseWebpushNotification.fromJson(Map<String, dynamic> json) =>
-      _$FirebaseWebpushNotificationFromJson(json);
-
   Map<String, dynamic> toJson() => _$FirebaseWebpushNotificationToJson(this);
 }
 
@@ -156,7 +156,12 @@ final class FirebaseWebpushNotification {
 
 /// FCM-specific options that apply on top of the webpush delivery channel.
 @JsonSerializable()
-class WebpushFcmOptions {
+final class WebpushFcmOptions {
+
+  const WebpushFcmOptions({this.link, this.analyticsLabel});
+
+  factory WebpushFcmOptions.fromJson(Map<String, dynamic> json) =>
+      _$WebpushFcmOptionsFromJson(json);
   /// The link to open when the user clicks the notification.
   ///
   /// Must be an HTTPS URL. If not set, the app's manifest start URL is used.
@@ -165,11 +170,6 @@ class WebpushFcmOptions {
   /// A label for analytics event tracking, associated with this message.
   @JsonKey(name: 'analytics_label')
   final String? analyticsLabel;
-
-  const WebpushFcmOptions({this.link, this.analyticsLabel});
-
-  factory WebpushFcmOptions.fromJson(Map<String, dynamic> json) =>
-      _$WebpushFcmOptionsFromJson(json);
 
   Map<String, dynamic> toJson() => _$WebpushFcmOptionsToJson(this);
 }

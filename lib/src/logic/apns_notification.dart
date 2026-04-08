@@ -51,7 +51,20 @@ enum InterruptionLevel {
 /// You can use this instead of flat strings when you need subtitle support or
 /// APS localisation keys.
 @JsonSerializable()
-class ApnsAlert {
+final class ApnsAlert {
+
+  const ApnsAlert({
+    this.title,
+    this.titleLocKey,
+    this.titleLocArgs,
+    this.subtitle,
+    this.body,
+    this.locKey,
+    this.locArgs,
+  });
+
+  factory ApnsAlert.fromJson(Map<String, dynamic> json) =>
+      _$ApnsAlertFromJson(json);
   /// The alert title shown in bold at the top of the notification banner.
   final String? title;
 
@@ -78,19 +91,6 @@ class ApnsAlert {
   @JsonKey(name: 'loc-args')
   final List<String>? locArgs;
 
-  const ApnsAlert({
-    this.title,
-    this.titleLocKey,
-    this.titleLocArgs,
-    this.subtitle,
-    this.body,
-    this.locKey,
-    this.locArgs,
-  });
-
-  factory ApnsAlert.fromJson(Map<String, dynamic> json) =>
-      _$ApnsAlertFromJson(json);
-
   Map<String, dynamic> toJson() => _$ApnsAlertToJson(this);
 }
 
@@ -105,6 +105,24 @@ class ApnsAlert {
 /// dictionary reference, see Apple's UserNotifications documentation.
 @JsonSerializable()
 final class FirebaseApnsNotification {
+
+  const FirebaseApnsNotification({
+    this.alert,
+    this.title,
+    this.body,
+    this.sound,
+    this.badge,
+    this.category,
+    this.threadId,
+    this.contentAvailable,
+    this.mutableContent,
+    this.targetContentId,
+    this.interruptionLevel,
+    this.relevanceScore,
+  });
+
+  factory FirebaseApnsNotification.fromJson(Map<String, dynamic> json) =>
+      _$FirebaseApnsNotificationFromJson(json);
   /// Structured visual alert object.
   ///
   /// Use this for subtitle support or localisation. If you only need
@@ -158,24 +176,6 @@ final class FirebaseApnsNotification {
   @JsonKey(name: 'relevance-score')
   final double? relevanceScore;
 
-  const FirebaseApnsNotification({
-    this.alert,
-    this.title,
-    this.body,
-    this.sound,
-    this.badge,
-    this.category,
-    this.threadId,
-    this.contentAvailable,
-    this.mutableContent,
-    this.targetContentId,
-    this.interruptionLevel,
-    this.relevanceScore,
-  });
-
-  factory FirebaseApnsNotification.fromJson(Map<String, dynamic> json) =>
-      _$FirebaseApnsNotificationFromJson(json);
-
   Map<String, dynamic> toJson() => _$FirebaseApnsNotificationToJson(this);
 }
 
@@ -185,7 +185,12 @@ final class FirebaseApnsNotification {
 
 /// FCM-specific options that overlay on top of the APNs delivery channel.
 @JsonSerializable()
-class ApnsFcmOptions {
+final class ApnsFcmOptions {
+
+  const ApnsFcmOptions({this.analyticsLabel, this.image});
+
+  factory ApnsFcmOptions.fromJson(Map<String, dynamic> json) =>
+      _$ApnsFcmOptionsFromJson(json);
   /// A label for analytics event tracking, associated with this notification.
   ///
   /// The label may only contain ASCII letters, numbers, and underscores.
@@ -196,11 +201,6 @@ class ApnsFcmOptions {
   ///
   /// On iOS this shows as the notification attachment thumbnail.
   final String? image;
-
-  const ApnsFcmOptions({this.analyticsLabel, this.image});
-
-  factory ApnsFcmOptions.fromJson(Map<String, dynamic> json) =>
-      _$ApnsFcmOptionsFromJson(json);
 
   Map<String, dynamic> toJson() => _$ApnsFcmOptionsToJson(this);
 }

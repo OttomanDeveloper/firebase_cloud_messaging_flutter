@@ -9,6 +9,11 @@ part 'fcm_options.g.dart';
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#fcmoptions
 @JsonSerializable()
 final class FirebaseFcmOptions {
+
+  const FirebaseFcmOptions({this.analyticsLabel, this.image});
+
+  factory FirebaseFcmOptions.fromJson(Map<String, dynamic> json) =>
+      _$FirebaseFcmOptionsFromJson(json);
   /// A label associated with the message for use in Firebase Analytics.
   ///
   /// The label may only contain ASCII letters, numbers, and underscores;
@@ -21,11 +26,6 @@ final class FirebaseFcmOptions {
   /// This overrides the image set in [FirebaseNotification.image] and applies
   /// across all platforms that support notification images.
   final String? image;
-
-  const FirebaseFcmOptions({this.analyticsLabel, this.image});
-
-  factory FirebaseFcmOptions.fromJson(Map<String, dynamic> json) =>
-      _$FirebaseFcmOptionsFromJson(json);
 
   Map<String, dynamic> toJson() => _$FirebaseFcmOptionsToJson(this);
 }

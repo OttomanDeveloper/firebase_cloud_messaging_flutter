@@ -3,6 +3,7 @@
 [![pub package](https://img.shields.io/pub/v/firebase_cloud_messaging_flutter.svg)](https://pub.dev/packages/firebase_cloud_messaging_flutter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+Send Firebase Cloud Messages (FCM) and manage topics directly from your **Dart or Flutter** application. This package provides a pure-Dart, type-safe wrapper around the [FCM HTTP v1 REST API](https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages), removing the need for an intermediate server or the complex Firebase Admin SDK in many scenarios.
 
 ---
 

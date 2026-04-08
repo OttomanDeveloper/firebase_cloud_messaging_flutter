@@ -168,28 +168,28 @@ class FirebaseAndroidNotification {
 /// priority deciding *when* the message is delivered.
 enum NotificationPriority {
   /// Unspecified priority — let the system decide.
-  // ignore: constant_identifier_names
-  PRIORITY_UNSPECIFIED,
+  @JsonValue('PRIORITY_UNSPECIFIED')
+  priorityUnspecified,
 
   /// Lowest priority — may not be shown to the user at all.
-  // ignore: constant_identifier_names
-  PRIORITY_MIN,
+  @JsonValue('PRIORITY_MIN')
+  priorityMin,
 
   /// Low priority — shown in shade only, no sound or vibration.
-  // ignore: constant_identifier_names
-  PRIORITY_LOW,
+  @JsonValue('PRIORITY_LOW')
+  priorityLow,
 
   /// Default priority.
-  // ignore: constant_identifier_names
-  PRIORITY_DEFAULT,
+  @JsonValue('PRIORITY_DEFAULT')
+  priorityDefault,
 
   /// High priority — may make a sound.
-  // ignore: constant_identifier_names
-  PRIORITY_HIGH,
+  @JsonValue('PRIORITY_HIGH')
+  priorityHigh,
 
   /// Highest priority — full-screen intent for incoming calls.
-  // ignore: constant_identifier_names
-  PRIORITY_MAX,
+  @JsonValue('PRIORITY_MAX')
+  priorityMax,
 }
 
 // ---------------------------------------------------------------------------
@@ -199,20 +199,20 @@ enum NotificationPriority {
 /// Controls how much of the notification is visible on the lock screen.
 enum Visibility {
   /// Default visibility — the system decides based on user settings.
-  // ignore: constant_identifier_names
-  VISIBILITY_UNSPECIFIED,
+  @JsonValue('VISIBILITY_UNSPECIFIED')
+  visibilityUnspecified,
 
   /// Show only the notification's icon on the lock screen.
-  // ignore: constant_identifier_names
-  PRIVATE,
+  @JsonValue('PRIVATE')
+  private,
 
   /// Show the full notification on the lock screen.
-  // ignore: constant_identifier_names
-  PUBLIC,
+  @JsonValue('PUBLIC')
+  public,
 
   /// Hide the notification completely on the lock screen.
-  // ignore: constant_identifier_names
-  SECRET,
+  @JsonValue('SECRET')
+  secret,
 }
 
 // ---------------------------------------------------------------------------

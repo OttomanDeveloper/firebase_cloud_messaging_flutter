@@ -75,7 +75,7 @@ void main() async {
             icon: 'ic_notification',
             color: '#FF6D00',
             channelID: 'default_channel',
-            notificationPriority: NotificationPriority.PRIORITY_HIGH,
+            notificationPriority: NotificationPriority.priorityHigh,
             proxy: AndroidNotificationProxy.allow,
           ),
         ),

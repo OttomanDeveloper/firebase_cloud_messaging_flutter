@@ -97,19 +97,19 @@ const _$AndroidNotificationProxyEnumMap = {
 };
 
 const _$VisibilityEnumMap = {
-  Visibility.VISIBILITY_UNSPECIFIED: 'VISIBILITY_UNSPECIFIED',
-  Visibility.PRIVATE: 'PRIVATE',
-  Visibility.PUBLIC: 'PUBLIC',
-  Visibility.SECRET: 'SECRET',
+  Visibility.visibilityUnspecified: 'VISIBILITY_UNSPECIFIED',
+  Visibility.private: 'PRIVATE',
+  Visibility.public: 'PUBLIC',
+  Visibility.secret: 'SECRET',
 };
 
 const _$NotificationPriorityEnumMap = {
-  NotificationPriority.PRIORITY_UNSPECIFIED: 'PRIORITY_UNSPECIFIED',
-  NotificationPriority.PRIORITY_MIN: 'PRIORITY_MIN',
-  NotificationPriority.PRIORITY_LOW: 'PRIORITY_LOW',
-  NotificationPriority.PRIORITY_DEFAULT: 'PRIORITY_DEFAULT',
-  NotificationPriority.PRIORITY_HIGH: 'PRIORITY_HIGH',
-  NotificationPriority.PRIORITY_MAX: 'PRIORITY_MAX',
+  NotificationPriority.priorityUnspecified: 'PRIORITY_UNSPECIFIED',
+  NotificationPriority.priorityMin: 'PRIORITY_MIN',
+  NotificationPriority.priorityLow: 'PRIORITY_LOW',
+  NotificationPriority.priorityDefault: 'PRIORITY_DEFAULT',
+  NotificationPriority.priorityHigh: 'PRIORITY_HIGH',
+  NotificationPriority.priorityMax: 'PRIORITY_MAX',
 };
 
 LightSettings _$LightSettingsFromJson(Map<String, dynamic> json) =>

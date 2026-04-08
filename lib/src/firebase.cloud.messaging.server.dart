@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 /// A server-side client for sending Firebase Cloud Messages via the
 /// FCM HTTP v1 API directly from Dart or Flutter.
 ///
+/// The default base endpoint used is [fcmApiEndpoint].
+///
 /// ## Quick start
 /// ```dart
 /// import 'dart:convert';
@@ -49,6 +51,13 @@ import 'package:http/http.dart' as http;
 /// until it expires (≈1 hour), then refreshed automatically. Call [dispose]
 /// when you are done with the server to close the underlying HTTP client.
 class FirebaseCloudMessagingServer {
+  // ---------------------------------------------------------------------------
+  // Constants
+  // ---------------------------------------------------------------------------
+
+  /// The base URL path for the FCM HTTP v1 API.
+  static const String fcmApiEndpoint = 'https://fcm.googleapis.com/v1/projects';
+
   // ---------------------------------------------------------------------------
   // Constructor & fields
   // ---------------------------------------------------------------------------
@@ -358,7 +367,7 @@ class FirebaseCloudMessagingServer {
     required int attempt,
   }) async {
     final url = Uri.parse(
-      'https://fcm.googleapis.com/v1/projects/$_projectId/messages:send',
+      '$fcmApiEndpoint/$_projectId/messages:send',
     );
 
     final headers = {

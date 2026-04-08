@@ -1,12 +1,12 @@
-# Contributing to firebase_cloud_messaging_flutter
+# Contributing to firebase_cloud_messaging_dart
 
-First off, thank you for considering contributing to `firebase_cloud_messaging_flutter`! It's people like you that make the open-source community such an amazing place to learn, inspire, and create.
+First off, thank you for considering contributing to `firebase_cloud_messaging_dart`! It's people like you that make the open-source community such an amazing place to learn, inspire, and create.
 
 All types of contributions are encouraged and valued. See the [Table of Contents](#table-of-contents) for different ways to help and details about how this project handles them. Please make sure to read the relevant section before making your contribution. It will make it a lot easier for us maintainers and smooth out the experience for all involved.
 
 ## Table of Contents
 
-- [Contributing to firebase\_cloud\_messaging\_flutter](#contributing-to-firebase_cloud_messaging_flutter)
+- [Contributing to firebase_cloud_messaging_dart](#contributing-to-firebase_cloud_messaging_dart)
   - [Table of Contents](#table-of-contents)
   - [Code of Conduct](#code-of-conduct)
   - [How Can I Contribute?](#how-can-i-contribute)
@@ -74,7 +74,7 @@ flutter test
 
 ## Architecture Overview
 
-- **`lib/firebase_cloud_messaging_flutter.dart`**: The public "barrel" file. Don't add logic here; only exports.
+- **`lib/firebase_cloud_messaging_dart.dart`**: The public "barrel" file. Don't add logic here; only exports.
 - **`lib/src/firebase_cloud_messaging_server.dart`**: The main service class. Handles authentication and API orchestration.
 - **`lib/src/logic/`**: Contains all data models and sub-logic (Android, APNs, WebPush configurations).
 - **`example/`**: A working demonstration of the package.

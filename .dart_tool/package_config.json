@@ -416,10 +416,10 @@
       "languageVersion": "3.4"
     },
     {
-      "name": "firebase_cloud_messaging_flutter",
+      "name": "firebase_cloud_messaging_dart",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.0"
     }
   ],
   "generator": "pub",

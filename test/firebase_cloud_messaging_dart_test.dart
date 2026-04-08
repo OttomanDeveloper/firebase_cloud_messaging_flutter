@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
+import 'package:firebase_cloud_messaging_dart/firebase_cloud_messaging_dart.dart';
 import 'package:test/test.dart';
 
-/// Unit tests for firebase_cloud_messaging_flutter v2.1.0
+/// Unit tests for firebase_cloud_messaging_dart v2.1.0
 
 ///
 /// Run with:

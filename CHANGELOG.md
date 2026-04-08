@@ -1,3 +1,13 @@
+## 3.0.0
+
+**Major Breaking Change**: Renamed package from `firebase_cloud_messaging_flutter` to `firebase_cloud_messaging_dart`.
+
+This update accurately reflects the library's status as a pure Dart package, suitable for both Flutter and server-side environments like **Serverpod**.
+
+* **Breaking**: All imports must now use `package:firebase_cloud_messaging_dart/`.
+* **Breaking**: Main entry point renamed to `firebase_cloud_messaging_dart.dart`.
+* **Branding**: Updated documentation and examples to emphasize "Pure Dart" and "Server-Ready" identity.
+
 ## 2.1.0
 
 This release elevates the package to a production-hardened server-side SDK by introducing native ambient credentials and dedicated topic management.

@@ -5,11 +5,11 @@
 ///
 /// ## Getting started
 /// ```dart
-/// import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
+/// import 'package:firebase_cloud_messaging_dart/firebase_cloud_messaging_dart.dart';
 /// ```
 ///
 /// See [FirebaseCloudMessagingServer] for the primary entry point.
-library firebase_cloud_messaging_flutter;
+library firebase_cloud_messaging_dart;
 
 // ---------------------------------------------------------------------------
 // Server entry point & result types

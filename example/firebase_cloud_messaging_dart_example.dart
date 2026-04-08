@@ -1,6 +1,6 @@
-import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
+import 'package:firebase_cloud_messaging_dart/firebase_cloud_messaging_dart.dart';
 
-/// Example file demonstrating the firebase_cloud_messaging_flutter v2.1.0 API.
+/// Example file demonstrating the firebase_cloud_messaging_dart v2.1.0 API.
 ///
 /// To run this example, replace the placeholder values with your actual
 /// Firebase service account credentials and device tokens.

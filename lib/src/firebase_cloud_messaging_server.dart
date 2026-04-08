@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
-import 'package:firebase_cloud_messaging_flutter/src/logic/fcm_topic_management.dart';
+import 'package:firebase_cloud_messaging_dart/firebase_cloud_messaging_dart.dart';
+import 'package:firebase_cloud_messaging_dart/src/logic/fcm_topic_management.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,7 +15,7 @@ import 'package:http/http.dart' as http;
 /// ```dart
 /// import 'dart:convert';
 /// import 'dart:io';
-/// import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
+/// import 'package:firebase_cloud_messaging_dart/firebase_cloud_messaging_dart.dart';
 ///
 /// void main() async {
 ///   final credentials = jsonDecode(

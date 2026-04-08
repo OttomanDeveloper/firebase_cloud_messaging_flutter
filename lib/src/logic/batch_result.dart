@@ -1,4 +1,4 @@
-import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
+import 'package:firebase_cloud_messaging_dart/firebase_cloud_messaging_dart.dart';
 
 /// Result types returned by [FirebaseCloudMessagingServer.sendToMultiple].
 ///

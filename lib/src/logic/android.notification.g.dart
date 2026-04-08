@@ -44,38 +44,57 @@ FirebaseAndroidNotification _$FirebaseAndroidNotificationFromJson(
           ? null
           : LightSettings.fromJson(
               json['light_settings'] as Map<String, dynamic>),
+      proxy:
+          $enumDecodeNullable(_$AndroidNotificationProxyEnumMap, json['proxy']),
     );
 
 Map<String, dynamic> _$FirebaseAndroidNotificationToJson(
         FirebaseAndroidNotification instance) =>
     <String, dynamic>{
-      'title': instance.title,
-      'body': instance.body,
-      'icon': instance.icon,
-      'color': instance.color,
-      'sound': instance.sound,
-      'tag': instance.tag,
-      'click_action': instance.clickAction,
-      'body_loc_key': instance.bodyLocKey,
-      'body_loc_args': instance.bodyLocArgs,
-      'title_loc_key': instance.titleLocKey,
-      'title_loc_args': instance.titleLocArgs,
-      'channel_id': instance.channelID,
-      'ticker': instance.ticker,
-      'sticky': instance.sticky,
-      'event_time': instance.eventTime,
-      'local_only': instance.localOnly,
-      'notification_priority':
-          _$NotificationPriorityEnumMap[instance.notificationPriority],
-      'default_sound': instance.defaultSound,
-      'default_vibrate_timings': instance.defaultVibrateTimings,
-      'default_light_settings': instance.defaultLightSettings,
-      'vibrate_timings': instance.vibrateTimings,
-      'visibility': _$VisibilityEnumMap[instance.visibility],
-      'notification_count': instance.notificationCount,
-      'light_settings': instance.lightSettings,
-      'image': instance.image,
+      if (instance.title != null) 'title': instance.title,
+      if (instance.body != null) 'body': instance.body,
+      if (instance.icon != null) 'icon': instance.icon,
+      if (instance.color != null) 'color': instance.color,
+      if (instance.sound != null) 'sound': instance.sound,
+      if (instance.tag != null) 'tag': instance.tag,
+      if (instance.clickAction != null) 'click_action': instance.clickAction,
+      if (instance.bodyLocKey != null) 'body_loc_key': instance.bodyLocKey,
+      if (instance.bodyLocArgs != null) 'body_loc_args': instance.bodyLocArgs,
+      if (instance.titleLocKey != null) 'title_loc_key': instance.titleLocKey,
+      if (instance.titleLocArgs != null)
+        'title_loc_args': instance.titleLocArgs,
+      if (instance.channelID != null) 'channel_id': instance.channelID,
+      if (instance.ticker != null) 'ticker': instance.ticker,
+      if (instance.sticky != null) 'sticky': instance.sticky,
+      if (instance.eventTime != null) 'event_time': instance.eventTime,
+      if (instance.localOnly != null) 'local_only': instance.localOnly,
+      if (instance.notificationPriority != null)
+        'notification_priority':
+            _$NotificationPriorityEnumMap[instance.notificationPriority],
+      if (instance.defaultSound != null) 'default_sound': instance.defaultSound,
+      if (instance.defaultVibrateTimings != null)
+        'default_vibrate_timings': instance.defaultVibrateTimings,
+      if (instance.defaultLightSettings != null)
+        'default_light_settings': instance.defaultLightSettings,
+      if (instance.vibrateTimings != null)
+        'vibrate_timings': instance.vibrateTimings,
+      if (instance.visibility != null)
+        'visibility': _$VisibilityEnumMap[instance.visibility],
+      if (instance.notificationCount != null)
+        'notification_count': instance.notificationCount,
+      if (instance.lightSettings != null)
+        'light_settings': instance.lightSettings?.toJson(),
+      if (instance.image != null) 'image': instance.image,
+      if (instance.proxy != null)
+        'proxy': _$AndroidNotificationProxyEnumMap[instance.proxy],
     };
+
+const _$AndroidNotificationProxyEnumMap = {
+  AndroidNotificationProxy.proxyUnspecified: 'PROXY_UNSPECIFIED',
+  AndroidNotificationProxy.allow: 'ALLOW',
+  AndroidNotificationProxy.deny: 'DENY',
+  AndroidNotificationProxy.ifPriorityDegraded: 'IF_PRIORITY_DEGRADED',
+};
 
 const _$VisibilityEnumMap = {
   Visibility.VISIBILITY_UNSPECIFIED: 'VISIBILITY_UNSPECIFIED',

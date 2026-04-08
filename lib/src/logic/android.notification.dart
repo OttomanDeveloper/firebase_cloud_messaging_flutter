@@ -2,103 +2,126 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'android.notification.g.dart';
 
+/// Android-specific notification content for FCM messages.
+///
+/// These fields control how the notification is displayed on Android devices.
+/// Many fields require specific API levels; see the FCM v1 reference for details.
+///
+/// FCM Reference:
+/// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#androidnotification
 @JsonSerializable()
 class FirebaseAndroidNotification {
+  /// The notification's title. Overrides [FirebaseNotification.title].
   final String? title;
+
+  /// The notification's body text. Overrides [FirebaseNotification.body].
   final String? body;
 
-  ///The notification's icon. Sets the notification icon to myicon for drawable resource myicon. If you don't send this key in the request, FCM displays the launcher icon specified in your app manifest.
+  /// Drawable resource name for the notification icon (without extension).
+  ///
+  /// Defaults to the launcher icon if not set.
   final String? icon;
 
-  ///The notification's icon color, expressed in #rrggbb format.
+  /// Icon tint colour in `#rrggbb` hex format.
   final String? color;
 
-  ///The sound to play when the device receives the notification. Supports "default" or the filename of a sound resource bundled in the app. Sound files must reside in /res/raw/.
+  /// Sound to play when the notification arrives.
+  ///
+  /// Use `"default"` or a filename from `res/raw/` (without extension).
   final String? sound;
 
-  ///Identifier used to replace existing notifications in the notification drawer. If not specified, each request creates a new notification. If specified and a notification with the same tag is already being shown, the new notification replaces the existing one in the notification drawer.
+  /// Tag for replacing existing notifications with the same tag value.
   final String? tag;
 
-  ///The action associated with a user click on the notification. If specified, an activity with a matching intent filter is launched when a user clicks on the notification.
-  @JsonKey(name: "click_action")
+  /// Intent filter action triggered when the user taps the notification.
+  @JsonKey(name: 'click_action')
   final String? clickAction;
 
-  ///The key to the body string in the app's string resources to use to localize the body text to the user's current localization. See String Resources for more information.
-  @JsonKey(name: "body_loc_key")
+  /// Localisation key for the notification body string.
+  @JsonKey(name: 'body_loc_key')
   final String? bodyLocKey;
 
-  ///Variable string values to be used in place of the format specifiers in body_loc_key to use to localize the body text to the user's current localization. See Formatting and Styling for more information.
-  @JsonKey(name: "body_loc_args")
+  /// Arguments to substitute into the [bodyLocKey] format string.
+  @JsonKey(name: 'body_loc_args')
   final List<String>? bodyLocArgs;
 
-  ///The key to the title string in the app's string resources to use to localize the title text to the user's current localization. See String Resources for more information.
-  @JsonKey(name: "title_loc_key")
+  /// Localisation key for the notification title string.
+  @JsonKey(name: 'title_loc_key')
   final String? titleLocKey;
 
-  ///Variable string values to be used in place of the format specifiers in title_loc_key to use to localize the title text to the user's current localization. See Formatting and Styling for more information.
-  @JsonKey(name: "title_loc_args")
+  /// Arguments to substitute into the [titleLocKey] format string.
+  @JsonKey(name: 'title_loc_args')
   final List<String>? titleLocArgs;
 
-  ///The notification's channel id (new in Android O). The app must create a channel with this channel ID before any notification with this channel ID is received. If you don't send this channel ID in the request, or if the channel ID provided has not yet been created by the app, FCM uses the channel ID specified in the app manifest.
-  @JsonKey(name: "channel_id")
+  /// Android notification channel ID (required on Android 8+).
+  ///
+  /// The app must create a channel with this ID before any notification using
+  /// it is received.
+  @JsonKey(name: 'channel_id')
   final String? channelID;
 
-  ///Sets the "ticker" text, which is sent to accessibility services. Prior to API level 21 (Lollipop), sets the text that is displayed in the status bar when the notification first arrives.
+  /// Text delivered to accessibility services and shown in the status bar
+  /// on pre-Lollipop devices.
   final String? ticker;
 
-  ///When set to false or unset, the notification is automatically dismissed when the user clicks it in the panel. When set to true, the notification persists even when the user clicks it.
+  /// When `true`, the notification persists in the drawer after the user taps it.
   final bool? sticky;
 
-  ///Set the time that the event in the notification occurred. Notifications in the panel are sorted by this time. A point in time is represented using protobuf.Timestamp.
-  //
-  //A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".
-  @JsonKey(name: "event_time")
+  /// The time at which the event described by this notification occurred.
+  ///
+  /// RFC 3339 UTC "Zulu" format: e.g. `"2014-10-02T15:01:23.045123456Z"`.
+  @JsonKey(name: 'event_time')
   final String? eventTime;
 
-  ///Set whether or not this notification is relevant only to the current device. Some notifications can be bridged to other devices for remote display, such as a Wear OS watch. This hint can be set to recommend this notification not be bridged. See Wear OS guides
-  @JsonKey(name: "local_only")
+  /// When `true`, hints that this notification should not be bridged to
+  /// paired Wear OS devices.
+  @JsonKey(name: 'local_only')
   final bool? localOnly;
 
-  ///Set the relative priority for this notification. Priority is an indication of how much of the user's attention should be consumed by this notification. Low-priority notifications may be hidden from the user in certain situations, while the user might be interrupted for a higher-priority notification. The effect of setting the same priorities may differ slightly on different platforms. Note this priority differs from AndroidMessagePriority. This priority is processed by the client after the message has been delivered, whereas AndroidMessagePriority is an FCM concept that controls when the message is delivered.
-  @JsonKey(name: "notification_priority")
+  /// Display priority for the notification once delivered.
+  ///
+  /// This is a post-delivery concept and is independent of
+  /// [AndroidMessagePriority] which controls FCM transport priority.
+  @JsonKey(name: 'notification_priority')
   final NotificationPriority? notificationPriority;
 
-  ///If set to true, use the Android framework's default sound for the notification. Default values are specified in config.xml.
-  @JsonKey(name: "default_sound")
+  /// Use the Android framework's default sound.
+  @JsonKey(name: 'default_sound')
   final bool? defaultSound;
 
-  ///If set to true, use the Android framework's default vibrate pattern for the notification. Default values are specified in config.xml. If default_vibrate_timings is set to true and vibrate_timings is also set, the default value is used instead of the user-specified vibrate_timings.
-  @JsonKey(name: "default_vibrate_timings")
+  /// Use the Android framework's default vibrate pattern.
+  @JsonKey(name: 'default_vibrate_timings')
   final bool? defaultVibrateTimings;
 
-  ///If set to true, use the Android framework's default LED light settings for the notification. Default values are specified in config.xml. If default_light_settings is set to true and light_settings is also set, the user-specified light_settings is used instead of the default value.
-  @JsonKey(name: "default_light_settings")
+  /// Use the Android framework's default LED light settings.
+  @JsonKey(name: 'default_light_settings')
   final bool? defaultLightSettings;
 
-  ///Set the vibration pattern to use. Pass in an array of protobuf.Duration to turn on or off the vibrator. The first value indicates the Duration to wait before turning the vibrator on. The next value indicates the Duration to keep the vibrator on. Subsequent values alternate between Duration to turn the vibrator off and to turn the vibrator on. If vibrate_timings is set and default_vibrate_timings is set to true, the default value is used instead of the user-specified vibrate_timings.
-  //
-  //A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
-  @JsonKey(name: "vibrate_timings")
+  /// Custom vibration pattern — alternating on/off durations as protobuf
+  /// Duration strings (e.g., `["0s", "0.5s", "0.5s"]`).
+  @JsonKey(name: 'vibrate_timings')
   final List<String>? vibrateTimings;
 
-  ///Set the Notification.visibility of the notification.
+  /// Lock-screen visibility of the notification.
   final Visibility? visibility;
 
-  ///Sets the number of items this notification represents. May be displayed as a badge count for launchers that support badging.See Notification Badge. For example, this might be useful if you're using just one notification to represent multiple new messages but you want the count here to represent the number of total new messages. If zero or unspecified, systems that support badging use the default, which is to increment a number displayed on the long-press menu each time a new notification arrives.
-  @JsonKey(name: "notification_count")
+  /// Badge count for launcher icons that support badging.
+  @JsonKey(name: 'notification_count')
   final int? notificationCount;
 
-  ///Settings to control the notification's LED blinking rate and color if LED is available on the device. The total blinking time is controlled by the OS.
-  @JsonKey(name: "light_settings")
+  /// LED blinking rate and colour settings.
+  @JsonKey(name: 'light_settings')
   final LightSettings? lightSettings;
 
-  ///Contains the URL of an image that is going to be displayed in a notification. If present, it will override google.firebase.fcm.v1.Notification.image.
+  /// URL of an image to display inside the notification.
+  /// Overrides [FirebaseNotification.image].
   final String? image;
 
-  factory FirebaseAndroidNotification.fromJson(Map<String, dynamic> json) =>
-      _$FirebaseAndroidNotificationFromJson(json);
-
-  Map<String, dynamic> toJson() => _$FirebaseAndroidNotificationToJson(this);
+  /// Controls whether the notification is proxied through a trusted application
+  /// (e.g., the Android Wear companion app).
+  ///
+  /// Available on Android 12+ when the app targets API 31+.
+  final AndroidNotificationProxy? proxy;
 
   const FirebaseAndroidNotification({
     this.title,
@@ -126,26 +149,113 @@ class FirebaseAndroidNotification {
     this.vibrateTimings,
     this.notificationCount,
     this.lightSettings,
+    this.proxy,
   });
+
+  factory FirebaseAndroidNotification.fromJson(Map<String, dynamic> json) =>
+      _$FirebaseAndroidNotificationFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FirebaseAndroidNotificationToJson(this);
 }
 
+// ---------------------------------------------------------------------------
+// NotificationPriority enum
+// ---------------------------------------------------------------------------
+
+/// Display priority of a notification on the device (client-side concept).
+///
+/// This is distinct from [AndroidMessagePriority] which is the FCM transport
+/// priority deciding *when* the message is delivered.
 enum NotificationPriority {
+  /// Unspecified priority — let the system decide.
+  // ignore: constant_identifier_names
   PRIORITY_UNSPECIFIED,
+
+  /// Lowest priority — may not be shown to the user at all.
+  // ignore: constant_identifier_names
   PRIORITY_MIN,
+
+  /// Low priority — shown in shade only, no sound or vibration.
+  // ignore: constant_identifier_names
   PRIORITY_LOW,
+
+  /// Default priority.
+  // ignore: constant_identifier_names
   PRIORITY_DEFAULT,
+
+  /// High priority — may make a sound.
+  // ignore: constant_identifier_names
   PRIORITY_HIGH,
-  PRIORITY_MAX
+
+  /// Highest priority — full-screen intent for incoming calls.
+  // ignore: constant_identifier_names
+  PRIORITY_MAX,
 }
 
-enum Visibility { VISIBILITY_UNSPECIFIED, PRIVATE, PUBLIC, SECRET }
+// ---------------------------------------------------------------------------
+// Visibility enum
+// ---------------------------------------------------------------------------
 
+/// Controls how much of the notification is visible on the lock screen.
+enum Visibility {
+  /// Default visibility — the system decides based on user settings.
+  // ignore: constant_identifier_names
+  VISIBILITY_UNSPECIFIED,
+
+  /// Show only the notification's icon on the lock screen.
+  // ignore: constant_identifier_names
+  PRIVATE,
+
+  /// Show the full notification on the lock screen.
+  // ignore: constant_identifier_names
+  PUBLIC,
+
+  /// Hide the notification completely on the lock screen.
+  // ignore: constant_identifier_names
+  SECRET,
+}
+
+// ---------------------------------------------------------------------------
+// AndroidNotificationProxy enum (NEW in this upgrade)
+// ---------------------------------------------------------------------------
+
+/// Controls proxy behaviour for notifications through trusted applications.
+///
+/// Requires Android 12+ (API level 31+) and targeting API 31+.
+enum AndroidNotificationProxy {
+  /// Proxy state is not specified — use the system default.
+  @JsonValue('PROXY_UNSPECIFIED')
+  proxyUnspecified,
+
+  /// Always proxy this notification.
+  @JsonValue('ALLOW')
+  allow,
+
+  /// Never proxy this notification.
+  @JsonValue('DENY')
+  deny,
+
+  /// Proxy if the delivery priority was degraded by the system.
+  @JsonValue('IF_PRIORITY_DEGRADED')
+  ifPriorityDegraded,
+}
+
+// ---------------------------------------------------------------------------
+// LightSettings
+// ---------------------------------------------------------------------------
+
+/// Controls the notification LED blinking rate and colour.
 @JsonSerializable()
 class LightSettings {
+  /// The LED colour as an RGBA value.
   final FCMColor? color;
-  @JsonKey(name: "light_on_duration")
+
+  /// Duration to keep the LED on (protobuf Duration string, e.g., `"0.5s"`).
+  @JsonKey(name: 'light_on_duration')
   final String? lightOnDuration;
-  @JsonKey(name: "light_off_duration")
+
+  /// Duration to keep the LED off (protobuf Duration string, e.g., `"0.5s"`).
+  @JsonKey(name: 'light_off_duration')
   final String? lightOffDuration;
 
   const LightSettings({
@@ -160,11 +270,25 @@ class LightSettings {
   Map<String, dynamic> toJson() => _$LightSettingsToJson(this);
 }
 
+// ---------------------------------------------------------------------------
+// FCMColor
+// ---------------------------------------------------------------------------
+
+/// An RGBA colour value used in FCM notification models.
+///
+/// Each component is a value in the range 0–255.
 @JsonSerializable()
 class FCMColor {
+  /// Red component (0–255).
   final int? red;
+
+  /// Green component (0–255).
   final int? green;
+
+  /// Blue component (0–255).
   final int? blue;
+
+  /// Alpha (opacity) component (0–255). `255` is fully opaque.
   final int? alpha;
 
   const FCMColor({this.red, this.green, this.blue, this.alpha});

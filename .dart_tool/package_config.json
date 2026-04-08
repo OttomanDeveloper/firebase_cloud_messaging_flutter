@@ -57,9 +57,9 @@
     },
     {
       "name": "build_runner",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/build_runner-2.4.6",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/build_runner-2.4.13",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.5"
     },
     {
       "name": "build_runner_core",
@@ -93,9 +93,9 @@
     },
     {
       "name": "collection",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/collection-1.17.2",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/collection-1.19.1",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.4"
     },
     {
       "name": "convert",
@@ -117,9 +117,9 @@
     },
     {
       "name": "dart_internal",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/dart_internal-0.2.8",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/dart_internal-0.2.17",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.5"
     },
     {
       "name": "dart_style",
@@ -152,10 +152,16 @@
       "languageVersion": "2.19"
     },
     {
-      "name": "googleapis_auth",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/googleapis_auth-1.4.1",
+      "name": "google_identity_services_web",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.3.3+1",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "googleapis_auth",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/googleapis_auth-1.6.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
     },
     {
       "name": "graphs",
@@ -165,9 +171,9 @@
     },
     {
       "name": "http",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.1.0",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.6.0",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.4"
     },
     {
       "name": "http_multi_server",
@@ -195,21 +201,21 @@
     },
     {
       "name": "json_annotation",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/json_annotation-4.8.1",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/json_annotation-4.9.0",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.0"
     },
     {
       "name": "json_serializable",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/json_serializable-6.7.1",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/json_serializable-6.8.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "lints",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/lints-2.1.1",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/lints-4.0.0",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.1"
     },
     {
       "name": "logging",
@@ -219,21 +225,27 @@
     },
     {
       "name": "matcher",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/matcher-0.12.16",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/matcher-0.12.17",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.4"
     },
     {
       "name": "meta",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.9.1",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.18.2",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.5"
     },
     {
       "name": "mime",
       "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/mime-1.0.4",
       "packageUri": "lib/",
       "languageVersion": "2.18"
+    },
+    {
+      "name": "mocktail",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/mocktail-1.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "node_preamble",
@@ -357,21 +369,21 @@
     },
     {
       "name": "test",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/test-1.24.6",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/test-1.26.3",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.5"
     },
     {
       "name": "test_api",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.6.1",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.7.7",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.5"
     },
     {
       "name": "test_core",
-      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/test_core-0.5.6",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/test_core-0.6.12",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.5"
     },
     {
       "name": "timing",
@@ -398,6 +410,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "web",
+      "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/web-1.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "web_socket_channel",
       "rootUri": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache/hosted/pub.dev/web_socket_channel-2.4.0",
       "packageUri": "lib/",
@@ -419,10 +437,12 @@
       "name": "firebase_cloud_messaging_flutter",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.17"
     }
   ],
-  "generated": "2023-08-19T12:07:44.867248Z",
   "generator": "pub",
-  "generatorVersion": "3.1.0"
+  "generatorVersion": "3.11.4",
+  "flutterRoot": "file:///C:/src/flutter",
+  "flutterVersion": "3.41.6",
+  "pubCache": "file:///C:/Users/Muhammad%20Usman/AppData/Local/Pub/Cache"
 }

@@ -1,0 +1,11 @@
+Analyzing firebase_cloud_messaging_flutter...
+
+warning - example\firebase_cloud_messaging_flutter_example.dart:1:8 - Unused import: 'dart:io'. Try removing the import directive. - unused_import
+   info - lib\src\firebase.cloud.messaging.server.dart:8:8 - The import of 'fcm.logger.dart' is unnecessary because all of the used elements are also provided by the import of 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart'. Try removing the import directive. - unnecessary_import
+   info - lib\src\firebase.cloud.messaging.server.dart:9:8 - The import of 'logic/batch.result.dart' is unnecessary because all of the used elements are also provided by the import of 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart'. Try removing the import directive. - unnecessary_import
+   info - lib\src\firebase.cloud.messaging.server.dart:10:8 - The import of 'logic/fcm.error.dart' is unnecessary because all of the used elements are also provided by the import of 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart'. Try removing the import directive. - unnecessary_import
+   info - lib\src\firebase.cloud.messaging.server.dart:11:8 - The import of 'logic/fcm.retry.dart' is unnecessary because all of the used elements are also provided by the import of 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart'. Try removing the import directive. - unnecessary_import
+   info - lib\src\logic\fcm.error.dart:6:1 - Dangling library doc comment. Add a 'library' directive after the library comment. - dangling_library_doc_comments
+   info - test\firebase_cloud_messaging_flutter_test.dart:273:18 - The local variable '_makeResult' starts with an underscore. Try renaming the variable to not start with an underscore. - no_leading_underscores_for_local_identifiers
+
+7 issues found.

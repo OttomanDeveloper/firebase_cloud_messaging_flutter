@@ -1,0 +1,130 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'webpush.notification.g.dart';
+
+/// Typed models for Web Push notifications delivered through FCM.
+///
+/// This file contains:
+/// - [WebpushAction]           — a notification action button
+/// - [FirebaseWebpushNotification] — the full Web Notification spec object
+/// - [WebpushFcmOptions]       — FCM-specific options for the webpush channel
+///
+/// FCM Reference:
+/// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#webpushconfig
+
+// ---------------------------------------------------------------------------
+// Webpush Action
+// ---------------------------------------------------------------------------
+
+/// A button that appears in an expanded web push notification.
+///
+/// Corresponds to the [NotificationAction] dictionary in the
+/// Web Notifications specification.
+@JsonSerializable()
+class WebpushAction {
+  /// An identifier for the action. Provided to the service worker when the
+  /// button is clicked.
+  final String? action;
+
+  /// The label text displayed on the action button.
+  final String? title;
+
+  /// A URL pointing to an icon image to display alongside the action button.
+  final String? icon;
+
+  const WebpushAction({this.action, this.title, this.icon});
+
+  factory WebpushAction.fromJson(Map<String, dynamic> json) =>
+      _$WebpushActionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WebpushActionToJson(this);
+}
+
+// ---------------------------------------------------------------------------
+// Webpush Notification
+// ---------------------------------------------------------------------------
+
+/// A typed [Web Notification](https://developer.mozilla.org/en-US/docs/Web/API/Notification)
+/// object for the webpush channel.
+///
+/// All fields are optional; set only what you need. Fields here override
+/// the top-level [FirebaseNotification] values for browsers.
+@JsonSerializable()
+class FirebaseWebpushNotification {
+  /// The title shown in the notification banner.
+  final String? title;
+
+  /// The body text shown below [title].
+  final String? body;
+
+  /// URL of the icon image shown in the notification banner.
+  final String? icon;
+
+  /// URL of a badge image displayed in the notification tray on Android Chrome.
+  final String? badge;
+
+  /// URL of a large image displayed inside the notification body on Chrome.
+  final String? image;
+
+  /// A tag string that identifies this notification. Notifications with the
+  /// same tag replace each other rather than stacking.
+  final String? tag;
+
+  /// Vibration pattern in milliseconds (on/off alternating). Only honoured
+  /// on devices with vibration support.
+  final List<int>? vibrate;
+
+  /// Whether the notification should remain visible until the user explicitly
+  /// interacts with it (not auto-dismissed).
+  @JsonKey(name: 'require_interaction')
+  final bool? requireInteraction;
+
+  /// When `true`, no visual or audible alert is shown — the notification is
+  /// created silently (e.g., for badge updates).
+  final bool? silent;
+
+  /// Action buttons to show in the expanded notification.
+  final List<WebpushAction>? actions;
+
+  const FirebaseWebpushNotification({
+    this.title,
+    this.body,
+    this.icon,
+    this.badge,
+    this.image,
+    this.tag,
+    this.vibrate,
+    this.requireInteraction,
+    this.silent,
+    this.actions,
+  });
+
+  factory FirebaseWebpushNotification.fromJson(Map<String, dynamic> json) =>
+      _$FirebaseWebpushNotificationFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FirebaseWebpushNotificationToJson(this);
+}
+
+// ---------------------------------------------------------------------------
+// Webpush FCM Options
+// ---------------------------------------------------------------------------
+
+/// FCM-specific options that apply on top of the webpush delivery channel.
+@JsonSerializable()
+class WebpushFcmOptions {
+  /// The link to open when the user clicks the notification.
+  ///
+  /// Must be an HTTPS URL. If not set, the app's manifest start URL is used.
+  final String? link;
+
+  /// A label for analytics event tracking, associated with this message.
+  @JsonKey(name: 'analytics_label')
+  final String? analyticsLabel;
+
+  const WebpushFcmOptions({this.link, this.analyticsLabel});
+
+  factory WebpushFcmOptions.fromJson(Map<String, dynamic> json) =>
+      _$WebpushFcmOptionsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WebpushFcmOptionsToJson(this);
+}

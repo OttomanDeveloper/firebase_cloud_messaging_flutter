@@ -21,20 +21,26 @@ FirebaseAndroidConfig _$FirebaseAndroidConfigFromJson(
           ? null
           : FirebaseAndroidNotification.fromJson(
               json['notification'] as Map<String, dynamic>),
+      directBootOk: json['direct_boot_ok'] as bool?,
     );
 
 Map<String, dynamic> _$FirebaseAndroidConfigToJson(
         FirebaseAndroidConfig instance) =>
     <String, dynamic>{
-      'collapse_key': instance.collapseKey,
-      'priority': _$AndroidMessagePriorityEnumMap[instance.priority],
-      'ttl': instance.ttl,
-      'restricted_package_name': instance.restrictedPackageName,
-      'data': instance.data,
-      'notification': instance.notification,
+      if (instance.collapseKey != null) 'collapse_key': instance.collapseKey,
+      if (instance.priority != null)
+        'priority': _$AndroidMessagePriorityEnumMap[instance.priority],
+      if (instance.ttl != null) 'ttl': instance.ttl,
+      if (instance.restrictedPackageName != null)
+        'restricted_package_name': instance.restrictedPackageName,
+      if (instance.data != null) 'data': instance.data,
+      if (instance.notification != null)
+        'notification': instance.notification?.toJson(),
+      if (instance.directBootOk != null)
+        'direct_boot_ok': instance.directBootOk,
     };
 
 const _$AndroidMessagePriorityEnumMap = {
-  AndroidMessagePriority.normal: 'normal',
-  AndroidMessagePriority.high: 'high',
+  AndroidMessagePriority.normal: 'NORMAL',
+  AndroidMessagePriority.high: 'HIGH',
 };

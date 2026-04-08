@@ -72,7 +72,7 @@ class WebpushAction {
 /// All fields are optional; set only what you need. Fields here override
 /// the top-level [FirebaseNotification] values for browsers.
 @JsonSerializable()
-class FirebaseWebpushNotification {
+final class FirebaseWebpushNotification {
   /// The title shown in the notification banner.
   final String? title;
 

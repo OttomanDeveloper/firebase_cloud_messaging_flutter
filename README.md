@@ -75,24 +75,21 @@ final result = await server.send(
       token: 'device-token',
       notification: FirebaseNotification(
         title: 'Project Update',
-        body: 'New version 2.1.0 is live!',
-      ),
-      android: FirebaseAndroidConfig(
-        priority: AndroidMessagePriority.high,
-        notification: FirebaseAndroidNotification(
-          color: '#4CAF50',
-          sound: 'default',
-        ),
+        body: 'Version 3.0.0 is now Pure Dart!',
       ),
     ),
   ),
 );
 
-if (result.successful) {
-  print('Message sent: ${result.messageId}');
-} else {
-  print('FCM Error: ${result.fcmError}');
-}
+  // Dart 3 Exhaustive Pattern Matching for handling send outcomes
+  switch (result) {
+    case ServerSuccess(:final messageSent):
+      print('✅ Message sent successfully! ID: ${messageSent.name}');
+    case ServerFailure(:final fcmError):
+      print('❌ FCM Error: ${fcmError?.errorCode}');
+      print('   Summary: ${fcmError?.message}');
+      print('   Is Retryable: ${fcmError?.isRetryable}');
+  }
 ```
 
 ### Topic Management

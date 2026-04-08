@@ -1,12 +1,23 @@
-## 3.0.0
+# CHANGELOG
+
+## 3.0.0 (Dart 3 Modernization)
 
 **Major Breaking Change**: Renamed package from `firebase_cloud_messaging_flutter` to `firebase_cloud_messaging_dart`.
 
 This update accurately reflects the library's status as a pure Dart package, suitable for both Flutter and server-side environments like **Serverpod**.
 
-* **Breaking**: All imports must now use `package:firebase_cloud_messaging_dart/`.
-* **Breaking**: Main entry point renamed to `firebase_cloud_messaging_dart.dart`.
-* **Branding**: Updated documentation and examples to emphasize "Pure Dart" and "Server-Ready" identity.
+### 🚀 Key Improvements (Dart 3)
+
+* **Sealed Results**: `ServerResult` is now a `sealed` class hierarchy (`ServerSuccess`, `ServerFailure`). This allows for type-safe exhaustive pattern matching when handling send outcomes.
+* **Switch Expressions**: Refactored internal error parsing logic to use concise Dart 3 switch expressions.
+* **Class Modifiers**: Applied `final` class modifiers to core data models (e.g., `FirebaseAndroidConfig`, `FirebaseApnsConfig`, `FcmError`) to improve architectural integrity and compiler optimization.
+* **SDK Alignment**: Bumped minimum SDK constraint to `^3.0.0`.
+
+### ⚠️ Breaking Changes
+
+* **Package Rename**: All imports must now use `package:firebase_cloud_messaging_dart/`.
+* **Main Entry Point**: Renamed from `firebase_cloud_messaging_server.dart` to `firebase_cloud_messaging_dart.dart`.
+* **Result Matching**: Since `ServerResult` is now sealed, users should switch to type-safe pattern matching or check for `ServerSuccess`/`ServerFailure` concrete types. Legacy properties (`messageSent`, `fcmError`, `errorBody`) are preserved on the base class for backward compatibility but using the subclasses is recommended.
 
 ## 2.1.0
 
@@ -69,9 +80,9 @@ This release elevates the package to a production-hardened server-side SDK by in
 
 ### Quality
 
-*   Added `copyWith()` to `FirebaseMessage`, `FirebaseSend`, and `ServerResult`.
-*   Added `ServerResult.errorBody` (raw response body on failure) and
-    `ServerResult.fcmError` (typed error).
+* Added `copyWith()` to `FirebaseMessage`, `FirebaseSend`, and `ServerResult`.
+* Added `ServerResult.errorBody` (raw response body on failure) and
+  `ServerResult.fcmError` (typed error).
 *   `FirebaseSend` now asserts that `message` is non-null at construction time.
 *   Added full unit test suite in `test/`.
 *   Updated all dev dependencies to latest versions.

@@ -19,7 +19,7 @@ part 'send.g.dart';
 /// final result = await server.send(request);
 /// ```
 @JsonSerializable()
-class FirebaseSend {
+final class FirebaseSend {
   /// When `true`, validates the request without sending the message.
   ///
   /// The API will process the request and return the result as if the message

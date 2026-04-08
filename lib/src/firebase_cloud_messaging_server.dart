@@ -504,27 +504,31 @@ class FirebaseCloudMessagingServer {
       fcmError = FcmError.fromResponseBody(bodyMap);
     }
 
-    // Build the result object before deciding whether to retry.
-    final result = ServerResult(
-      successful: successful,
-      statusCode: response.statusCode,
-      errorPhrase: response.reasonPhrase,
-      errorBody: successful ? null : response.body,
-      fcmError: fcmError,
-      messageSent: successful && bodyMap != null
-          ? FirebaseMessage.fromJson(bodyMap)
-          : const FirebaseMessage(),
-    );
-
     final targetToken = sendObject.message?.token;
 
     if (successful) {
-      logger(FcmLogLevel.info, 'Message sent: ${result.messageSent?.name}');
+      final messageSent = successful && bodyMap != null
+          ? FirebaseMessage.fromJson(bodyMap)
+          : const FirebaseMessage();
+
+      final result = ServerSuccess(
+        statusCode: response.statusCode,
+        messageSent: messageSent,
+      );
+
+      logger(FcmLogLevel.info, 'Message sent: ${result.messageSent.name}');
       if (targetToken != null) {
         onRegistrationChange?.call(targetToken, FcmRegistrationStatus.active);
       }
       return result;
     }
+
+    final result = ServerFailure(
+      statusCode: response.statusCode,
+      errorPhrase: response.reasonPhrase,
+      errorBody: response.body,
+      fcmError: fcmError,
+    );
 
     logger(
       FcmLogLevel.warning,
@@ -532,9 +536,7 @@ class FirebaseCloudMessagingServer {
       '${fcmError?.status ?? response.reasonPhrase}',
     );
 
-    // Trigger registration callback if the token is unregistered.
-    if (fcmError?.errorCode == FcmErrorCode.unregistered &&
-        targetToken != null) {
+    if (targetToken != null) {
       onRegistrationChange?.call(
           targetToken, FcmRegistrationStatus.unregistered);
     }
@@ -672,9 +674,16 @@ class FirebaseCloudMessagingServer {
 
 /// Holds the outcome of a single FCM send request.
 ///
-/// Check [successful] first; if `false`, inspect [fcmError] for a typed error
-/// or [errorBody] for the raw response body.
-class ServerResult {
+/// Use a `switch` statement for exhaustive handling:
+/// ```dart
+/// switch (result) {
+///   case ServerSuccess(:final messageSent):
+///     print('Sent: ${messageSent.name}');
+///   case ServerFailure(:final fcmError):
+///     print('Error: ${fcmError?.errorCode}');
+/// }
+/// ```
+sealed class ServerResult {
   /// Whether FCM accepted and will deliver the message.
   final bool successful;
 
@@ -683,22 +692,16 @@ class ServerResult {
 
   /// The [FirebaseMessage] identifier returned by FCM on success.
   ///
-  /// Contains `null` values on failure — always check [successful] first.
+  /// This field is only guaranteed to be non-null in [ServerSuccess].
   final FirebaseMessage? messageSent;
 
   /// The HTTP reason phrase (e.g., `"Bad Request"`).
   final String? errorPhrase;
 
   /// The raw response body on failure, for advanced debugging.
-  ///
-  /// `null` when [successful] is `true`.
   final String? errorBody;
 
   /// Structured FCM error extracted from [errorBody], when available.
-  ///
-  /// Use [FcmError.isRetryable] and [FcmError.errorCode] for programmatic
-  /// error handling. `null` when [successful] is `true` or when the body
-  /// could not be parsed.
   final FcmError? fcmError;
 
   const ServerResult({
@@ -710,25 +713,6 @@ class ServerResult {
     this.fcmError,
   });
 
-  /// Creates a copy with the specified fields replaced.
-  ServerResult copyWith({
-    bool? successful,
-    int? statusCode,
-    FirebaseMessage? messageSent,
-    String? errorPhrase,
-    String? errorBody,
-    FcmError? fcmError,
-  }) {
-    return ServerResult(
-      successful: successful ?? this.successful,
-      statusCode: statusCode ?? this.statusCode,
-      messageSent: messageSent ?? this.messageSent,
-      errorPhrase: errorPhrase ?? this.errorPhrase,
-      errorBody: errorBody ?? this.errorBody,
-      fcmError: fcmError ?? this.fcmError,
-    );
-  }
-
   @override
   String toString() {
     return 'ServerResult{successful: $successful, statusCode: $statusCode, '
@@ -737,23 +721,47 @@ class ServerResult {
   }
 
   @override
-  bool operator ==(covariant ServerResult other) {
+  bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other.successful == successful &&
+    return other is ServerResult &&
+        other.successful == successful &&
         other.statusCode == statusCode &&
         other.messageSent == messageSent &&
         other.errorPhrase == errorPhrase &&
         other.errorBody == errorBody &&
-        other.fcmError?.toString() == fcmError?.toString();
+        other.fcmError == fcmError;
   }
 
   @override
   int get hashCode {
-    return successful.hashCode ^
-        statusCode.hashCode ^
-        messageSent.hashCode ^
-        errorPhrase.hashCode ^
-        errorBody.hashCode ^
-        fcmError.hashCode;
+    return Object.hash(
+      successful,
+      statusCode,
+      messageSent,
+      errorPhrase,
+      errorBody,
+      fcmError,
+    );
   }
+}
+
+/// Represents a successful FCM send outcome.
+final class ServerSuccess extends ServerResult {
+  @override
+  FirebaseMessage get messageSent => super.messageSent!;
+
+  const ServerSuccess({
+    required super.statusCode,
+    required FirebaseMessage messageSent,
+  }) : super(successful: true, messageSent: messageSent);
+}
+
+/// Represents a failed FCM send outcome.
+final class ServerFailure extends ServerResult {
+  const ServerFailure({
+    required super.statusCode,
+    super.fcmError,
+    super.errorPhrase,
+    super.errorBody,
+  }) : super(successful: false);
 }

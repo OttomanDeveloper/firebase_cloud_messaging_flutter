@@ -8,7 +8,7 @@ part 'android_config.g.dart';
 /// FCM Reference:
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#androidconfig
 @JsonSerializable()
-class FirebaseAndroidConfig {
+final class FirebaseAndroidConfig {
   /// An identifier for a group of messages that can be collapsed so that only
   /// the most recent message is delivered when the device comes online.
   ///

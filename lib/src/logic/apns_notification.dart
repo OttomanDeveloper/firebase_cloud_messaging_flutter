@@ -104,7 +104,7 @@ class ApnsAlert {
 /// Fields map directly to APNs APS dictionary keys. For the full APS
 /// dictionary reference, see Apple's UserNotifications documentation.
 @JsonSerializable()
-class FirebaseApnsNotification {
+final class FirebaseApnsNotification {
   /// Structured visual alert object.
   ///
   /// Use this for subtitle support or localisation. If you only need

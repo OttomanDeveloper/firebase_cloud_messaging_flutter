@@ -1,0 +1,31 @@
+500b78f Rename package to firebase_cloud_messaging_dart
+a2110b0 Include nulls in toJson and fix numeric casts
+096977b Bump Dart packages and add .pubignore
+ded427d Add package description to README
+2e18f9a Add FCM topic management and refactor server
+2675a19 Rename files to snake_case & add APNs/WebPush
+dbbe188 Add registration callback & APNs payload nesting
+cb6dcce Add ADC & topic management; bump to v2.1.0
+4cb6785 Bug fixes
+9933851 Release v2.0.0: API revamp and new features
+f6557bc Dependencies Upgraded
+8bb880f Minor Changes
+0904ba7 Minor Changes
+307d529 Minor Changes
+cda2c03 Merge pull request #3 from dsyrstad/main
+ddb8b5c Allow arbitrary values for Webpush notification and add webPushFcmOptions.
+fb64954 Allow arbitrary values for Webpush notification and add webPushFcmOptions.
+171b841 Allow map values for APNS payload values.
+798f2e3 Fixes issues #1 and #2.
+f579fd6 Improved code
+487ddc4 Minor changes
+82e3f9f Updated Dependencies & Improved code structure
+e1511b4 removed pandetic and added lints
+d20515d Updated Dependencies
+7c6c0ae Version Upgrade
+0b3b823 Improved README.md file
+fc1b772 Package Improved
+d39bb35 Some Changes
+12a6b16 Improved
+8e8ddbe Improved Readme.md File
+848e8b3 First Release

@@ -1,3 +1,24 @@
-**/.dart_tool/*
-!**/.dart_tool/build/
-!**/.dart_tool/package_config.json/*
+# Files that should not be published to pub.dev
+
+# Build artifacts
+build/
+.dart_tool/
+.packages
+.pub/
+pub_output.txt
+test_results.txt
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# Local/Secret files
+service_account.json
+credentials.json
+*.log
+
+# Git files are ignored by default by pub, but we can be explicit
+.git/
+.gitignore
+.metadata

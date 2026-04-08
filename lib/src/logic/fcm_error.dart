@@ -55,7 +55,7 @@ enum FcmErrorCode {
 ///   }
 /// }
 /// ```
-class FcmError {
+final class FcmError {
   /// The HTTP status code returned by FCM (e.g., 400, 401, 500).
   final int code;
 
@@ -105,26 +105,16 @@ class FcmError {
   // ---------------------------------------------------------------------------
 
   /// Maps a raw FCM status string to a typed [FcmErrorCode].
-  static FcmErrorCode _parseErrorCode(String? status) {
-    switch (status) {
-      case 'UNREGISTERED':
-        return FcmErrorCode.unregistered;
-      case 'SENDER_ID_MISMATCH':
-        return FcmErrorCode.senderIdMismatch;
-      case 'INVALID_ARGUMENT':
-        return FcmErrorCode.invalidArgument;
-      case 'QUOTA_EXCEEDED':
-        return FcmErrorCode.quotaExceeded;
-      case 'UNAVAILABLE':
-        return FcmErrorCode.unavailable;
-      case 'INTERNAL':
-        return FcmErrorCode.internal;
-      case 'THIRD_PARTY_AUTH_ERROR':
-        return FcmErrorCode.thirdPartyAuthError;
-      default:
-        return FcmErrorCode.unknown;
-    }
-  }
+  static FcmErrorCode _parseErrorCode(String? status) => switch (status) {
+        'UNREGISTERED' => FcmErrorCode.unregistered,
+        'SENDER_ID_MISMATCH' => FcmErrorCode.senderIdMismatch,
+        'INVALID_ARGUMENT' => FcmErrorCode.invalidArgument,
+        'QUOTA_EXCEEDED' => FcmErrorCode.quotaExceeded,
+        'UNAVAILABLE' => FcmErrorCode.unavailable,
+        'INTERNAL' => FcmErrorCode.internal,
+        'THIRD_PARTY_AUTH_ERROR' => FcmErrorCode.thirdPartyAuthError,
+        _ => FcmErrorCode.unknown,
+      };
 
   // ---------------------------------------------------------------------------
   // Whether this error is considered retryable

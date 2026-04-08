@@ -17,7 +17,7 @@ part 'message.g.dart';
 /// FCM Reference:
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages
 @JsonSerializable()
-class FirebaseMessage {
+final class FirebaseMessage {
   /// Output-only identifier returned by FCM after a successful send.
   ///
   /// Format: `"projects/{project-id}/messages/{message-id}"`.

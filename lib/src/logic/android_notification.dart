@@ -10,7 +10,7 @@ part 'android_notification.g.dart';
 /// FCM Reference:
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#androidnotification
 @JsonSerializable()
-class FirebaseAndroidNotification {
+final class FirebaseAndroidNotification {
   /// The notification's title. Overrides [FirebaseNotification.title].
   final String? title;
 
@@ -246,7 +246,7 @@ enum AndroidNotificationProxy {
 
 /// Controls the notification LED blinking rate and colour.
 @JsonSerializable()
-class LightSettings {
+final class LightSettings {
   /// The LED colour as an RGBA value.
   final FCMColor? color;
 
@@ -278,7 +278,7 @@ class LightSettings {
 ///
 /// Each component is a value in the range 0–255.
 @JsonSerializable()
-class FCMColor {
+final class FCMColor {
   /// Red component (0–255).
   final int? red;
 

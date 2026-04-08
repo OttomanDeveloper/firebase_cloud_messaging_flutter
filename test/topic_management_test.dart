@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:firebase_cloud_messaging_flutter/firebase_cloud_messaging_flutter.dart';
+import 'package:firebase_cloud_messaging_dart/firebase_cloud_messaging_dart.dart';
 import 'package:test/test.dart';
 
 void main() {

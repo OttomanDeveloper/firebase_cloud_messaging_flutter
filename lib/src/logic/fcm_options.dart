@@ -8,7 +8,7 @@ part 'fcm_options.g.dart';
 /// FCM Reference:
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#fcmoptions
 @JsonSerializable()
-class FirebaseFcmOptions {
+final class FirebaseFcmOptions {
   /// A label associated with the message for use in Firebase Analytics.
   ///
   /// The label may only contain ASCII letters, numbers, and underscores;

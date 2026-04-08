@@ -15,9 +15,9 @@ WebpushAction _$WebpushActionFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$WebpushActionToJson(WebpushAction instance) =>
     <String, dynamic>{
-      if (instance.action != null) 'action': instance.action,
-      if (instance.title != null) 'title': instance.title,
-      if (instance.icon != null) 'icon': instance.icon,
+      'action': instance.action,
+      'title': instance.title,
+      'icon': instance.icon,
     };
 
 FirebaseWebpushNotification _$FirebaseWebpushNotificationFromJson(
@@ -47,23 +47,21 @@ FirebaseWebpushNotification _$FirebaseWebpushNotificationFromJson(
 Map<String, dynamic> _$FirebaseWebpushNotificationToJson(
         FirebaseWebpushNotification instance) =>
     <String, dynamic>{
-      if (instance.title != null) 'title': instance.title,
-      if (instance.body != null) 'body': instance.body,
-      if (instance.icon != null) 'icon': instance.icon,
-      if (instance.badge != null) 'badge': instance.badge,
-      if (instance.image != null) 'image': instance.image,
-      if (instance.tag != null) 'tag': instance.tag,
-      if (instance.vibrate != null) 'vibrate': instance.vibrate,
-      if (instance.requireInteraction != null)
-        'require_interaction': instance.requireInteraction,
-      if (instance.silent != null) 'silent': instance.silent,
-      if (instance.actions != null)
-        'actions': instance.actions?.map((e) => e.toJson()).toList(),
-      if (instance.dir != null) 'dir': _$WebpushDirectionEnumMap[instance.dir],
-      if (instance.lang != null) 'lang': instance.lang,
-      if (instance.renotify != null) 'renotify': instance.renotify,
-      if (instance.timestamp != null) 'timestamp': instance.timestamp,
-      if (instance.data != null) 'data': instance.data,
+      'title': instance.title,
+      'body': instance.body,
+      'icon': instance.icon,
+      'badge': instance.badge,
+      'image': instance.image,
+      'tag': instance.tag,
+      'vibrate': instance.vibrate,
+      'require_interaction': instance.requireInteraction,
+      'silent': instance.silent,
+      'actions': instance.actions,
+      'dir': _$WebpushDirectionEnumMap[instance.dir],
+      'lang': instance.lang,
+      'renotify': instance.renotify,
+      'timestamp': instance.timestamp,
+      'data': instance.data,
     };
 
 const _$WebpushDirectionEnumMap = {
@@ -80,7 +78,6 @@ WebpushFcmOptions _$WebpushFcmOptionsFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$WebpushFcmOptionsToJson(WebpushFcmOptions instance) =>
     <String, dynamic>{
-      if (instance.link != null) 'link': instance.link,
-      if (instance.analyticsLabel != null)
-        'analytics_label': instance.analyticsLabel,
+      'link': instance.link,
+      'analytics_label': instance.analyticsLabel,
     };

@@ -27,17 +27,13 @@ FirebaseAndroidConfig _$FirebaseAndroidConfigFromJson(
 Map<String, dynamic> _$FirebaseAndroidConfigToJson(
         FirebaseAndroidConfig instance) =>
     <String, dynamic>{
-      if (instance.collapseKey != null) 'collapse_key': instance.collapseKey,
-      if (instance.priority != null)
-        'priority': _$AndroidMessagePriorityEnumMap[instance.priority],
-      if (instance.ttl != null) 'ttl': instance.ttl,
-      if (instance.restrictedPackageName != null)
-        'restricted_package_name': instance.restrictedPackageName,
-      if (instance.data != null) 'data': instance.data,
-      if (instance.notification != null)
-        'notification': instance.notification?.toJson(),
-      if (instance.directBootOk != null)
-        'direct_boot_ok': instance.directBootOk,
+      'collapse_key': instance.collapseKey,
+      'priority': _$AndroidMessagePriorityEnumMap[instance.priority],
+      'ttl': instance.ttl,
+      'restricted_package_name': instance.restrictedPackageName,
+      'data': instance.data,
+      'notification': instance.notification,
+      'direct_boot_ok': instance.directBootOk,
     };
 
 const _$AndroidMessagePriorityEnumMap = {

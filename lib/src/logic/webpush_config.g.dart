@@ -28,10 +28,8 @@ FirebaseWebpushConfig _$FirebaseWebpushConfigFromJson(
 Map<String, dynamic> _$FirebaseWebpushConfigToJson(
         FirebaseWebpushConfig instance) =>
     <String, dynamic>{
-      if (instance.headers != null) 'headers': instance.headers,
-      if (instance.data != null) 'data': instance.data,
-      if (instance.notification != null)
-        'notification': instance.notification?.toJson(),
-      if (instance.fcmOptions != null)
-        'fcm_options': instance.fcmOptions?.toJson(),
+      'headers': instance.headers,
+      'data': instance.data,
+      'notification': instance.notification,
+      'fcm_options': instance.fcmOptions,
     };

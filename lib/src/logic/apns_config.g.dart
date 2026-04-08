@@ -24,10 +24,8 @@ FirebaseApnsConfig _$FirebaseApnsConfigFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$FirebaseApnsConfigToJson(FirebaseApnsConfig instance) =>
     <String, dynamic>{
-      if (instance.headers != null) 'headers': instance.headers,
-      if (instance.notification != null)
-        'notification': instance.notification?.toJson(),
-      if (instance.fcmOptions != null)
-        'fcm_options': instance.fcmOptions?.toJson(),
-      if (instance.payload != null) 'payload': instance.payload,
+      'headers': instance.headers,
+      'notification': instance.notification,
+      'fcm_options': instance.fcmOptions,
+      'payload': instance.payload,
     };

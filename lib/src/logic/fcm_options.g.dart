@@ -14,7 +14,6 @@ FirebaseFcmOptions _$FirebaseFcmOptionsFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$FirebaseFcmOptionsToJson(FirebaseFcmOptions instance) =>
     <String, dynamic>{
-      if (instance.analyticsLabel != null)
-        'analytics_label': instance.analyticsLabel,
-      if (instance.image != null) 'image': instance.image,
+      'analytics_label': instance.analyticsLabel,
+      'image': instance.image,
     };

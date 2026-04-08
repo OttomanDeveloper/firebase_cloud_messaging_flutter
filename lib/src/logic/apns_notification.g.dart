@@ -21,14 +21,13 @@ ApnsAlert _$ApnsAlertFromJson(Map<String, dynamic> json) => ApnsAlert(
     );
 
 Map<String, dynamic> _$ApnsAlertToJson(ApnsAlert instance) => <String, dynamic>{
-      if (instance.title != null) 'title': instance.title,
-      if (instance.titleLocKey != null) 'title-loc-key': instance.titleLocKey,
-      if (instance.titleLocArgs != null)
-        'title-loc-args': instance.titleLocArgs,
-      if (instance.subtitle != null) 'subtitle': instance.subtitle,
-      if (instance.body != null) 'body': instance.body,
-      if (instance.locKey != null) 'loc-key': instance.locKey,
-      if (instance.locArgs != null) 'loc-args': instance.locArgs,
+      'title': instance.title,
+      'title-loc-key': instance.titleLocKey,
+      'title-loc-args': instance.titleLocArgs,
+      'subtitle': instance.subtitle,
+      'body': instance.body,
+      'loc-key': instance.locKey,
+      'loc-args': instance.locArgs,
     };
 
 FirebaseApnsNotification _$FirebaseApnsNotificationFromJson(
@@ -40,11 +39,11 @@ FirebaseApnsNotification _$FirebaseApnsNotificationFromJson(
       title: json['title'] as String?,
       body: json['body'] as String?,
       sound: json['sound'] as String?,
-      badge: json['badge'] as int?,
+      badge: (json['badge'] as num?)?.toInt(),
       category: json['category'] as String?,
       threadId: json['thread-id'] as String?,
-      contentAvailable: json['content-available'] as int?,
-      mutableContent: json['mutable-content'] as int?,
+      contentAvailable: (json['content-available'] as num?)?.toInt(),
+      mutableContent: (json['mutable-content'] as num?)?.toInt(),
       targetContentId: json['target-content-id'] as String?,
       interruptionLevel: $enumDecodeNullable(
           _$InterruptionLevelEnumMap, json['interruption-level']),
@@ -54,24 +53,19 @@ FirebaseApnsNotification _$FirebaseApnsNotificationFromJson(
 Map<String, dynamic> _$FirebaseApnsNotificationToJson(
         FirebaseApnsNotification instance) =>
     <String, dynamic>{
-      if (instance.alert != null) 'alert': instance.alert?.toJson(),
-      if (instance.title != null) 'title': instance.title,
-      if (instance.body != null) 'body': instance.body,
-      if (instance.sound != null) 'sound': instance.sound,
-      if (instance.badge != null) 'badge': instance.badge,
-      if (instance.category != null) 'category': instance.category,
-      if (instance.threadId != null) 'thread-id': instance.threadId,
-      if (instance.contentAvailable != null)
-        'content-available': instance.contentAvailable,
-      if (instance.mutableContent != null)
-        'mutable-content': instance.mutableContent,
-      if (instance.targetContentId != null)
-        'target-content-id': instance.targetContentId,
-      if (instance.interruptionLevel != null)
-        'interruption-level':
-            _$InterruptionLevelEnumMap[instance.interruptionLevel],
-      if (instance.relevanceScore != null)
-        'relevance-score': instance.relevanceScore,
+      'alert': instance.alert,
+      'title': instance.title,
+      'body': instance.body,
+      'sound': instance.sound,
+      'badge': instance.badge,
+      'category': instance.category,
+      'thread-id': instance.threadId,
+      'content-available': instance.contentAvailable,
+      'mutable-content': instance.mutableContent,
+      'target-content-id': instance.targetContentId,
+      'interruption-level':
+          _$InterruptionLevelEnumMap[instance.interruptionLevel],
+      'relevance-score': instance.relevanceScore,
     };
 
 const _$InterruptionLevelEnumMap = {
@@ -89,7 +83,6 @@ ApnsFcmOptions _$ApnsFcmOptionsFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$ApnsFcmOptionsToJson(ApnsFcmOptions instance) =>
     <String, dynamic>{
-      if (instance.analyticsLabel != null)
-        'analytics_label': instance.analyticsLabel,
-      if (instance.image != null) 'image': instance.image,
+      'analytics_label': instance.analyticsLabel,
+      'image': instance.image,
     };

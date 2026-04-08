@@ -3,7 +3,7 @@ description: >-
   Send Firebase Cloud Messages and manage topics directly from your Dart or 
   Flutter application using the FCM HTTP v1 API. No external server required.
   Includes native Google Application Default Credentials (ADC) support.
-version: 2.1.0
+version: 2.1.2
 homepage: https://github.com/OttomanDeveloper/firebase_cloud_messaging_flutter
 
 environment:
